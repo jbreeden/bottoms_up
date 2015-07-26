@@ -1,0 +1,13 @@
+<h1>Grammar</h1>
+<pre>IF' ->
+  IF
+
+IF ->
+  IF body
+  | IF body ELSE body
+</pre>
+
+<h1>NFA Table</h1>
+<table border='1' cellspacing='0' cellpadding='3'><thead><th>State</th><th>Item</th><th>Epsilon Transitions</th><th>Action</th></thead><tbody><tr><td>0</td><td>IF' = . IF</td><td>[2, 5]</td><td>goto(1)</td></tr><tr><td>1</td><td>IF' = IF .</td><td>[]</td><td>reduce(IF)</td></tr><tr><td>2</td><td>IF = . IF body</td><td>[2, 5]</td><td>goto(3)</td></tr><tr><td>3</td><td>IF = IF . body</td><td>[]</td><td>shift(4)</td></tr><tr><td>4</td><td>IF = IF body .</td><td>[]</td><td>reduce(IF body)</td></tr><tr><td>5</td><td>IF = . IF body ELSE body</td><td>[2, 5]</td><td>goto(6)</td></tr><tr><td>6</td><td>IF = IF . body ELSE body</td><td>[]</td><td>shift(7)</td></tr><tr><td>7</td><td>IF = IF body . ELSE body</td><td>[]</td><td>goto(8)</td></tr><tr><td>8</td><td>IF = IF body ELSE . body</td><td>[]</td><td>shift(9)</td></tr><tr><td>9</td><td>IF = IF body ELSE body .</td><td>[]</td><td>reduce(IF body ELSE body)</td></tr></tbody></table>
+<h1>DFA Table</h1>
+<table border='1' cellspacing='0' cellpadding='3'><thead><th>State</th><th>NFA States</th><th>Items</th><th>Shifts</th><th>Reductions</th></thead><tbody><tr><td>0</td><td>0<br/>2<br/>5<br/></td><td>IF' = . IF<br/>IF = . IF body<br/>IF = . IF body ELSE body<br/></td><td>IF -> goto(1)<br/></td><td></td></tr><tr><td>1</td><td>1<br/>3<br/>6<br/></td><td>IF' = IF .<br/>IF = IF . body<br/>IF = IF . body ELSE body<br/></td><td>body -> shift(2)<br/></td><td>reduce(IF)<br/></td></tr><tr><td>2</td><td>4<br/>7<br/></td><td>IF = IF body .<br/>IF = IF body . ELSE body<br/></td><td>ELSE -> goto(3)<br/></td><td>reduce(IF body)<br/></td></tr><tr><td>3</td><td>8<br/></td><td>IF = IF body ELSE . body<br/></td><td>body -> shift(4)<br/></td><td></td></tr><tr><td>4</td><td>9<br/></td><td>IF = IF body ELSE body .<br/></td><td></td><td>reduce(IF body ELSE body)<br/></td></tr></tbody></table>
