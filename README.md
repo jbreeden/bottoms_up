@@ -16,6 +16,7 @@ correspond to at lease one production rule in the grammar. (Otherwise the gramma
 Ex (Balanced Parens)
 ```Ruby
 parser = BottomsUp.new(:S) do |p|
+  # S -> ( S ) S | e
   p.rule :S, [:'(', :S, :')', :S]
   p.rule :S, [:e]
 end
@@ -25,12 +26,17 @@ parser.dump_html
 
 ### Alternation
 A single level of alternation is allowed in each rule. This is done by including an array of
-symbols in the rule.
+symbols in the rule. If your needs are more than this, you can always just write separate rules.
+In fact, when a rule with alternation is encountered, it is expanded into multiple rules before
+generating the NFA.
 
 Ex (Dangling Else Problem)
 ```Ruby
 parser = BottomsUp.new(:S) do |p|
+  # S -> I | other
   p.rule :S, [[:I, :other]]
+
+  # I -> if S | if S else S
   p.rule :I, [:if, :S]
   p.rule :I, [:if, :S, :else, :S]
 end

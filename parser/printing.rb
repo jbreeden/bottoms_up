@@ -3,6 +3,8 @@ class BottomsUp
     puts('<h1>Grammar</h1>')
     print_html_grammar
     puts
+    print_first_sets
+    print_follow_sets
     puts('<h1>NFA Table</h1>')
     puts @nfa.to_html
     puts('<h1>DFA Table</h1>')
@@ -20,5 +22,53 @@ class BottomsUp
     end
     result << "</pre>"
     puts result
+  end
+
+  def print_first_sets
+    str = '<h1>First Sets</h1>'
+    str <<
+      "<table border='1' cellspacing='0' cellpadding='3'>\n" <<
+      "  <thead>\n" <<
+      "    <th>Non Terminal</th>\n" <<
+      "    <th>Firsts</th>\n" <<
+      "  </thead>\n" <<
+      "  <tbody>\n"
+
+    @non_terminals.each do |nt|
+      str <<
+        "<tr>" <<
+        "<td>#{nt.symbol}</td><td>#{firsts(nt.symbol).join(' ')}</td>" <<
+        "</tr>\n"
+    end
+
+    str <<
+      "  </tbody>\n" <<
+      "</table>\n"
+
+    puts str
+  end
+
+  def print_follow_sets
+    str = '<h1>Follow Sets</h1>'
+    str <<
+      "<table border='1' cellspacing='0' cellpadding='3'>\n" <<
+      "  <thead>\n" <<
+      "    <th>Non Terminal</th>\n" <<
+      "    <th>Follows</th>\n" <<
+      "  </thead>\n" <<
+      "  <tbody>\n"
+
+    @non_terminals.each do |nt|
+      str <<
+        "<tr>" <<
+        "<td>#{nt.symbol}</td><td>#{follows(nt.symbol).join(' ')}</td>" <<
+        "</tr>\n"
+    end
+
+    str <<
+      "  </tbody>\n" <<
+      "</table>\n"
+
+    puts str
   end
 end

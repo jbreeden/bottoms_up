@@ -14,6 +14,30 @@ B ->
   e
 </pre>
 
+<h1>First Sets</h1><table border='1' cellspacing='0' cellpadding='3'>
+  <thead>
+    <th>Non Terminal</th>
+    <th>Firsts</th>
+  </thead>
+  <tbody>
+<tr><td>E'</td><td>str</td></tr>
+<tr><td>E</td><td>str</td></tr>
+<tr><td>A</td><td>str</td></tr>
+<tr><td>B</td><td></td></tr>
+  </tbody>
+</table>
+<h1>Follow Sets</h1><table border='1' cellspacing='0' cellpadding='3'>
+  <thead>
+    <th>Non Terminal</th>
+    <th>Follows</th>
+  </thead>
+  <tbody>
+<tr><td>E'</td><td>$</td></tr>
+<tr><td>E</td><td></td></tr>
+<tr><td>A</td><td></td></tr>
+<tr><td>B</td><td></td></tr>
+  </tbody>
+</table>
 <h1>NFA Table</h1>
 <table border='1' cellspacing='0' cellpadding='3'><thead><th>State</th><th>Item</th><th>Epsilon Transitions</th><th>Action</th></thead><tbody><tr><td>0</td><td>E' = . E</td><td>[2, 5]</td><td>goto(1)</td></tr><tr><td>1</td><td>E' = E .</td><td>[]</td><td>reduce(E' -> E)</td></tr><tr><td>2</td><td>E = . A B</td><td>[6, 9]</td><td>goto(3)</td></tr><tr><td>3</td><td>E = A . B</td><td>[11]</td><td>goto(4)</td></tr><tr><td>4</td><td>E = A B .</td><td>[]</td><td>reduce(E -> A B)</td></tr><tr><td>5</td><td>E = . e</td><td>[]</td><td>reduce(E -> e)</td></tr><tr><td>6</td><td>A = . str B</td><td>[]</td><td>shift(7)</td></tr><tr><td>7</td><td>A = str . B</td><td>[11]</td><td>goto(8)</td></tr><tr><td>8</td><td>A = str B .</td><td>[]</td><td>reduce(A -> str B)</td></tr><tr><td>9</td><td>A = . str</td><td>[]</td><td>shift(10)</td></tr><tr><td>10</td><td>A = str .</td><td>[]</td><td>reduce(A -> str)</td></tr><tr><td>11</td><td>B = . e</td><td>[]</td><td>reduce(B -> e)</td></tr></tbody></table>
 <h1>DFA Table</h1>

@@ -5,9 +5,16 @@ require_relative './parser/item'
 require_relative './parser/action'
 require_relative './parser/nfa'
 require_relative './parser/dfa'
+require_relative './parser/ffsets'
 require_relative './parser/printing'
 
 class BottomsUp
+  attr_reader :start_symbol,
+    :productions,
+    :non_terminals,
+    :nfa,
+    :dfa
+
   def initialize(start_symbol, &block)
     @augmented_start_symbol = "#{start_symbol}'".to_sym
     @productions = []
@@ -21,9 +28,6 @@ class BottomsUp
     @nfa = NFA.new(@augmented_start_symbol, items)
     @dfa = DFA.new(@augmented_start_symbol, @nfa)
   end
-  attr_reader :start_symbol,
-    :productions,
-    :non_terminals
 
   def non_terminal(symbol)
     # O(n), could use a hash
@@ -96,5 +100,44 @@ class BottomsUp
     # empty rules with [:e] at the end. This is mostly for printing,
     # as [:e] and [] are semantically equivalent as items.
     rules = rules.map { |r| r == [] ? [:e] : r }
+  end
+
+  def firsts(sym)
+    return sym if SymCheck.terminal?(sym)
+
+    unless @firsts
+      @firsts = {}
+      non_terminals.each do |nt|
+        @firsts[nt.symbol] = FirstSet.new(@firsts, nt)
+      end
+
+      begin
+        @firsts.values.each { |set|
+          set.resolve
+        }
+      end while @firsts.values.find { |set| set.changed? }
+    end
+
+    @firsts[sym].terminals
+  end
+
+  def follows(sym)
+    unless @follows
+      @follows = {}
+      non_terminals.each do |nt|
+        @follows[nt.symbol] = FollowSet.new(@firsts, @follows, @non_terminals, nt)
+        if nt.symbol == @augmented_start_symbol
+          @follows[nt.symbol].add_terminal(:'$')
+        end
+      end
+
+      begin
+        @follows.values.each { |set|
+          set.resolve
+        }
+      end while @follows.values.find { |set| set.changed? }
+    end
+
+    @follows[sym].terminals
   end
 end

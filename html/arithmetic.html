@@ -35,6 +35,40 @@ NUMBER ->
   | number
 </pre>
 
+<h1>First Sets</h1><table border='1' cellspacing='0' cellpadding='3'>
+  <thead>
+    <th>Non Terminal</th>
+    <th>Firsts</th>
+  </thead>
+  <tbody>
+<tr><td>ARITHMETIC'</td><td>( + - number</td></tr>
+<tr><td>ARITHMETIC</td><td>( + - number</td></tr>
+<tr><td>EXPR_LIST</td><td>( + - number</td></tr>
+<tr><td>EXPR</td><td>( + - number</td></tr>
+<tr><td>MULTIPLICATION</td><td>( + - number</td></tr>
+<tr><td>DIVISION</td><td>( + - number</td></tr>
+<tr><td>ADDITION</td><td>( + - number</td></tr>
+<tr><td>SUBTRACTION</td><td>( + - number</td></tr>
+<tr><td>NUMBER</td><td>+ - number</td></tr>
+  </tbody>
+</table>
+<h1>Follow Sets</h1><table border='1' cellspacing='0' cellpadding='3'>
+  <thead>
+    <th>Non Terminal</th>
+    <th>Follows</th>
+  </thead>
+  <tbody>
+<tr><td>ARITHMETIC'</td><td>$</td></tr>
+<tr><td>ARITHMETIC</td><td></td></tr>
+<tr><td>EXPR_LIST</td><td></td></tr>
+<tr><td>EXPR</td><td></td></tr>
+<tr><td>MULTIPLICATION</td><td></td></tr>
+<tr><td>DIVISION</td><td></td></tr>
+<tr><td>ADDITION</td><td></td></tr>
+<tr><td>SUBTRACTION</td><td></td></tr>
+<tr><td>NUMBER</td><td></td></tr>
+  </tbody>
+</table>
 <h1>NFA Table</h1>
 <table border='1' cellspacing='0' cellpadding='3'><thead><th>State</th><th>Item</th><th>Epsilon Transitions</th><th>Action</th></thead><tbody><tr><td>0</td><td>ARITHMETIC' = . ARITHMETIC</td><td>[2]</td><td>goto(1)</td></tr><tr><td>1</td><td>ARITHMETIC' = ARITHMETIC .</td><td>[]</td><td>reduce(ARITHMETIC' -> ARITHMETIC)</td></tr><tr><td>2</td><td>ARITHMETIC = . EXPR_LIST</td><td>[4, 6]</td><td>goto(3)</td></tr><tr><td>3</td><td>ARITHMETIC = EXPR_LIST .</td><td>[]</td><td>reduce(ARITHMETIC -> EXPR_LIST)</td></tr><tr><td>4</td><td>EXPR_LIST = . EXPR</td><td>[9, 11, 13, 15, 17, 19]</td><td>goto(5)</td></tr><tr><td>5</td><td>EXPR_LIST = EXPR .</td><td>[]</td><td>reduce(EXPR_LIST -> EXPR)</td></tr><tr><td>6</td><td>EXPR_LIST = . EXPR_LIST EXPR</td><td>[4, 6]</td><td>goto(7)</td></tr><tr><td>7</td><td>EXPR_LIST = EXPR_LIST . EXPR</td><td>[9, 11, 13, 15, 17, 19]</td><td>goto(8)</td></tr><tr><td>8</td><td>EXPR_LIST = EXPR_LIST EXPR .</td><td>[]</td><td>reduce(EXPR_LIST -> EXPR_LIST EXPR)</td></tr><tr><td>9</td><td>EXPR = . MULTIPLICATION</td><td>[23]</td><td>goto(10)</td></tr><tr><td>10</td><td>EXPR = MULTIPLICATION .</td><td>[]</td><td>reduce(EXPR -> MULTIPLICATION)</td></tr><tr><td>11</td><td>EXPR = . DIVISION</td><td>[27]</td><td>goto(12)</td></tr><tr><td>12</td><td>EXPR = DIVISION .</td><td>[]</td><td>reduce(EXPR -> DIVISION)</td></tr><tr><td>13</td><td>EXPR = . ADDITION</td><td>[31]</td><td>goto(14)</td></tr><tr><td>14</td><td>EXPR = ADDITION .</td><td>[]</td><td>reduce(EXPR -> ADDITION)</td></tr><tr><td>15</td><td>EXPR = . SUBTRACTION</td><td>[35]</td><td>goto(16)</td></tr><tr><td>16</td><td>EXPR = SUBTRACTION .</td><td>[]</td><td>reduce(EXPR -> SUBTRACTION)</td></tr><tr><td>17</td><td>EXPR = . NUMBER</td><td>[39, 42, 45]</td><td>goto(18)</td></tr><tr><td>18</td><td>EXPR = NUMBER .</td><td>[]</td><td>reduce(EXPR -> NUMBER)</td></tr><tr><td>19</td><td>EXPR = . ( EXPR )</td><td>[]</td><td>shift(20)</td></tr><tr><td>20</td><td>EXPR = ( . EXPR )</td><td>[9, 11, 13, 15, 17, 19]</td><td>goto(21)</td></tr><tr><td>21</td><td>EXPR = ( EXPR . )</td><td>[]</td><td>shift(22)</td></tr><tr><td>22</td><td>EXPR = ( EXPR ) .</td><td>[]</td><td>reduce(EXPR -> ( EXPR ))</td></tr><tr><td>23</td><td>MULTIPLICATION = . EXPR * EXPR</td><td>[9, 11, 13, 15, 17, 19]</td><td>goto(24)</td></tr><tr><td>24</td><td>MULTIPLICATION = EXPR . * EXPR</td><td>[]</td><td>shift(25)</td></tr><tr><td>25</td><td>MULTIPLICATION = EXPR * . EXPR</td><td>[9, 11, 13, 15, 17, 19]</td><td>goto(26)</td></tr><tr><td>26</td><td>MULTIPLICATION = EXPR * EXPR .</td><td>[]</td><td>reduce(MULTIPLICATION -> EXPR * EXPR)</td></tr><tr><td>27</td><td>DIVISION = . EXPR / EXPR</td><td>[9, 11, 13, 15, 17, 19]</td><td>goto(28)</td></tr><tr><td>28</td><td>DIVISION = EXPR . / EXPR</td><td>[]</td><td>shift(29)</td></tr><tr><td>29</td><td>DIVISION = EXPR / . EXPR</td><td>[9, 11, 13, 15, 17, 19]</td><td>goto(30)</td></tr><tr><td>30</td><td>DIVISION = EXPR / EXPR .</td><td>[]</td><td>reduce(DIVISION -> EXPR / EXPR)</td></tr><tr><td>31</td><td>ADDITION = . EXPR + EXPR</td><td>[9, 11, 13, 15, 17, 19]</td><td>goto(32)</td></tr><tr><td>32</td><td>ADDITION = EXPR . + EXPR</td><td>[]</td><td>shift(33)</td></tr><tr><td>33</td><td>ADDITION = EXPR + . EXPR</td><td>[9, 11, 13, 15, 17, 19]</td><td>goto(34)</td></tr><tr><td>34</td><td>ADDITION = EXPR + EXPR .</td><td>[]</td><td>reduce(ADDITION -> EXPR + EXPR)</td></tr><tr><td>35</td><td>SUBTRACTION = . EXPR - EXPR</td><td>[9, 11, 13, 15, 17, 19]</td><td>goto(36)</td></tr><tr><td>36</td><td>SUBTRACTION = EXPR . - EXPR</td><td>[]</td><td>shift(37)</td></tr><tr><td>37</td><td>SUBTRACTION = EXPR - . EXPR</td><td>[9, 11, 13, 15, 17, 19]</td><td>goto(38)</td></tr><tr><td>38</td><td>SUBTRACTION = EXPR - EXPR .</td><td>[]</td><td>reduce(SUBTRACTION -> EXPR - EXPR)</td></tr><tr><td>39</td><td>NUMBER = . + number</td><td>[]</td><td>shift(40)</td></tr><tr><td>40</td><td>NUMBER = + . number</td><td>[]</td><td>shift(41)</td></tr><tr><td>41</td><td>NUMBER = + number .</td><td>[]</td><td>reduce(NUMBER -> + number)</td></tr><tr><td>42</td><td>NUMBER = . - number</td><td>[]</td><td>shift(43)</td></tr><tr><td>43</td><td>NUMBER = - . number</td><td>[]</td><td>shift(44)</td></tr><tr><td>44</td><td>NUMBER = - number .</td><td>[]</td><td>reduce(NUMBER -> - number)</td></tr><tr><td>45</td><td>NUMBER = . number</td><td>[]</td><td>shift(46)</td></tr><tr><td>46</td><td>NUMBER = number .</td><td>[]</td><td>reduce(NUMBER -> number)</td></tr></tbody></table>
 <h1>DFA Table</h1>

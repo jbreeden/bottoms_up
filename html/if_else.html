@@ -11,6 +11,28 @@ I ->
   | if S else S
 </pre>
 
+<h1>First Sets</h1><table border='1' cellspacing='0' cellpadding='3'>
+  <thead>
+    <th>Non Terminal</th>
+    <th>Firsts</th>
+  </thead>
+  <tbody>
+<tr><td>S'</td><td>other if</td></tr>
+<tr><td>S</td><td>other if</td></tr>
+<tr><td>I</td><td>if</td></tr>
+  </tbody>
+</table>
+<h1>Follow Sets</h1><table border='1' cellspacing='0' cellpadding='3'>
+  <thead>
+    <th>Non Terminal</th>
+    <th>Follows</th>
+  </thead>
+  <tbody>
+<tr><td>S'</td><td>$</td></tr>
+<tr><td>S</td><td></td></tr>
+<tr><td>I</td><td></td></tr>
+  </tbody>
+</table>
 <h1>NFA Table</h1>
 <table border='1' cellspacing='0' cellpadding='3'><thead><th>State</th><th>Item</th><th>Epsilon Transitions</th><th>Action</th></thead><tbody><tr><td>0</td><td>S' = . S</td><td>[2, 4]</td><td>goto(1)</td></tr><tr><td>1</td><td>S' = S .</td><td>[]</td><td>reduce(S' -> S)</td></tr><tr><td>2</td><td>S = . I</td><td>[6, 9]</td><td>goto(3)</td></tr><tr><td>3</td><td>S = I .</td><td>[]</td><td>reduce(S -> I)</td></tr><tr><td>4</td><td>S = . other</td><td>[]</td><td>shift(5)</td></tr><tr><td>5</td><td>S = other .</td><td>[]</td><td>reduce(S -> other)</td></tr><tr><td>6</td><td>I = . if S</td><td>[]</td><td>shift(7)</td></tr><tr><td>7</td><td>I = if . S</td><td>[2, 4]</td><td>goto(8)</td></tr><tr><td>8</td><td>I = if S .</td><td>[]</td><td>reduce(I -> if S)</td></tr><tr><td>9</td><td>I = . if S else S</td><td>[]</td><td>shift(10)</td></tr><tr><td>10</td><td>I = if . S else S</td><td>[2, 4]</td><td>goto(11)</td></tr><tr><td>11</td><td>I = if S . else S</td><td>[]</td><td>shift(12)</td></tr><tr><td>12</td><td>I = if S else . S</td><td>[2, 4]</td><td>goto(13)</td></tr><tr><td>13</td><td>I = if S else S .</td><td>[]</td><td>reduce(I -> if S else S)</td></tr></tbody></table>
 <h1>DFA Table</h1>

@@ -7,6 +7,26 @@ E ->
   | 1
 </pre>
 
+<h1>First Sets</h1><table border='1' cellspacing='0' cellpadding='3'>
+  <thead>
+    <th>Non Terminal</th>
+    <th>Firsts</th>
+  </thead>
+  <tbody>
+<tr><td>E'</td><td>1</td></tr>
+<tr><td>E</td><td>1</td></tr>
+  </tbody>
+</table>
+<h1>Follow Sets</h1><table border='1' cellspacing='0' cellpadding='3'>
+  <thead>
+    <th>Non Terminal</th>
+    <th>Follows</th>
+  </thead>
+  <tbody>
+<tr><td>E'</td><td>$</td></tr>
+<tr><td>E</td><td></td></tr>
+  </tbody>
+</table>
 <h1>NFA Table</h1>
 <table border='1' cellspacing='0' cellpadding='3'><thead><th>State</th><th>Item</th><th>Epsilon Transitions</th><th>Action</th></thead><tbody><tr><td>0</td><td>E' = . E</td><td>[2, 5]</td><td>goto(1)</td></tr><tr><td>1</td><td>E' = E .</td><td>[]</td><td>reduce(E' -> E)</td></tr><tr><td>2</td><td>E = . 1 E</td><td>[]</td><td>shift(3)</td></tr><tr><td>3</td><td>E = 1 . E</td><td>[2, 5]</td><td>goto(4)</td></tr><tr><td>4</td><td>E = 1 E .</td><td>[]</td><td>reduce(E -> 1 E)</td></tr><tr><td>5</td><td>E = . 1</td><td>[]</td><td>shift(6)</td></tr><tr><td>6</td><td>E = 1 .</td><td>[]</td><td>reduce(E -> 1)</td></tr></tbody></table>
 <h1>DFA Table</h1>

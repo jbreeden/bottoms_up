@@ -35,6 +35,38 @@ ESCAPE ->
   | backslash close_group
 </pre>
 
+<h1>First Sets</h1><table border='1' cellspacing='0' cellpadding='3'>
+  <thead>
+    <th>Non Terminal</th>
+    <th>Firsts</th>
+  </thead>
+  <tbody>
+<tr><td>GLOB'</td><td>slash open_group string</td></tr>
+<tr><td>GLOB</td><td>slash open_group string</td></tr>
+<tr><td>SEGMENT_LIST</td><td>open_group string</td></tr>
+<tr><td>SEGMENT</td><td>open_group string</td></tr>
+<tr><td>GROUP</td><td>open_group</td></tr>
+<tr><td>STRING_LIST</td><td>comma string</td></tr>
+<tr><td>STRING</td><td>string</td></tr>
+<tr><td>ESCAPE</td><td>backslash</td></tr>
+  </tbody>
+</table>
+<h1>Follow Sets</h1><table border='1' cellspacing='0' cellpadding='3'>
+  <thead>
+    <th>Non Terminal</th>
+    <th>Follows</th>
+  </thead>
+  <tbody>
+<tr><td>GLOB'</td><td>$</td></tr>
+<tr><td>GLOB</td><td></td></tr>
+<tr><td>SEGMENT_LIST</td><td></td></tr>
+<tr><td>SEGMENT</td><td></td></tr>
+<tr><td>GROUP</td><td></td></tr>
+<tr><td>STRING_LIST</td><td></td></tr>
+<tr><td>STRING</td><td></td></tr>
+<tr><td>ESCAPE</td><td></td></tr>
+  </tbody>
+</table>
 <h1>NFA Table</h1>
 <table border='1' cellspacing='0' cellpadding='3'><thead><th>State</th><th>Item</th><th>Epsilon Transitions</th><th>Action</th></thead><tbody><tr><td>0</td><td>GLOB' = . GLOB</td><td>[2, 5]</td><td>goto(1)</td></tr><tr><td>1</td><td>GLOB' = GLOB .</td><td>[]</td><td>reduce(GLOB' -> GLOB)</td></tr><tr><td>2</td><td>GLOB = . SEGMENT_LIST $</td><td>[9, 11]</td><td>goto(3)</td></tr><tr><td>3</td><td>GLOB = SEGMENT_LIST . $</td><td>[]</td><td>shift(4)</td></tr><tr><td>4</td><td>GLOB = SEGMENT_LIST $ .</td><td>[]</td><td>reduce(GLOB -> SEGMENT_LIST $)</td></tr><tr><td>5</td><td>GLOB = . slash SEGMENT_LIST $</td><td>[]</td><td>shift(6)</td></tr><tr><td>6</td><td>GLOB = slash . SEGMENT_LIST $</td><td>[9, 11]</td><td>goto(7)</td></tr><tr><td>7</td><td>GLOB = slash SEGMENT_LIST . $</td><td>[]</td><td>shift(8)</td></tr><tr><td>8</td><td>GLOB = slash SEGMENT_LIST $ .</td><td>[]</td><td>reduce(GLOB -> slash SEGMENT_LIST $)</td></tr><tr><td>9</td><td>SEGMENT_LIST = . SEGMENT</td><td>[15, 17, 19]</td><td>goto(10)</td></tr><tr><td>10</td><td>SEGMENT_LIST = SEGMENT .</td><td>[]</td><td>reduce(SEGMENT_LIST -> SEGMENT)</td></tr><tr><td>11</td><td>SEGMENT_LIST = . SEGMENT_LIST slash SEGMENT</td><td>[9, 11]</td><td>goto(12)</td></tr><tr><td>12</td><td>SEGMENT_LIST = SEGMENT_LIST . slash SEGMENT</td><td>[]</td><td>shift(13)</td></tr><tr><td>13</td><td>SEGMENT_LIST = SEGMENT_LIST slash . SEGMENT</td><td>[15, 17, 19]</td><td>goto(14)</td></tr><tr><td>14</td><td>SEGMENT_LIST = SEGMENT_LIST slash SEGMENT .</td><td>[]</td><td>reduce(SEGMENT_LIST -> SEGMENT_LIST slash SEGMENT)</td></tr><tr><td>15</td><td>SEGMENT = . GROUP</td><td>[22, 25]</td><td>goto(16)</td></tr><tr><td>16</td><td>SEGMENT = GROUP .</td><td>[]</td><td>reduce(SEGMENT -> GROUP)</td></tr><tr><td>17</td><td>SEGMENT = . STRING</td><td>[36]</td><td>goto(18)</td></tr><tr><td>18</td><td>SEGMENT = STRING .</td><td>[]</td><td>reduce(SEGMENT -> STRING)</td></tr><tr><td>19</td><td>SEGMENT = . SEGMENT SEGMENT</td><td>[15, 17, 19]</td><td>goto(20)</td></tr><tr><td>20</td><td>SEGMENT = SEGMENT . SEGMENT</td><td>[15, 17, 19]</td><td>goto(21)</td></tr><tr><td>21</td><td>SEGMENT = SEGMENT SEGMENT .</td><td>[]</td><td>reduce(SEGMENT -> SEGMENT SEGMENT)</td></tr><tr><td>22</td><td>GROUP = . open_group close_group</td><td>[]</td><td>shift(23)</td></tr><tr><td>23</td><td>GROUP = open_group . close_group</td><td>[]</td><td>shift(24)</td></tr><tr><td>24</td><td>GROUP = open_group close_group .</td><td>[]</td><td>reduce(GROUP -> open_group close_group)</td></tr><tr><td>25</td><td>GROUP = . open_group STRING_LIST close_group</td><td>[]</td><td>shift(26)</td></tr><tr><td>26</td><td>GROUP = open_group . STRING_LIST close_group</td><td>[29, 31, 33]</td><td>goto(27)</td></tr><tr><td>27</td><td>GROUP = open_group STRING_LIST . close_group</td><td>[]</td><td>shift(28)</td></tr><tr><td>28</td><td>GROUP = open_group STRING_LIST close_group .</td><td>[]</td><td>reduce(GROUP -> open_group STRING_LIST close_group)</td></tr><tr><td>29</td><td>STRING_LIST = . STRING</td><td>[36]</td><td>goto(30)</td></tr><tr><td>30</td><td>STRING_LIST = STRING .</td><td>[]</td><td>reduce(STRING_LIST -> STRING)</td></tr><tr><td>31</td><td>STRING_LIST = . comma</td><td>[]</td><td>shift(32)</td></tr><tr><td>32</td><td>STRING_LIST = comma .</td><td>[]</td><td>reduce(STRING_LIST -> comma)</td></tr><tr><td>33</td><td>STRING_LIST = . STRING_LIST STRING</td><td>[29, 31, 33]</td><td>goto(34)</td></tr><tr><td>34</td><td>STRING_LIST = STRING_LIST . STRING</td><td>[36]</td><td>goto(35)</td></tr><tr><td>35</td><td>STRING_LIST = STRING_LIST STRING .</td><td>[]</td><td>reduce(STRING_LIST -> STRING_LIST STRING)</td></tr><tr><td>36</td><td>STRING = . string ESCAPE</td><td>[]</td><td>shift(37)</td></tr><tr><td>37</td><td>STRING = string . ESCAPE</td><td>[39, 42, 45, 48, 51]</td><td>goto(38)</td></tr><tr><td>38</td><td>STRING = string ESCAPE .</td><td>[]</td><td>reduce(STRING -> string ESCAPE)</td></tr><tr><td>39</td><td>ESCAPE = . backslash string</td><td>[]</td><td>shift(40)</td></tr><tr><td>40</td><td>ESCAPE = backslash . string</td><td>[]</td><td>shift(41)</td></tr><tr><td>41</td><td>ESCAPE = backslash string .</td><td>[]</td><td>reduce(ESCAPE -> backslash string)</td></tr><tr><td>42</td><td>ESCAPE = . backslash backslash</td><td>[]</td><td>shift(43)</td></tr><tr><td>43</td><td>ESCAPE = backslash . backslash</td><td>[]</td><td>shift(44)</td></tr><tr><td>44</td><td>ESCAPE = backslash backslash .</td><td>[]</td><td>reduce(ESCAPE -> backslash backslash)</td></tr><tr><td>45</td><td>ESCAPE = . backslash open_group</td><td>[]</td><td>shift(46)</td></tr><tr><td>46</td><td>ESCAPE = backslash . open_group</td><td>[]</td><td>shift(47)</td></tr><tr><td>47</td><td>ESCAPE = backslash open_group .</td><td>[]</td><td>reduce(ESCAPE -> backslash open_group)</td></tr><tr><td>48</td><td>ESCAPE = . backslash comma</td><td>[]</td><td>shift(49)</td></tr><tr><td>49</td><td>ESCAPE = backslash . comma</td><td>[]</td><td>shift(50)</td></tr><tr><td>50</td><td>ESCAPE = backslash comma .</td><td>[]</td><td>reduce(ESCAPE -> backslash comma)</td></tr><tr><td>51</td><td>ESCAPE = . backslash close_group</td><td>[]</td><td>shift(52)</td></tr><tr><td>52</td><td>ESCAPE = backslash . close_group</td><td>[]</td><td>shift(53)</td></tr><tr><td>53</td><td>ESCAPE = backslash close_group .</td><td>[]</td><td>reduce(ESCAPE -> backslash close_group)</td></tr></tbody></table>
 <h1>DFA Table</h1>
