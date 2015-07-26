@@ -1,4 +1,4 @@
-class LR0
+class BottomsUp
   class NFA
     class State
       attr_reader :nfa, :item, :num
@@ -26,8 +26,10 @@ class LR0
           Reduction.new(item.production)
         elsif item.goto_item?
           Goto.new(next_state)
-        else
+        elsif item.shift_item?
           Shift.new(next_state)
+        else
+          raise "Error in parser. No action known for item #{item}"
         end
       end
     end

@@ -1,9 +1,8 @@
 require_relative '../parser'
 
 parser = BottomsUp.new(:S) do |p|
-  p.rule :S, [[:I, :other]]
-  p.rule :I, [:if, :S]
-  p.rule :I, [:if, :S, :else, :S]
+  p.rule :S, [:'(', :S, :')', :S]
+  p.rule :S, [:e]
 end
 
 parser.dump_html

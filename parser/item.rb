@@ -1,4 +1,4 @@
-class LR0
+class BottomsUp
   class Item
     def initialize(production, step)
       @production = production
@@ -18,15 +18,15 @@ class LR0
     end
 
     def shift_item?
-      @production.symbols.length > @step && SymCheck.terminal?(next_symbol)
+      !reduction_item? && SymCheck.terminal?(next_symbol)
     end
 
     def goto_item?
-      @production.symbols.length > @step && SymCheck.non_terminal?(next_symbol)
+      !reduction_item? && SymCheck.non_terminal?(next_symbol)
     end
 
     def reduction_item?
-      @step == (production.symbols.length)
+      production.symbols == [:e] || @step == (production.symbols.length)
     end
 
     def next_symbol

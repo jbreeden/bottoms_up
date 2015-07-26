@@ -1,4 +1,4 @@
-class LR0
+class BottomsUp
   class NonTerminal
     def initialize(symbol)
       @symbol = symbol

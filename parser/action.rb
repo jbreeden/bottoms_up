@@ -1,4 +1,4 @@
-class LR0
+class BottomsUp
   class Action; end
 
   class Reduction < Action
@@ -9,7 +9,7 @@ class LR0
     end
 
     def to_s
-      "reduce(#{production.symbols.join(' ')})"
+      "reduce(#{production.to_s})"
     end
   end
 

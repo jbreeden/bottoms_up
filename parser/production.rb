@@ -1,4 +1,4 @@
-class LR0
+class BottomsUp
   class Production
     def initialize(non_terminal, symbols)
       @non_terminal = non_terminal
@@ -6,7 +6,7 @@ class LR0
       @items = symbols.each_with_index.map { |sym, i|
         Item.new(self, i)
       }
-      @items.push(Item.new(self, symbols.length))
+      @items.push(Item.new(self, symbols.length)) unless symbols == [:e]
     end
 
     def non_terminal

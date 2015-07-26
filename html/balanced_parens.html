@@ -1,0 +1,13 @@
+<h1>Grammar</h1>
+<pre>S' ->
+  S
+
+S ->
+  ( S ) S
+  | e
+</pre>
+
+<h1>NFA Table</h1>
+<table border='1' cellspacing='0' cellpadding='3'><thead><th>State</th><th>Item</th><th>Epsilon Transitions</th><th>Action</th></thead><tbody><tr><td>0</td><td>S' = . S</td><td>[2, 7]</td><td>goto(1)</td></tr><tr><td>1</td><td>S' = S .</td><td>[]</td><td>reduce(S' -> S)</td></tr><tr><td>2</td><td>S = . ( S ) S</td><td>[]</td><td>shift(3)</td></tr><tr><td>3</td><td>S = ( . S ) S</td><td>[2, 7]</td><td>goto(4)</td></tr><tr><td>4</td><td>S = ( S . ) S</td><td>[]</td><td>shift(5)</td></tr><tr><td>5</td><td>S = ( S ) . S</td><td>[2, 7]</td><td>goto(6)</td></tr><tr><td>6</td><td>S = ( S ) S .</td><td>[]</td><td>reduce(S -> ( S ) S)</td></tr><tr><td>7</td><td>S = . e</td><td>[]</td><td>reduce(S -> e)</td></tr></tbody></table>
+<h1>DFA Table</h1>
+<table border='1' cellspacing='0' cellpadding='3'><thead><th>State</th><th>NFA States</th><th>Items</th><th>Shifts</th><th>Reductions</th></thead><tbody><tr><td>0</td><td>0<br/>2<br/>7<br/></td><td>S' = . S<br/>S = . ( S ) S<br/>S = . e<br/></td><td>S -> goto(1)<br/>( -> shift(2)<br/></td><td>reduce(S -> e)<br/></td></tr><tr><td>1</td><td>1<br/></td><td>S' = S .<br/></td><td></td><td>reduce(S' -> S)<br/></td></tr><tr><td>2</td><td>3<br/>2<br/>7<br/></td><td>S = ( . S ) S<br/>S = . ( S ) S<br/>S = . e<br/></td><td>S -> goto(3)<br/>( -> shift(2)<br/></td><td>reduce(S -> e)<br/></td></tr><tr><td>3</td><td>4<br/></td><td>S = ( S . ) S<br/></td><td>) -> shift(4)<br/></td><td></td></tr><tr><td>4</td><td>5<br/>2<br/>7<br/></td><td>S = ( S ) . S<br/>S = . ( S ) S<br/>S = . e<br/></td><td>S -> goto(5)<br/>( -> shift(2)<br/></td><td>reduce(S -> e)<br/></td></tr><tr><td>5</td><td>6<br/></td><td>S = ( S ) S .<br/></td><td></td><td>reduce(S -> ( S ) S)<br/></td></tr></tbody></table>

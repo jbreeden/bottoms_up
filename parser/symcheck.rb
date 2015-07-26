@@ -1,4 +1,4 @@
-class LR0
+class BottomsUp
   module SymCheck
     def self.terminal?(sym)
       sym.to_s[0].downcase == sym.to_s[0]

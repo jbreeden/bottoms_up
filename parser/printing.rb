@@ -1,4 +1,4 @@
-class LR0
+class BottomsUp
   def dump_html
     puts('<h1>Grammar</h1>')
     print_html_grammar

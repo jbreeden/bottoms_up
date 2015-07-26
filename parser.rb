@@ -7,7 +7,7 @@ require_relative './parser/nfa'
 require_relative './parser/dfa'
 require_relative './parser/printing'
 
-class LR0
+class BottomsUp
   def initialize(start_symbol, &block)
     @augmented_start_symbol = "#{start_symbol}'".to_sym
     @productions = []
@@ -56,22 +56,45 @@ class LR0
   def expand_rule(rule)
     rules = [[]]
     rule.each do |symbol|
+      # Alternation:
+      # Represented by a single level of nested arrays in the rule.
+      # We flatten the alternatives by constructing the set of all expansions
+      # given by a current expansion concatenated with a symbol from the alternation.
+      #   (ie. L -> a(b|c) is expanded to L -> ab | ac)
+      # Note that alternations containing :e retain the existing expansions, as
+      # well as the set of existing expansions with the above rule applied.
       if symbol.respond_to?(:each)
         alternatives = []
         symbol.each do |sym|
-          raise "Alternations within production rules may only contain symbols" unless sym.class == Symbol
+          unless sym.class == Symbol
+            raise "Alternations within production rules may only contain symbols"
+          end
           rules.each do |existing_rule|
-            alternatives.push(existing_rule + [sym])
+            if sym == :e
+              alternatives.push(existing_rule)
+            else
+              alternatives.push(existing_rule + [sym])
+            end
           end
         end
         rules = alternatives
+      # Concatenation:
+      # The default action for all symbols in the input (just like normal BNF).
+      # Note that concatenating :e has no effect, and can be ignored.
       else
+        next if symbol == :e # No point in concatentating the empty string
         rules.each do |existing_rule|
-          raise "Production rules may only contain symbols or alternations (enumerables of symbols)" unless symbol.class == Symbol
+          unless symbol.class == Symbol
+            raise "Production rules may only contain symbols or alternations (enumerables of symbols)"
+          end
           existing_rule.push(symbol)
         end
       end
     end
-    rules
+    # Could start from [:e] instead of [], but then we have to remove
+    # the :e on the first concatenation. Instead, we can just replace any
+    # empty rules with [:e] at the end. This is mostly for printing,
+    # as [:e] and [] are semantically equivalent as items.
+    rules = rules.map { |r| r == [] ? [:e] : r }
   end
 end
