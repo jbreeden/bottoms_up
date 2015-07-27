@@ -2,7 +2,7 @@
 Bottom-up NFA, DFA, and parser generation for BNF grammars.
 
 Work in progress. Currently generates an LR0 NFA & DFA for a given grammar.
-The NFA & DFA can be dumped as HTML tables. Inspecting these tables can help
+The NFA & DFA can be [dumped as HTML](https://rawgit.com/jbreeden/bottoms_up/master/html/if_else.html) tables. Inspecting these tables can help
 you reason about the grammar and target parser (or just do your compilers homework).
 
 ## Grammar Syntax
