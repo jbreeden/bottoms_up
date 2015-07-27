@@ -3,6 +3,7 @@ class BottomsUp
 
   class Reduction < Action
     attr_reader :production
+    attr_accessor :lookahead
 
     def initialize(production)
       @production = production

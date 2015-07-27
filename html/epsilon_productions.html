@@ -1,3 +1,10 @@
+<html><head><style>
+h1 { margin: 10px 0 5px 0; font-size: 16pt; }
+pre { margin: 0; background-color: whitesmoke; display: inline-block; padding: 10px; border-style: solid; border-width: 1px; border-radius: 4px; }
+table { border-collapse: collapse; border-spacing: 0px; }th, td { border-width: 1px; border-style: solid; border-color: black; margin: 0; padding: 4px; }
+thead { background-color: skyblue; }
+tr.odd-state { background-color: whitesmoke; }
+</style></head><body>
 <h1>Grammar</h1>
 <pre>E' ->
   E
@@ -14,7 +21,7 @@ B ->
   e
 </pre>
 
-<h1>First Sets</h1><table border='1' cellspacing='0' cellpadding='3'>
+<h1>First Sets</h1><table>
   <thead>
     <th>Non Terminal</th>
     <th>Firsts</th>
@@ -26,19 +33,26 @@ B ->
 <tr><td>B</td><td></td></tr>
   </tbody>
 </table>
-<h1>Follow Sets</h1><table border='1' cellspacing='0' cellpadding='3'>
+<h1>Follow Sets</h1><table>
   <thead>
     <th>Non Terminal</th>
     <th>Follows</th>
   </thead>
   <tbody>
 <tr><td>E'</td><td>$</td></tr>
-<tr><td>E</td><td></td></tr>
-<tr><td>A</td><td></td></tr>
-<tr><td>B</td><td></td></tr>
+<tr><td>E</td><td>$</td></tr>
+<tr><td>A</td><td>$</td></tr>
+<tr><td>B</td><td>$</td></tr>
   </tbody>
 </table>
 <h1>NFA Table</h1>
-<table border='1' cellspacing='0' cellpadding='3'><thead><th>State</th><th>Item</th><th>Epsilon Transitions</th><th>Action</th></thead><tbody><tr><td>0</td><td>E' = . E</td><td>[2, 5]</td><td>goto(1)</td></tr><tr><td>1</td><td>E' = E .</td><td>[]</td><td>reduce(E' -> E)</td></tr><tr><td>2</td><td>E = . A B</td><td>[6, 9]</td><td>goto(3)</td></tr><tr><td>3</td><td>E = A . B</td><td>[11]</td><td>goto(4)</td></tr><tr><td>4</td><td>E = A B .</td><td>[]</td><td>reduce(E -> A B)</td></tr><tr><td>5</td><td>E = . e</td><td>[]</td><td>reduce(E -> e)</td></tr><tr><td>6</td><td>A = . str B</td><td>[]</td><td>shift(7)</td></tr><tr><td>7</td><td>A = str . B</td><td>[11]</td><td>goto(8)</td></tr><tr><td>8</td><td>A = str B .</td><td>[]</td><td>reduce(A -> str B)</td></tr><tr><td>9</td><td>A = . str</td><td>[]</td><td>shift(10)</td></tr><tr><td>10</td><td>A = str .</td><td>[]</td><td>reduce(A -> str)</td></tr><tr><td>11</td><td>B = . e</td><td>[]</td><td>reduce(B -> e)</td></tr></tbody></table>
+<table><thead><th>State</th><th>Item</th><th>Epsilon Transitions</th><th>Action</th></thead><tbody><tr><td>0</td><td>E' = . E</td><td>[2, 5]</td><td>goto(1)</td></tr><tr><td>1</td><td>E' = E .</td><td>[]</td><td>reduce(E' -> E)</td></tr><tr><td>2</td><td>E = . A B</td><td>[6, 9]</td><td>goto(3)</td></tr><tr><td>3</td><td>E = A . B</td><td>[11]</td><td>goto(4)</td></tr><tr><td>4</td><td>E = A B .</td><td>[]</td><td>reduce(E -> A B)</td></tr><tr><td>5</td><td>E = . e</td><td>[]</td><td>reduce(E -> e)</td></tr><tr><td>6</td><td>A = . str B</td><td>[]</td><td>shift(7)</td></tr><tr><td>7</td><td>A = str . B</td><td>[11]</td><td>goto(8)</td></tr><tr><td>8</td><td>A = str B .</td><td>[]</td><td>reduce(A -> str B)</td></tr><tr><td>9</td><td>A = . str</td><td>[]</td><td>shift(10)</td></tr><tr><td>10</td><td>A = str .</td><td>[]</td><td>reduce(A -> str)</td></tr><tr><td>11</td><td>B = . e</td><td>[]</td><td>reduce(B -> e)</td></tr></tbody></table>
 <h1>DFA Table</h1>
-<table border='1' cellspacing='0' cellpadding='3'><thead><th>State</th><th>NFA States</th><th>Items</th><th>Shifts</th><th>Reductions</th></thead><tbody><tr><td>0</td><td>0<br/>2<br/>6<br/>9<br/>5<br/></td><td>E' = . E<br/>E = . A B<br/>A = . str B<br/>A = . str<br/>E = . e<br/></td><td>E -> goto(1)<br/>A -> goto(2)<br/>str -> shift(3)<br/></td><td>reduce(E -> e)<br/></td></tr><tr><td>1</td><td>1<br/></td><td>E' = E .<br/></td><td></td><td>reduce(E' -> E)<br/></td></tr><tr><td>2</td><td>3<br/>11<br/></td><td>E = A . B<br/>B = . e<br/></td><td>B -> goto(4)<br/></td><td>reduce(B -> e)<br/></td></tr><tr><td>3</td><td>7<br/>10<br/>11<br/></td><td>A = str . B<br/>A = str .<br/>B = . e<br/></td><td>B -> goto(5)<br/></td><td>reduce(A -> str)<br/>reduce(B -> e)<br/></td></tr><tr><td>4</td><td>4<br/></td><td>E = A B .<br/></td><td></td><td>reduce(E -> A B)<br/></td></tr><tr><td>5</td><td>8<br/></td><td>A = str B .<br/></td><td></td><td>reduce(A -> str B)<br/></td></tr></tbody></table>
+<table>
+  <thead>
+    <tr><th rowspan="2">State</th><th rowspan="2">NFA States</th><th rowspan="2">Items</th><th rowspan="2">Shifts</th><th colspan="2">Reductions</th></tr>
+    <tr><th>Rule</th><th>LR0 Lookaheads</th></tr>
+  </thead>
+<tbody>
+<tr class="even-state"><td rowspan="5">0</td><td>0</td><td>E' = . E</td><td>E -> goto(1)</td><td>E -> e</td><td>$</td></tr><tr class="even-state"><td>2</td><td>E = . A B</td><td>A -> goto(2)</td><td></td><td></td></tr><tr class="even-state"><td>6</td><td>A = . str B</td><td>str -> shift(3)</td><td></td><td></td></tr><tr class="even-state"><td>9</td><td>A = . str</td><td></td><td></td><td></td></tr><tr class="even-state"><td>5</td><td>E = . e</td><td></td><td></td><td></td></tr><tr class="odd-state"><td rowspan="1">1</td><td>1</td><td>E' = E .</td><td></td><td>E' -> E</td><td>$</td></tr><tr class="even-state"><td rowspan="2">2</td><td>3</td><td>E = A . B</td><td>B -> goto(4)</td><td>B -> e</td><td>$</td></tr><tr class="even-state"><td>11</td><td>B = . e</td><td></td><td></td><td></td></tr><tr class="odd-state"><td rowspan="3">3</td><td>7</td><td>A = str . B</td><td>B -> goto(5)</td><td>A -> str</td><td>$</td></tr><tr class="odd-state"><td>10</td><td>A = str .</td><td></td><td>B -> e</td><td>$</td></tr><tr class="odd-state"><td>11</td><td>B = . e</td><td></td><td></td><td></td></tr><tr class="even-state"><td rowspan="1">4</td><td>4</td><td>E = A B .</td><td></td><td>E -> A B</td><td>$</td></tr><tr class="odd-state"><td rowspan="1">5</td><td>8</td><td>A = str B .</td><td></td><td>A -> str B</td><td>$</td></tr></tbody></table>
+</body></html>

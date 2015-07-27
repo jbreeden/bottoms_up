@@ -1,72 +1,7 @@
+require_relative './dfa_state'
+
 class BottomsUp
   class DFA
-    class State
-      attr_reader :num, :nfa_state_closure
-      alias closure nfa_state_closure
-
-      def initialize(dfa, nfa_state_closure)
-        @dfa = dfa
-        @num = @dfa.next_state_number
-        @nfa_state_closure = nfa_state_closure.dup
-      end
-
-      def items
-        nfa_state_closure.map { |s| s.item }
-      end
-
-      def shifts
-        unless @shifts
-          @shifts = {}
-          next_symbols.each do |symbol|
-            # Next state will be one that closes over all states
-            # from the NFA that represent the next item of any item
-            # from the current closure, after recieving the given token.
-            next_state_closure = closure.select { |s|
-              s.item.next_symbol == symbol
-            }.map { |s| s.next_state }
-
-            # Make sure to include the epsilon closure of all next states from the NFA
-            next_state_closure.concat(next_state_closure.flat_map {|s| s.epsilon_closure})
-            next_state_closure = next_state_closure.uniq
-
-            # Get the DFA state for the determined closure,
-            # or create it if it doesn't yet exist
-            existing_state = @dfa.state_for_closure(next_state_closure)
-            if existing_state
-              next_state = existing_state
-            else
-              next_state = State.new(@dfa, next_state_closure)
-              @dfa.states.push(next_state)
-            end
-
-            # Now that we have the next state, check if it's a goto or a shift
-            @shifts[symbol] = if SymCheck.non_terminal?(symbol)
-              Goto.new(next_state)
-            else
-              Shift.new(next_state)
-            end
-          end
-        end
-        @shifts
-      end
-
-      def reductions
-        @reductions ||= closure.select { |s|
-          s.item.reduction_item?
-        }.map { |s|
-          Reduction.new(s.item.production)
-        }
-      end
-
-      def next_symbols
-        @next_symbols ||= closure.select { |s|
-          s.item.shift_item? || s.item.goto_item?
-        }.map { |s|
-          s.item.next_symbol
-        }.uniq
-      end
-    end
-
     attr_reader :start_symbol,
       :states,
       :shifts,
@@ -115,32 +50,56 @@ class BottomsUp
     end
 
     def to_html
-      result = "<table border='1' cellspacing='0' cellpadding='3'>"
-      result << "<thead><th>State</th><th>NFA States</th><th>Items</th><th>Shifts</th><th>Reductions</th></thead>"
-      result << "<tbody>"
+      result =
+        "<table>\n" <<
+        "  <thead>\n" <<
+        "    <tr><th rowspan=\"2\">State</th><th rowspan=\"2\">NFA States</th><th rowspan=\"2\">Items</th><th rowspan=\"2\">Shifts</th><th colspan=\"2\">Reductions</th></tr>\n" <<
+        "    <tr><th>Rule</th><th>LR0 Lookaheads</th></tr>\n" <<
+        "  </thead>\n" <<
+        "<tbody>\n"
+
       states.each_with_index do |s, i|
-        result << '<tr>'
-        result << "<td>#{i}</td>"
-        closure_cell = "<td>"
-        items_cell = "<td>"
+        row_class = i % 2 == 0 ? 'even-state' : 'odd-state'
+        row =
+          "<tr class=\"#{row_class}\"><td rowspan=\"#{s.closure.length}\">#{i}</td>"
+
+
         s.closure.each_with_index do |nfa_state, i|
-          closure_cell << "#{nfa_state.num}<br/>"
-          items_cell   << "#{nfa_state.item}<br/>"
+          row <<
+            "<td>#{nfa_state.num}</td>" <<
+            "<td>#{nfa_state.item}</td>"
+
+          if s.shifts.length > i
+            row << "<td>#{s.shifts.keys[i]} -> #{s.shifts[s.shifts.keys[i]]}</td>"
+          else
+            row << "<td></td>"
+          end
+
+          if s.reductions.length > i
+            row << "<td>#{s.reductions[i].production}</td><td>#{s.reductions[i].lookahead.join(' ') if s.reductions[i]}</td>"
+          else
+            row << "<td></td><td></td>"
+          end
+          row << "</tr>"
+
+          result << row
+          row = "<tr class=\"#{row_class}\">"
         end
-        closure_cell << "</td>"
-        items_cell   << "</td>"
-        shifts_cell = "<td>"
-        s.shifts.each do |sym, action|
-          shifts_cell << "#{sym} -> #{action}<br/>"
-        end
-        shifts_cell << "</td>"
-        reductions_cell = "<td>"
-        s.reductions.each do |action|
-          reductions_cell << "#{action}<br/>"
-        end
-        reductions_cell << "</td>"
-        result << closure_cell << items_cell << shifts_cell << reductions_cell
-        result << '</tr>'
+
+        # closure_cell << "</td>"
+        # items_cell   << "</td>"
+        # shifts_cell = "<td>"
+        # s.shifts.each do |sym, action|
+        #   shifts_cell << "#{sym} -> #{action}<br/>"
+        # end
+        # shifts_cell << "</td>"
+        # reductions_cell = "<td>"
+        # s.reductions.each do |action|
+        #   reductions_cell << "#{action}<br/>"
+        # end
+        # reductions_cell << "</td>"
+        # result << closure_cell << items_cell << shifts_cell << reductions_cell
+        # result << '</tr>'
       end
       result << "</tbody>"
       result << "</table>"

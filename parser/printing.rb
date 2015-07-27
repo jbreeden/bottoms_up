@@ -1,5 +1,15 @@
 class BottomsUp
   def dump_html
+    puts "<html><head><style>\n"
+    puts style =
+      "h1 { margin: 10px 0 5px 0; font-size: 16pt; }\n" +
+      "pre { margin: 0; background-color: whitesmoke; display: inline-block; padding: 10px; border-style: solid; border-width: 1px; border-radius: 4px; }\n" +
+      "table { border-collapse: collapse; border-spacing: 0px; }" +
+      "th, td { border-width: 1px; border-style: solid; border-color: black; margin: 0; padding: 4px; }\n" +
+      "thead { background-color: skyblue; }\n" +
+      "tr.odd-state { background-color: whitesmoke; }\n"
+    puts "</style></head><body>\n"
+
     puts('<h1>Grammar</h1>')
     print_html_grammar
     puts
@@ -9,6 +19,8 @@ class BottomsUp
     puts @nfa.to_html
     puts('<h1>DFA Table</h1>')
     puts @dfa.to_html
+
+    puts "</body></html>"
   end
 
   def print_html_grammar
@@ -27,7 +39,7 @@ class BottomsUp
   def print_first_sets
     str = '<h1>First Sets</h1>'
     str <<
-      "<table border='1' cellspacing='0' cellpadding='3'>\n" <<
+      "<table>\n" <<
       "  <thead>\n" <<
       "    <th>Non Terminal</th>\n" <<
       "    <th>Firsts</th>\n" <<
@@ -51,7 +63,7 @@ class BottomsUp
   def print_follow_sets
     str = '<h1>Follow Sets</h1>'
     str <<
-      "<table border='1' cellspacing='0' cellpadding='3'>\n" <<
+      "<table>\n" <<
       "  <thead>\n" <<
       "    <th>Non Terminal</th>\n" <<
       "    <th>Follows</th>\n" <<

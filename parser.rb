@@ -25,8 +25,17 @@ class BottomsUp
     # Client calls `rule` to define the grammar
     block[self]
 
+    define_firsts
+    define_follows
+
     @nfa = NFA.new(@augmented_start_symbol, items)
     @dfa = DFA.new(@augmented_start_symbol, @nfa)
+
+    @dfa.states.each do |state|
+      state.reductions.each do |reduction|
+        reduction.lookahead = follows(reduction.production.non_terminal.symbol)
+      end
+    end
   end
 
   def non_terminal(symbol)
@@ -100,44 +109,5 @@ class BottomsUp
     # empty rules with [:e] at the end. This is mostly for printing,
     # as [:e] and [] are semantically equivalent as items.
     rules = rules.map { |r| r == [] ? [:e] : r }
-  end
-
-  def firsts(sym)
-    return sym if SymCheck.terminal?(sym)
-
-    unless @firsts
-      @firsts = {}
-      non_terminals.each do |nt|
-        @firsts[nt.symbol] = FirstSet.new(@firsts, nt)
-      end
-
-      begin
-        @firsts.values.each { |set|
-          set.resolve
-        }
-      end while @firsts.values.find { |set| set.changed? }
-    end
-
-    @firsts[sym].terminals
-  end
-
-  def follows(sym)
-    unless @follows
-      @follows = {}
-      non_terminals.each do |nt|
-        @follows[nt.symbol] = FollowSet.new(@firsts, @follows, @non_terminals, nt)
-        if nt.symbol == @augmented_start_symbol
-          @follows[nt.symbol].add_terminal(:'$')
-        end
-      end
-
-      begin
-        @follows.values.each { |set|
-          set.resolve
-        }
-      end while @follows.values.find { |set| set.changed? }
-    end
-
-    @follows[sym].terminals
   end
 end
