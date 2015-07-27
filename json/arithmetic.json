@@ -1,0 +1,192 @@
+[
+{ "num": 0, 
+  "shifts": { "ARITHMETIC": 1, "EXPR_LIST": 2, "EXPR": 3, "MULTIPLICATION": 4, "DIVISION": 5, "ADDITION": 6, "SUBTRACTION": 7, "NUMBER": 8, "+": 9, "-": 10, "number": 11, "(": 12},
+  "reductions": [ 
+
+  ]
+},
+{ "num": 1, 
+  "shifts": { },
+  "reductions": [ 
+    { "produces": "ARITHMETIC'", 
+      "lookaheads": ["$"], 
+      "nReducedSymbols": 1 }
+  ]
+},
+{ "num": 2, 
+  "shifts": { "EXPR": 13, "MULTIPLICATION": 4, "DIVISION": 5, "ADDITION": 6, "SUBTRACTION": 7, "NUMBER": 8, "+": 9, "-": 10, "number": 11, "(": 12},
+  "reductions": [ 
+    { "produces": "ARITHMETIC", 
+      "lookaheads": ["$"], 
+      "nReducedSymbols": 1 }
+  ]
+},
+{ "num": 3, 
+  "shifts": { "*": 14, "/": 15, "+": 16, "-": 17},
+  "reductions": [ 
+    { "produces": "EXPR_LIST", 
+      "lookaheads": ["(", "number", "-", "+", "$"], 
+      "nReducedSymbols": 1 }
+  ]
+},
+{ "num": 4, 
+  "shifts": { },
+  "reductions": [ 
+    { "produces": "EXPR", 
+      "lookaheads": ["/", "*", ")", "(", "number", "-", "+", "$"], 
+      "nReducedSymbols": 1 }
+  ]
+},
+{ "num": 5, 
+  "shifts": { },
+  "reductions": [ 
+    { "produces": "EXPR", 
+      "lookaheads": ["/", "*", ")", "(", "number", "-", "+", "$"], 
+      "nReducedSymbols": 1 }
+  ]
+},
+{ "num": 6, 
+  "shifts": { },
+  "reductions": [ 
+    { "produces": "EXPR", 
+      "lookaheads": ["/", "*", ")", "(", "number", "-", "+", "$"], 
+      "nReducedSymbols": 1 }
+  ]
+},
+{ "num": 7, 
+  "shifts": { },
+  "reductions": [ 
+    { "produces": "EXPR", 
+      "lookaheads": ["/", "*", ")", "(", "number", "-", "+", "$"], 
+      "nReducedSymbols": 1 }
+  ]
+},
+{ "num": 8, 
+  "shifts": { },
+  "reductions": [ 
+    { "produces": "EXPR", 
+      "lookaheads": ["/", "*", ")", "(", "number", "-", "+", "$"], 
+      "nReducedSymbols": 1 }
+  ]
+},
+{ "num": 9, 
+  "shifts": { "number": 18},
+  "reductions": [ 
+
+  ]
+},
+{ "num": 10, 
+  "shifts": { "number": 19},
+  "reductions": [ 
+
+  ]
+},
+{ "num": 11, 
+  "shifts": { },
+  "reductions": [ 
+    { "produces": "NUMBER", 
+      "lookaheads": ["/", "*", ")", "(", "number", "-", "+", "$"], 
+      "nReducedSymbols": 1 }
+  ]
+},
+{ "num": 12, 
+  "shifts": { "EXPR": 20, "MULTIPLICATION": 4, "DIVISION": 5, "ADDITION": 6, "SUBTRACTION": 7, "NUMBER": 8, "+": 9, "-": 10, "number": 11, "(": 12},
+  "reductions": [ 
+
+  ]
+},
+{ "num": 13, 
+  "shifts": { "*": 14, "/": 15, "+": 16, "-": 17},
+  "reductions": [ 
+    { "produces": "EXPR_LIST", 
+      "lookaheads": ["(", "number", "-", "+", "$"], 
+      "nReducedSymbols": 2 }
+  ]
+},
+{ "num": 14, 
+  "shifts": { "EXPR": 21, "MULTIPLICATION": 4, "DIVISION": 5, "ADDITION": 6, "SUBTRACTION": 7, "NUMBER": 8, "+": 9, "-": 10, "number": 11, "(": 12},
+  "reductions": [ 
+
+  ]
+},
+{ "num": 15, 
+  "shifts": { "EXPR": 22, "MULTIPLICATION": 4, "DIVISION": 5, "ADDITION": 6, "SUBTRACTION": 7, "NUMBER": 8, "+": 9, "-": 10, "number": 11, "(": 12},
+  "reductions": [ 
+
+  ]
+},
+{ "num": 16, 
+  "shifts": { "EXPR": 23, "MULTIPLICATION": 4, "DIVISION": 5, "ADDITION": 6, "SUBTRACTION": 7, "NUMBER": 8, "+": 9, "-": 10, "number": 11, "(": 12},
+  "reductions": [ 
+
+  ]
+},
+{ "num": 17, 
+  "shifts": { "EXPR": 24, "MULTIPLICATION": 4, "DIVISION": 5, "ADDITION": 6, "SUBTRACTION": 7, "NUMBER": 8, "+": 9, "-": 10, "number": 11, "(": 12},
+  "reductions": [ 
+
+  ]
+},
+{ "num": 18, 
+  "shifts": { },
+  "reductions": [ 
+    { "produces": "NUMBER", 
+      "lookaheads": ["/", "*", ")", "(", "number", "-", "+", "$"], 
+      "nReducedSymbols": 2 }
+  ]
+},
+{ "num": 19, 
+  "shifts": { },
+  "reductions": [ 
+    { "produces": "NUMBER", 
+      "lookaheads": ["/", "*", ")", "(", "number", "-", "+", "$"], 
+      "nReducedSymbols": 2 }
+  ]
+},
+{ "num": 20, 
+  "shifts": { ")": 25, "*": 14, "/": 15, "+": 16, "-": 17},
+  "reductions": [ 
+
+  ]
+},
+{ "num": 21, 
+  "shifts": { "*": 14, "/": 15, "+": 16, "-": 17},
+  "reductions": [ 
+    { "produces": "MULTIPLICATION", 
+      "lookaheads": ["/", "*", ")", "(", "number", "-", "+", "$"], 
+      "nReducedSymbols": 3 }
+  ]
+},
+{ "num": 22, 
+  "shifts": { "*": 14, "/": 15, "+": 16, "-": 17},
+  "reductions": [ 
+    { "produces": "DIVISION", 
+      "lookaheads": ["/", "*", ")", "(", "number", "-", "+", "$"], 
+      "nReducedSymbols": 3 }
+  ]
+},
+{ "num": 23, 
+  "shifts": { "*": 14, "/": 15, "+": 16, "-": 17},
+  "reductions": [ 
+    { "produces": "ADDITION", 
+      "lookaheads": ["/", "*", ")", "(", "number", "-", "+", "$"], 
+      "nReducedSymbols": 3 }
+  ]
+},
+{ "num": 24, 
+  "shifts": { "*": 14, "/": 15, "+": 16, "-": 17},
+  "reductions": [ 
+    { "produces": "SUBTRACTION", 
+      "lookaheads": ["/", "*", ")", "(", "number", "-", "+", "$"], 
+      "nReducedSymbols": 3 }
+  ]
+},
+{ "num": 25, 
+  "shifts": { },
+  "reductions": [ 
+    { "produces": "EXPR", 
+      "lookaheads": ["/", "*", ")", "(", "number", "-", "+", "$"], 
+      "nReducedSymbols": 3 }
+  ]
+}
+]

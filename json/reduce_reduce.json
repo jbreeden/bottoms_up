@@ -1,0 +1,55 @@
+[
+{ "num": 0, 
+  "shifts": { "E": 1, "A": 2, "1": 3, "B": 4},
+  "reductions": [ 
+
+  ]
+},
+{ "num": 1, 
+  "shifts": { },
+  "reductions": [ 
+    { "produces": "E'", 
+      "lookaheads": ["$"], 
+      "nReducedSymbols": 1 }
+  ]
+},
+{ "num": 2, 
+  "shifts": { "1": 5},
+  "reductions": [ 
+
+  ]
+},
+{ "num": 3, 
+  "shifts": { },
+  "reductions": [ 
+    { "produces": "A", 
+      "lookaheads": ["1"], 
+      "nReducedSymbols": 1 },
+    { "produces": "B", 
+      "lookaheads": ["1"], 
+      "nReducedSymbols": 1 }
+  ]
+},
+{ "num": 4, 
+  "shifts": { "1": 6},
+  "reductions": [ 
+
+  ]
+},
+{ "num": 5, 
+  "shifts": { },
+  "reductions": [ 
+    { "produces": "E", 
+      "lookaheads": ["$"], 
+      "nReducedSymbols": 2 }
+  ]
+},
+{ "num": 6, 
+  "shifts": { },
+  "reductions": [ 
+    { "produces": "E", 
+      "lookaheads": ["$"], 
+      "nReducedSymbols": 2 }
+  ]
+}
+]

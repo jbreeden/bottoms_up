@@ -1,0 +1,208 @@
+[
+{ "num": 0, 
+  "shifts": { "GLOB": 1, "SEGMENT_LIST": 2, "SEGMENT": 3, "GROUP": 4, "open_group": 5, "STRING": 6, "string": 7, "slash": 8},
+  "reductions": [ 
+
+  ]
+},
+{ "num": 1, 
+  "shifts": { },
+  "reductions": [ 
+    { "produces": "GLOB'", 
+      "lookaheads": ["$"], 
+      "nReducedSymbols": 1 }
+  ]
+},
+{ "num": 2, 
+  "shifts": { "$": 9, "slash": 10},
+  "reductions": [ 
+
+  ]
+},
+{ "num": 3, 
+  "shifts": { "SEGMENT": 11, "GROUP": 4, "open_group": 5, "STRING": 6, "string": 7},
+  "reductions": [ 
+    { "produces": "SEGMENT_LIST", 
+      "lookaheads": ["slash", "$"], 
+      "nReducedSymbols": 1 }
+  ]
+},
+{ "num": 4, 
+  "shifts": { },
+  "reductions": [ 
+    { "produces": "SEGMENT", 
+      "lookaheads": ["open_group", "string", "slash", "$"], 
+      "nReducedSymbols": 1 }
+  ]
+},
+{ "num": 5, 
+  "shifts": { "close_group": 12, "STRING_LIST": 13, "STRING": 14, "string": 7, "comma": 15},
+  "reductions": [ 
+
+  ]
+},
+{ "num": 6, 
+  "shifts": { },
+  "reductions": [ 
+    { "produces": "SEGMENT", 
+      "lookaheads": ["open_group", "string", "slash", "$"], 
+      "nReducedSymbols": 1 }
+  ]
+},
+{ "num": 7, 
+  "shifts": { "ESCAPE": 16, "backslash": 17},
+  "reductions": [ 
+
+  ]
+},
+{ "num": 8, 
+  "shifts": { "SEGMENT_LIST": 18, "SEGMENT": 3, "GROUP": 4, "open_group": 5, "STRING": 6, "string": 7},
+  "reductions": [ 
+
+  ]
+},
+{ "num": 9, 
+  "shifts": { },
+  "reductions": [ 
+    { "produces": "GLOB", 
+      "lookaheads": ["$"], 
+      "nReducedSymbols": 2 }
+  ]
+},
+{ "num": 10, 
+  "shifts": { "SEGMENT": 19, "GROUP": 4, "open_group": 5, "STRING": 6, "string": 7},
+  "reductions": [ 
+
+  ]
+},
+{ "num": 11, 
+  "shifts": { "SEGMENT": 11, "GROUP": 4, "open_group": 5, "STRING": 6, "string": 7},
+  "reductions": [ 
+    { "produces": "SEGMENT", 
+      "lookaheads": ["open_group", "string", "slash", "$"], 
+      "nReducedSymbols": 2 }
+  ]
+},
+{ "num": 12, 
+  "shifts": { },
+  "reductions": [ 
+    { "produces": "GROUP", 
+      "lookaheads": ["open_group", "string", "slash", "$"], 
+      "nReducedSymbols": 2 }
+  ]
+},
+{ "num": 13, 
+  "shifts": { "close_group": 20, "STRING": 21, "string": 7},
+  "reductions": [ 
+
+  ]
+},
+{ "num": 14, 
+  "shifts": { },
+  "reductions": [ 
+    { "produces": "STRING_LIST", 
+      "lookaheads": ["string", "close_group"], 
+      "nReducedSymbols": 1 }
+  ]
+},
+{ "num": 15, 
+  "shifts": { },
+  "reductions": [ 
+    { "produces": "STRING_LIST", 
+      "lookaheads": ["string", "close_group"], 
+      "nReducedSymbols": 1 }
+  ]
+},
+{ "num": 16, 
+  "shifts": { },
+  "reductions": [ 
+    { "produces": "STRING", 
+      "lookaheads": ["open_group", "string", "close_group", "slash", "$"], 
+      "nReducedSymbols": 2 }
+  ]
+},
+{ "num": 17, 
+  "shifts": { "string": 22, "backslash": 23, "open_group": 24, "comma": 25, "close_group": 26},
+  "reductions": [ 
+
+  ]
+},
+{ "num": 18, 
+  "shifts": { "$": 27, "slash": 10},
+  "reductions": [ 
+
+  ]
+},
+{ "num": 19, 
+  "shifts": { "SEGMENT": 11, "GROUP": 4, "open_group": 5, "STRING": 6, "string": 7},
+  "reductions": [ 
+    { "produces": "SEGMENT_LIST", 
+      "lookaheads": ["slash", "$"], 
+      "nReducedSymbols": 3 }
+  ]
+},
+{ "num": 20, 
+  "shifts": { },
+  "reductions": [ 
+    { "produces": "GROUP", 
+      "lookaheads": ["open_group", "string", "slash", "$"], 
+      "nReducedSymbols": 3 }
+  ]
+},
+{ "num": 21, 
+  "shifts": { },
+  "reductions": [ 
+    { "produces": "STRING_LIST", 
+      "lookaheads": ["string", "close_group"], 
+      "nReducedSymbols": 2 }
+  ]
+},
+{ "num": 22, 
+  "shifts": { },
+  "reductions": [ 
+    { "produces": "ESCAPE", 
+      "lookaheads": ["open_group", "string", "close_group", "slash", "$"], 
+      "nReducedSymbols": 2 }
+  ]
+},
+{ "num": 23, 
+  "shifts": { },
+  "reductions": [ 
+    { "produces": "ESCAPE", 
+      "lookaheads": ["open_group", "string", "close_group", "slash", "$"], 
+      "nReducedSymbols": 2 }
+  ]
+},
+{ "num": 24, 
+  "shifts": { },
+  "reductions": [ 
+    { "produces": "ESCAPE", 
+      "lookaheads": ["open_group", "string", "close_group", "slash", "$"], 
+      "nReducedSymbols": 2 }
+  ]
+},
+{ "num": 25, 
+  "shifts": { },
+  "reductions": [ 
+    { "produces": "ESCAPE", 
+      "lookaheads": ["open_group", "string", "close_group", "slash", "$"], 
+      "nReducedSymbols": 2 }
+  ]
+},
+{ "num": 26, 
+  "shifts": { },
+  "reductions": [ 
+    { "produces": "ESCAPE", 
+      "lookaheads": ["open_group", "string", "close_group", "slash", "$"], 
+      "nReducedSymbols": 2 }
+  ]
+},
+{ "num": 27, 
+  "shifts": { },
+  "reductions": [ 
+    { "produces": "GLOB", 
+      "lookaheads": ["$"], 
+      "nReducedSymbols": 3 }
+  ]
+}
+]
