@@ -4,6 +4,7 @@ class BottomsUp
   class Reduction < Action
     attr_reader :production
     attr_accessor :lookahead
+    alias lookaheads lookahead
 
     def initialize(production)
       @production = production
@@ -15,10 +16,11 @@ class BottomsUp
   end
 
   class Shift < Action
-    attr_reader :state
+    attr_reader :state, :symbol
 
-    def initialize(to_state_number)
-      @state = to_state_number
+    def initialize(symbol, to_state)
+      @symbol = symbol
+      @state = to_state
     end
 
     def to_s
@@ -27,8 +29,11 @@ class BottomsUp
   end
 
   class Goto < Action
-    def initialize(to_state_number)
-      @state = to_state_number
+    attr_reader :state, :symbol
+
+    def initialize(symbol, to_state)
+      @symbol = symbol
+      @state = to_state
     end
 
     def to_s

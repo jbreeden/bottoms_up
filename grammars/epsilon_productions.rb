@@ -1,6 +1,6 @@
 require_relative '../parser'
 
-parser = BottomsUp.new(:E) do |p|
+$parser = BottomsUp.new(:E) do |p|
   # Should be rewritten without :e as
   # E -> A B | e
   p.rule :E, [:A, :e, :B]
@@ -10,5 +10,3 @@ parser = BottomsUp.new(:E) do |p|
   p.rule :A, [:str, [:B, :e]]
   p.rule :B, [:e]
 end
-
-parser.dump_html

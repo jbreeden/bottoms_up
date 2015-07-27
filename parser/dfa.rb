@@ -54,7 +54,7 @@ class BottomsUp
         "<table>\n" <<
         "  <thead>\n" <<
         "    <tr><th rowspan=\"2\">State</th><th rowspan=\"2\">NFA States</th><th rowspan=\"2\">Items</th><th rowspan=\"2\">Shifts</th><th colspan=\"2\">Reductions</th></tr>\n" <<
-        "    <tr><th>Rule</th><th>LR0 Lookaheads</th></tr>\n" <<
+        "    <tr><th>Rule</th><th>SLR Lookaheads</th></tr>\n" <<
         "  </thead>\n" <<
         "<tbody>\n"
 
@@ -85,24 +85,42 @@ class BottomsUp
           result << row
           row = "<tr class=\"#{row_class}\">"
         end
-
-        # closure_cell << "</td>"
-        # items_cell   << "</td>"
-        # shifts_cell = "<td>"
-        # s.shifts.each do |sym, action|
-        #   shifts_cell << "#{sym} -> #{action}<br/>"
-        # end
-        # shifts_cell << "</td>"
-        # reductions_cell = "<td>"
-        # s.reductions.each do |action|
-        #   reductions_cell << "#{action}<br/>"
-        # end
-        # reductions_cell << "</td>"
-        # result << closure_cell << items_cell << shifts_cell << reductions_cell
-        # result << '</tr>'
       end
       result << "</tbody>\n"
       result << "</table>\n"
+      result
+    end
+
+    def to_json
+      result =
+          "[\n"
+      states.each_with_index do |s, i|
+        result <<
+          "{ \"num\": #{i}, \n"
+
+        result <<
+          '  "shifts": { '
+        result << s.shifts.map { |symbol, action|
+          "\"#{symbol}\": #{action.state.num}"
+        }.join(', ')
+        result <<
+          "},\n"
+
+        result <<
+          "  \"reductions\": [ \n"
+        result << s.reductions.map { |action|
+          "    { \"produces\": \"#{action.production.non_terminal.symbol}\", \n" +
+          "      \"lookaheads\": [#{action.lookaheads.map { |la| "\"#{la}\""}.join(', ') }], \n" +
+          "      \"nReducedSymbols\": #{action.production.symbols.reject { |s| s == :e }.length} }"
+        }.join(",\n")
+        result << "\n" <<
+          "  ]\n"
+
+        result <<
+          "}#{',' unless i == (states.length - 1)}\n"
+      end
+      result <<
+          "]"
       result
     end
   end

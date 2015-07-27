@@ -1,6 +1,6 @@
 require_relative '../parser'
 
-parser = BottomsUp.new(:GLOB) do |p|
+$parser = BottomsUp.new(:GLOB) do |p|
   p.rule(:GLOB, [:SEGMENT_LIST, :'$'])
   p.rule(:GLOB, [:slash, :SEGMENT_LIST, :'$'])
   p.rule(:SEGMENT_LIST, [:SEGMENT])
@@ -15,5 +15,3 @@ parser = BottomsUp.new(:GLOB) do |p|
   p.rule(:STRING, [:string, :ESCAPE])
   p.rule(:ESCAPE, [:backslash, [:string, :backslash, :open_group, :comma, :close_group]])
 end
-
-parser.dump_html

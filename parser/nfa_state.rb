@@ -25,9 +25,9 @@ class BottomsUp
         @action ||= if item.reduction_item?
           Reduction.new(item.production)
         elsif item.goto_item?
-          Goto.new(next_state)
+          Goto.new(item.next_symbol, next_state)
         elsif item.shift_item?
-          Shift.new(next_state)
+          Shift.new(item.next_symbol, next_state)
         else
           raise "Error in parser. No action known for item #{item}"
         end

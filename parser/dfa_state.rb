@@ -41,9 +41,9 @@ class BottomsUp
 
             # Now that we have the next state, check if it's a goto or a shift
             @shifts[symbol] = if SymCheck.non_terminal?(symbol)
-              Goto.new(next_state)
+              Goto.new(symbol, next_state)
             else
-              Shift.new(next_state)
+              Shift.new(symbol, next_state)
             end
           end
         end
