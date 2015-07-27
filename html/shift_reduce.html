@@ -35,7 +35,18 @@ E ->
   </tbody>
 </table>
 <h1>NFA Table</h1>
-<table><thead><th>State</th><th>Item</th><th>Epsilon Transitions</th><th>Action</th></thead><tbody><tr><td>0</td><td>E' = . E</td><td>[2, 5]</td><td>goto(1)</td></tr><tr><td>1</td><td>E' = E .</td><td>[]</td><td>reduce(E' -> E)</td></tr><tr><td>2</td><td>E = . 1 E</td><td>[]</td><td>shift(3)</td></tr><tr><td>3</td><td>E = 1 . E</td><td>[2, 5]</td><td>goto(4)</td></tr><tr><td>4</td><td>E = 1 E .</td><td>[]</td><td>reduce(E -> 1 E)</td></tr><tr><td>5</td><td>E = . 1</td><td>[]</td><td>shift(6)</td></tr><tr><td>6</td><td>E = 1 .</td><td>[]</td><td>reduce(E -> 1)</td></tr></tbody></table>
+<table>
+  <thead><th>State</th><th>Item</th><th>Epsilon Transitions</th><th>Action</th></thead>
+  <tbody>
+<tr><td>0</td><td>E' = . E</td><td>[2, 5]</td><td>goto(1)</td></tr>
+<tr><td>1</td><td>E' = E .</td><td>[]</td><td>reduce(E' -> E)</td></tr>
+<tr><td>2</td><td>E = . 1 E</td><td>[]</td><td>shift(3)</td></tr>
+<tr><td>3</td><td>E = 1 . E</td><td>[2, 5]</td><td>goto(4)</td></tr>
+<tr><td>4</td><td>E = 1 E .</td><td>[]</td><td>reduce(E -> 1 E)</td></tr>
+<tr><td>5</td><td>E = . 1</td><td>[]</td><td>shift(6)</td></tr>
+<tr><td>6</td><td>E = 1 .</td><td>[]</td><td>reduce(E -> 1)</td></tr>
+</tbody>
+</table>
 <h1>DFA Table</h1>
 <table>
   <thead>
@@ -43,5 +54,15 @@ E ->
     <tr><th>Rule</th><th>LR0 Lookaheads</th></tr>
   </thead>
 <tbody>
-<tr class="even-state"><td rowspan="3">0</td><td>0</td><td>E' = . E</td><td>E -> goto(1)</td><td></td><td></td></tr><tr class="even-state"><td>2</td><td>E = . 1 E</td><td>1 -> shift(2)</td><td></td><td></td></tr><tr class="even-state"><td>5</td><td>E = . 1</td><td></td><td></td><td></td></tr><tr class="odd-state"><td rowspan="1">1</td><td>1</td><td>E' = E .</td><td></td><td>E' -> E</td><td>$</td></tr><tr class="even-state"><td rowspan="4">2</td><td>3</td><td>E = 1 . E</td><td>E -> goto(3)</td><td>E -> 1</td><td>$</td></tr><tr class="even-state"><td>6</td><td>E = 1 .</td><td>1 -> shift(2)</td><td></td><td></td></tr><tr class="even-state"><td>2</td><td>E = . 1 E</td><td></td><td></td><td></td></tr><tr class="even-state"><td>5</td><td>E = . 1</td><td></td><td></td><td></td></tr><tr class="odd-state"><td rowspan="1">3</td><td>4</td><td>E = 1 E .</td><td></td><td>E -> 1 E</td><td>$</td></tr></tbody></table>
+<tr class="even-state"><td rowspan="3">0</td><td>0</td><td>E' = . E</td><td>E -> goto(1)</td><td></td><td></td></tr>
+<tr class="even-state"><td>2</td><td>E = . 1 E</td><td>1 -> shift(2)</td><td></td><td></td></tr>
+<tr class="even-state"><td>5</td><td>E = . 1</td><td></td><td></td><td></td></tr>
+<tr class="odd-state"><td rowspan="1">1</td><td>1</td><td>E' = E .</td><td></td><td>E' -> E</td><td>$</td></tr>
+<tr class="even-state"><td rowspan="4">2</td><td>3</td><td>E = 1 . E</td><td>E -> goto(3)</td><td>E -> 1</td><td>$</td></tr>
+<tr class="even-state"><td>6</td><td>E = 1 .</td><td>1 -> shift(2)</td><td></td><td></td></tr>
+<tr class="even-state"><td>2</td><td>E = . 1 E</td><td></td><td></td><td></td></tr>
+<tr class="even-state"><td>5</td><td>E = . 1</td><td></td><td></td><td></td></tr>
+<tr class="odd-state"><td rowspan="1">3</td><td>4</td><td>E = 1 E .</td><td></td><td>E -> 1 E</td><td>$</td></tr>
+</tbody>
+</table>
 </body></html>

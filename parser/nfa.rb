@@ -66,18 +66,18 @@ class BottomsUp
     end
 
     def to_html
-      result = "<table>"
-      result << "<thead><th>State</th><th>Item</th><th>Epsilon Transitions</th><th>Action</th></thead>"
-      result << "<tbody>"
+      result =    "<table>\n"
+      result <<   "  <thead><th>State</th><th>Item</th><th>Epsilon Transitions</th><th>Action</th></thead>\n"
+      result <<   "  <tbody>\n"
       states.each do |s|
         result << "<tr>"
         result << "<td>#{s.num}</td>"
         result << "<td>#{s.item.to_s}</td>"
         result << "<td>#{s.epsilon_transitions.map { |s| s.num } }</td>"
         result << "<td>#{s.action.to_s}</td>"
-        result << "</tr>"
+        result << "</tr>\n"
       end
-      result << "</tbody></table>"
+      result <<   "</tbody>\n</table>\n"
       result
     end
   end

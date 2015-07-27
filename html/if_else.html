@@ -41,7 +41,25 @@ I ->
   </tbody>
 </table>
 <h1>NFA Table</h1>
-<table><thead><th>State</th><th>Item</th><th>Epsilon Transitions</th><th>Action</th></thead><tbody><tr><td>0</td><td>S' = . S</td><td>[2, 4]</td><td>goto(1)</td></tr><tr><td>1</td><td>S' = S .</td><td>[]</td><td>reduce(S' -> S)</td></tr><tr><td>2</td><td>S = . I</td><td>[6, 9]</td><td>goto(3)</td></tr><tr><td>3</td><td>S = I .</td><td>[]</td><td>reduce(S -> I)</td></tr><tr><td>4</td><td>S = . other</td><td>[]</td><td>shift(5)</td></tr><tr><td>5</td><td>S = other .</td><td>[]</td><td>reduce(S -> other)</td></tr><tr><td>6</td><td>I = . if S</td><td>[]</td><td>shift(7)</td></tr><tr><td>7</td><td>I = if . S</td><td>[2, 4]</td><td>goto(8)</td></tr><tr><td>8</td><td>I = if S .</td><td>[]</td><td>reduce(I -> if S)</td></tr><tr><td>9</td><td>I = . if S else S</td><td>[]</td><td>shift(10)</td></tr><tr><td>10</td><td>I = if . S else S</td><td>[2, 4]</td><td>goto(11)</td></tr><tr><td>11</td><td>I = if S . else S</td><td>[]</td><td>shift(12)</td></tr><tr><td>12</td><td>I = if S else . S</td><td>[2, 4]</td><td>goto(13)</td></tr><tr><td>13</td><td>I = if S else S .</td><td>[]</td><td>reduce(I -> if S else S)</td></tr></tbody></table>
+<table>
+  <thead><th>State</th><th>Item</th><th>Epsilon Transitions</th><th>Action</th></thead>
+  <tbody>
+<tr><td>0</td><td>S' = . S</td><td>[2, 4]</td><td>goto(1)</td></tr>
+<tr><td>1</td><td>S' = S .</td><td>[]</td><td>reduce(S' -> S)</td></tr>
+<tr><td>2</td><td>S = . I</td><td>[6, 9]</td><td>goto(3)</td></tr>
+<tr><td>3</td><td>S = I .</td><td>[]</td><td>reduce(S -> I)</td></tr>
+<tr><td>4</td><td>S = . other</td><td>[]</td><td>shift(5)</td></tr>
+<tr><td>5</td><td>S = other .</td><td>[]</td><td>reduce(S -> other)</td></tr>
+<tr><td>6</td><td>I = . if S</td><td>[]</td><td>shift(7)</td></tr>
+<tr><td>7</td><td>I = if . S</td><td>[2, 4]</td><td>goto(8)</td></tr>
+<tr><td>8</td><td>I = if S .</td><td>[]</td><td>reduce(I -> if S)</td></tr>
+<tr><td>9</td><td>I = . if S else S</td><td>[]</td><td>shift(10)</td></tr>
+<tr><td>10</td><td>I = if . S else S</td><td>[2, 4]</td><td>goto(11)</td></tr>
+<tr><td>11</td><td>I = if S . else S</td><td>[]</td><td>shift(12)</td></tr>
+<tr><td>12</td><td>I = if S else . S</td><td>[2, 4]</td><td>goto(13)</td></tr>
+<tr><td>13</td><td>I = if S else S .</td><td>[]</td><td>reduce(I -> if S else S)</td></tr>
+</tbody>
+</table>
 <h1>DFA Table</h1>
 <table>
   <thead>
@@ -49,5 +67,28 @@ I ->
     <tr><th>Rule</th><th>LR0 Lookaheads</th></tr>
   </thead>
 <tbody>
-<tr class="even-state"><td rowspan="5">0</td><td>0</td><td>S' = . S</td><td>S -> goto(1)</td><td></td><td></td></tr><tr class="even-state"><td>2</td><td>S = . I</td><td>I -> goto(2)</td><td></td><td></td></tr><tr class="even-state"><td>6</td><td>I = . if S</td><td>if -> shift(3)</td><td></td><td></td></tr><tr class="even-state"><td>9</td><td>I = . if S else S</td><td>other -> shift(4)</td><td></td><td></td></tr><tr class="even-state"><td>4</td><td>S = . other</td><td></td><td></td><td></td></tr><tr class="odd-state"><td rowspan="1">1</td><td>1</td><td>S' = S .</td><td></td><td>S' -> S</td><td>$</td></tr><tr class="even-state"><td rowspan="1">2</td><td>3</td><td>S = I .</td><td></td><td>S -> I</td><td>else $</td></tr><tr class="odd-state"><td rowspan="6">3</td><td>7</td><td>I = if . S</td><td>S -> goto(5)</td><td></td><td></td></tr><tr class="odd-state"><td>10</td><td>I = if . S else S</td><td>I -> goto(2)</td><td></td><td></td></tr><tr class="odd-state"><td>2</td><td>S = . I</td><td>if -> shift(3)</td><td></td><td></td></tr><tr class="odd-state"><td>6</td><td>I = . if S</td><td>other -> shift(4)</td><td></td><td></td></tr><tr class="odd-state"><td>9</td><td>I = . if S else S</td><td></td><td></td><td></td></tr><tr class="odd-state"><td>4</td><td>S = . other</td><td></td><td></td><td></td></tr><tr class="even-state"><td rowspan="1">4</td><td>5</td><td>S = other .</td><td></td><td>S -> other</td><td>else $</td></tr><tr class="odd-state"><td rowspan="2">5</td><td>8</td><td>I = if S .</td><td>else -> shift(6)</td><td>I -> if S</td><td>else $</td></tr><tr class="odd-state"><td>11</td><td>I = if S . else S</td><td></td><td></td><td></td></tr><tr class="even-state"><td rowspan="5">6</td><td>12</td><td>I = if S else . S</td><td>S -> goto(7)</td><td></td><td></td></tr><tr class="even-state"><td>2</td><td>S = . I</td><td>I -> goto(2)</td><td></td><td></td></tr><tr class="even-state"><td>6</td><td>I = . if S</td><td>if -> shift(3)</td><td></td><td></td></tr><tr class="even-state"><td>9</td><td>I = . if S else S</td><td>other -> shift(4)</td><td></td><td></td></tr><tr class="even-state"><td>4</td><td>S = . other</td><td></td><td></td><td></td></tr><tr class="odd-state"><td rowspan="1">7</td><td>13</td><td>I = if S else S .</td><td></td><td>I -> if S else S</td><td>else $</td></tr></tbody></table>
+<tr class="even-state"><td rowspan="5">0</td><td>0</td><td>S' = . S</td><td>S -> goto(1)</td><td></td><td></td></tr>
+<tr class="even-state"><td>2</td><td>S = . I</td><td>I -> goto(2)</td><td></td><td></td></tr>
+<tr class="even-state"><td>6</td><td>I = . if S</td><td>if -> shift(3)</td><td></td><td></td></tr>
+<tr class="even-state"><td>9</td><td>I = . if S else S</td><td>other -> shift(4)</td><td></td><td></td></tr>
+<tr class="even-state"><td>4</td><td>S = . other</td><td></td><td></td><td></td></tr>
+<tr class="odd-state"><td rowspan="1">1</td><td>1</td><td>S' = S .</td><td></td><td>S' -> S</td><td>$</td></tr>
+<tr class="even-state"><td rowspan="1">2</td><td>3</td><td>S = I .</td><td></td><td>S -> I</td><td>else $</td></tr>
+<tr class="odd-state"><td rowspan="6">3</td><td>7</td><td>I = if . S</td><td>S -> goto(5)</td><td></td><td></td></tr>
+<tr class="odd-state"><td>10</td><td>I = if . S else S</td><td>I -> goto(2)</td><td></td><td></td></tr>
+<tr class="odd-state"><td>2</td><td>S = . I</td><td>if -> shift(3)</td><td></td><td></td></tr>
+<tr class="odd-state"><td>6</td><td>I = . if S</td><td>other -> shift(4)</td><td></td><td></td></tr>
+<tr class="odd-state"><td>9</td><td>I = . if S else S</td><td></td><td></td><td></td></tr>
+<tr class="odd-state"><td>4</td><td>S = . other</td><td></td><td></td><td></td></tr>
+<tr class="even-state"><td rowspan="1">4</td><td>5</td><td>S = other .</td><td></td><td>S -> other</td><td>else $</td></tr>
+<tr class="odd-state"><td rowspan="2">5</td><td>8</td><td>I = if S .</td><td>else -> shift(6)</td><td>I -> if S</td><td>else $</td></tr>
+<tr class="odd-state"><td>11</td><td>I = if S . else S</td><td></td><td></td><td></td></tr>
+<tr class="even-state"><td rowspan="5">6</td><td>12</td><td>I = if S else . S</td><td>S -> goto(7)</td><td></td><td></td></tr>
+<tr class="even-state"><td>2</td><td>S = . I</td><td>I -> goto(2)</td><td></td><td></td></tr>
+<tr class="even-state"><td>6</td><td>I = . if S</td><td>if -> shift(3)</td><td></td><td></td></tr>
+<tr class="even-state"><td>9</td><td>I = . if S else S</td><td>other -> shift(4)</td><td></td><td></td></tr>
+<tr class="even-state"><td>4</td><td>S = . other</td><td></td><td></td><td></td></tr>
+<tr class="odd-state"><td rowspan="1">7</td><td>13</td><td>I = if S else S .</td><td></td><td>I -> if S else S</td><td>else $</td></tr>
+</tbody>
+</table>
 </body></html>

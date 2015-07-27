@@ -80,7 +80,7 @@ class BottomsUp
           else
             row << "<td></td><td></td>"
           end
-          row << "</tr>"
+          row << "</tr>\n"
 
           result << row
           row = "<tr class=\"#{row_class}\">"
@@ -101,8 +101,8 @@ class BottomsUp
         # result << closure_cell << items_cell << shifts_cell << reductions_cell
         # result << '</tr>'
       end
-      result << "</tbody>"
-      result << "</table>"
+      result << "</tbody>\n"
+      result << "</table>\n"
       result
     end
   end

@@ -46,7 +46,23 @@ B ->
   </tbody>
 </table>
 <h1>NFA Table</h1>
-<table><thead><th>State</th><th>Item</th><th>Epsilon Transitions</th><th>Action</th></thead><tbody><tr><td>0</td><td>E' = . E</td><td>[2, 5]</td><td>goto(1)</td></tr><tr><td>1</td><td>E' = E .</td><td>[]</td><td>reduce(E' -> E)</td></tr><tr><td>2</td><td>E = . A B</td><td>[6, 9]</td><td>goto(3)</td></tr><tr><td>3</td><td>E = A . B</td><td>[11]</td><td>goto(4)</td></tr><tr><td>4</td><td>E = A B .</td><td>[]</td><td>reduce(E -> A B)</td></tr><tr><td>5</td><td>E = . e</td><td>[]</td><td>reduce(E -> e)</td></tr><tr><td>6</td><td>A = . str B</td><td>[]</td><td>shift(7)</td></tr><tr><td>7</td><td>A = str . B</td><td>[11]</td><td>goto(8)</td></tr><tr><td>8</td><td>A = str B .</td><td>[]</td><td>reduce(A -> str B)</td></tr><tr><td>9</td><td>A = . str</td><td>[]</td><td>shift(10)</td></tr><tr><td>10</td><td>A = str .</td><td>[]</td><td>reduce(A -> str)</td></tr><tr><td>11</td><td>B = . e</td><td>[]</td><td>reduce(B -> e)</td></tr></tbody></table>
+<table>
+  <thead><th>State</th><th>Item</th><th>Epsilon Transitions</th><th>Action</th></thead>
+  <tbody>
+<tr><td>0</td><td>E' = . E</td><td>[2, 5]</td><td>goto(1)</td></tr>
+<tr><td>1</td><td>E' = E .</td><td>[]</td><td>reduce(E' -> E)</td></tr>
+<tr><td>2</td><td>E = . A B</td><td>[6, 9]</td><td>goto(3)</td></tr>
+<tr><td>3</td><td>E = A . B</td><td>[11]</td><td>goto(4)</td></tr>
+<tr><td>4</td><td>E = A B .</td><td>[]</td><td>reduce(E -> A B)</td></tr>
+<tr><td>5</td><td>E = . e</td><td>[]</td><td>reduce(E -> e)</td></tr>
+<tr><td>6</td><td>A = . str B</td><td>[]</td><td>shift(7)</td></tr>
+<tr><td>7</td><td>A = str . B</td><td>[11]</td><td>goto(8)</td></tr>
+<tr><td>8</td><td>A = str B .</td><td>[]</td><td>reduce(A -> str B)</td></tr>
+<tr><td>9</td><td>A = . str</td><td>[]</td><td>shift(10)</td></tr>
+<tr><td>10</td><td>A = str .</td><td>[]</td><td>reduce(A -> str)</td></tr>
+<tr><td>11</td><td>B = . e</td><td>[]</td><td>reduce(B -> e)</td></tr>
+</tbody>
+</table>
 <h1>DFA Table</h1>
 <table>
   <thead>
@@ -54,5 +70,19 @@ B ->
     <tr><th>Rule</th><th>LR0 Lookaheads</th></tr>
   </thead>
 <tbody>
-<tr class="even-state"><td rowspan="5">0</td><td>0</td><td>E' = . E</td><td>E -> goto(1)</td><td>E -> e</td><td>$</td></tr><tr class="even-state"><td>2</td><td>E = . A B</td><td>A -> goto(2)</td><td></td><td></td></tr><tr class="even-state"><td>6</td><td>A = . str B</td><td>str -> shift(3)</td><td></td><td></td></tr><tr class="even-state"><td>9</td><td>A = . str</td><td></td><td></td><td></td></tr><tr class="even-state"><td>5</td><td>E = . e</td><td></td><td></td><td></td></tr><tr class="odd-state"><td rowspan="1">1</td><td>1</td><td>E' = E .</td><td></td><td>E' -> E</td><td>$</td></tr><tr class="even-state"><td rowspan="2">2</td><td>3</td><td>E = A . B</td><td>B -> goto(4)</td><td>B -> e</td><td>$</td></tr><tr class="even-state"><td>11</td><td>B = . e</td><td></td><td></td><td></td></tr><tr class="odd-state"><td rowspan="3">3</td><td>7</td><td>A = str . B</td><td>B -> goto(5)</td><td>A -> str</td><td>$</td></tr><tr class="odd-state"><td>10</td><td>A = str .</td><td></td><td>B -> e</td><td>$</td></tr><tr class="odd-state"><td>11</td><td>B = . e</td><td></td><td></td><td></td></tr><tr class="even-state"><td rowspan="1">4</td><td>4</td><td>E = A B .</td><td></td><td>E -> A B</td><td>$</td></tr><tr class="odd-state"><td rowspan="1">5</td><td>8</td><td>A = str B .</td><td></td><td>A -> str B</td><td>$</td></tr></tbody></table>
+<tr class="even-state"><td rowspan="5">0</td><td>0</td><td>E' = . E</td><td>E -> goto(1)</td><td>E -> e</td><td>$</td></tr>
+<tr class="even-state"><td>2</td><td>E = . A B</td><td>A -> goto(2)</td><td></td><td></td></tr>
+<tr class="even-state"><td>6</td><td>A = . str B</td><td>str -> shift(3)</td><td></td><td></td></tr>
+<tr class="even-state"><td>9</td><td>A = . str</td><td></td><td></td><td></td></tr>
+<tr class="even-state"><td>5</td><td>E = . e</td><td></td><td></td><td></td></tr>
+<tr class="odd-state"><td rowspan="1">1</td><td>1</td><td>E' = E .</td><td></td><td>E' -> E</td><td>$</td></tr>
+<tr class="even-state"><td rowspan="2">2</td><td>3</td><td>E = A . B</td><td>B -> goto(4)</td><td>B -> e</td><td>$</td></tr>
+<tr class="even-state"><td>11</td><td>B = . e</td><td></td><td></td><td></td></tr>
+<tr class="odd-state"><td rowspan="3">3</td><td>7</td><td>A = str . B</td><td>B -> goto(5)</td><td>A -> str</td><td>$</td></tr>
+<tr class="odd-state"><td>10</td><td>A = str .</td><td></td><td>B -> e</td><td>$</td></tr>
+<tr class="odd-state"><td>11</td><td>B = . e</td><td></td><td></td><td></td></tr>
+<tr class="even-state"><td rowspan="1">4</td><td>4</td><td>E = A B .</td><td></td><td>E -> A B</td><td>$</td></tr>
+<tr class="odd-state"><td rowspan="1">5</td><td>8</td><td>A = str B .</td><td></td><td>A -> str B</td><td>$</td></tr>
+</tbody>
+</table>
 </body></html>
