@@ -710,7 +710,7 @@
         search = search + "\n  | search "
           + self.filter.field + " "
           + self.filter.comparison + " " // TODO: Convert
-          + self.filter.literal;   // TODO: Convert
+          + self.filter.literal;         // TODO: Convert
       }
 
       if (self.groupby) {
@@ -723,7 +723,10 @@
       }
 
       if (self.having) {
-        search = search + "\n  | search " + self.having;
+        search = search + "\n  | search "
+          + self.having.field + " "
+          + self.having.comparison + " " // TODO: Convert
+          + self.having.literal;         // TODO: Convert
       }
 
       if (self.order) {
@@ -781,6 +784,10 @@
               fn: node.children[0].children[0].name,
               field: node.children[0].children[2].name
             });
+
+            // Need to add to the projection so a subsequent
+            // `stats` call can perform the aggregate.
+            self.query.projection.push(node.children[0].children[2].name);
           } else {
             var fieldName = node.children[0].name;
             self.query.projection.push(fieldName);
