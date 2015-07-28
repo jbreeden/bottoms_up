@@ -14,7 +14,7 @@ $parser = BottomsUp.new(:QUERY) do |p|
   p.rule :FROM,       [:from, :id]
   p.rule :WHERE,      [:where, :EXPR]
   p.rule :LIMIT,      [:limit, :number] # TODO, int type?
-  p.rule :GROUP_BY,   [:group, :by, :id] # TODO expr type? (for "function calls" like max(column_name) )
+  p.rule :GROUP_BY,   [:group, :by, :id] # TODO: multiple ids (ie FIELD_LIST)
   p.rule :HAVING,     [:having, :EXPR]
   p.rule :ORDER_BY,   [:order, :by, :id, [:asc, :desc, :e]] # TODO expression instead of ID?
   p.rule :EXPR,       [[:EQ_EXPR]]
@@ -23,4 +23,11 @@ $parser = BottomsUp.new(:QUERY) do |p|
   p.rule :LITERAL,    [[:number, :string]]
 
   # TODO: distinct
+  # TODO:
+  # TODO: Aggregate function expressions | eg: max(field) (e| as id)
+  #   SPL: avg(), count(), first(), last(), max(), min(), sum()
+  #   SQL: avg(), count(), first(), last(), max(), min(), sum()
+  # TODO: If groupby present, select fields must = groupby fields + aggregate functions
+  # TODO: convert eq_exprs to eval expressions in SPL
+  # TODO: Multi eq expressions in where/having
 end
