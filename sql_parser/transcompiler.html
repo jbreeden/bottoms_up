@@ -37,12 +37,14 @@ function test(title, sql) {
   $('body').append($(
     "<div id='test" + test.number + "' class='test'>" +
       "<h1>" + title + "</h1>" +
-      "<div class='column'>SQL<br/><textarea class='sql-input' rows='20' cols='60'>" +
+      "<div class='column'>SQL<br/><textarea class='sql-input' rows='20' cols='30'>" +
         sql +
       "</textarea></div>" +
-      "<div class='column'>AST<br/><textarea class='ast' rows='20' cols='60'>" +
+      "<div class='column'>AST<br/><textarea class='ast' rows='20' cols='30'>" +
       "</textarea></div>" +
-      "<div class='column'>SPL<br/><textarea class='spl' rows='20' cols='60'>" +
+      "<div class='column'>Query<br/><textarea class='query' rows='20' cols='30'>" +
+      "</textarea></div>" +
+      "<div class='column'>SPL<br/><textarea class='spl' rows='20' cols='30'>" +
       "</textarea></div>" +
       "<div><button class='refresh' onclick='refresh(" + test.number + ")'>Refresh</button></div>" +
     "</div>"
@@ -53,37 +55,35 @@ function test(title, sql) {
 
 function refresh (testNumber) {
   var $test = $("#test" + testNumber)
-  var error = null;
-  var ast = null;
   try {
-    parser.parse($test.find(".sql-input").val(), function (_error, _ast) {
-      if (_error) {
-        error = _error;
+    parser.transcompile($test.find(".sql-input").val(), function (error, ast, query) {
+      if (error) {
+        $test.find('.ast').val(error);
+        $test.find('.query').val('');
+        $test.find('.spl').val('');
       } else {
-        ast = _ast;
+        $test.find('.ast').val(JSON.stringify(ast, null, 2));
+        $test.find('.query').val(JSON.stringify(query, null, 2));
+        $test.find('.spl').val(query.toSPL());
+        console.log(ast);
+        console.log(query);
+        console.log(query.toSPL());
       }
     });
   } catch (ex) {
     error = ex;
   }
-
-  if (error) {
-    $test.find('.ast').val(error);
-  } else {
-    $test.find('.ast').val(JSON.stringify(ast, null, 2));
-    console.log(ast);
-  }
-
 }
 
 test('Select *', 'select * \nfrom git');
 test('Select Fields', 'select author_name, author_date \nfrom git');
 test('Filter', 'select sha, author_date \nfrom git\nwhere author_name = \'Brian Krueger\'');
 test('Alias', 'select this as that, other from git where something < 5');
+test('Select * and Alias', 'select col as my_col, *\nfrom git');
 test('Comments', '\n-- All Fields\nselect * \n--From the git index\nfrom git \n--Where some field < 5\nwhere something < 5');
 test('Limit', 'select *\nfrom default\nlimit 100');
 test('Order By', 'select *\nfrom default\norder by name');
-test('All Out', 'select last_name\nfrom index\nwhere name = \'steve\' \ngroup by last_name \nhaving last_name like \'%Burg%\'\norder by last_name\nlimit 100')
+test('All Out', 'select last_name as "Last Name"\nfrom index\nwhere name = \'steve\' \ngroup by last_name \nhaving last_name like \'%Burg%\'\norder by last_name\nlimit 100')
 
     </script>
   </body>

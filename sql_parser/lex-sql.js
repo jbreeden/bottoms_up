@@ -29,8 +29,8 @@
       .on(/^(asc)\s+/i, function (match) {
         return { symbol: 'asc' };
       })
-      .on(/^(dec)\s+/i, function (match) {
-        return { symbol: 'dec' };
+      .on(/^(desc)\s+/i, function (match) {
+        return { symbol: 'desc' };
       })
       .on(/^(group)\s+/i, function (match) {
         return { symbol: 'group' };
@@ -44,8 +44,8 @@
       .on(/^([a-zA-Z_][a-zA-Z_0-9]+)/i, function (match) {
         return { symbol: 'id', name: match[1] };
       })
-      .on(/^"([a-zA-Z_][a-zA-Z_0-9]+)"/i, function (match) {
-        return { symbol: 'id', name: match[1] };
+      .on(/^("([ a-zA-Z_0-9]+)")/i, function (match) {
+        return { symbol: 'id', name: match[2] };
       })
       .on(/^(,)/, function (match) {
         return { symbol: ',' };
