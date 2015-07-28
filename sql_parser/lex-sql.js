@@ -47,6 +47,12 @@
       .on(/^("([ a-zA-Z_0-9]+)")/i, function (match) {
         return { symbol: 'id', name: match[2] };
       })
+      .on(/^(\()/, function (match) {
+        return { symbol: '(' };
+      })
+      .on(/^(\))/, function (match) {
+        return { symbol: ')' };
+      })
       .on(/^(,)/, function (match) {
         return { symbol: ',' };
       })

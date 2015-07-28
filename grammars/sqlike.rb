@@ -11,16 +11,21 @@ $parser = BottomsUp.new(:QUERY) do |p|
   p.rule :FIELD_LIST, [:FIELD]
   p.rule :FIELD,      [[:id, :'*']]
   p.rule :FIELD,      [:id, :as, :id]
+  p.rule :FIELD,      [:FN_CALL]
   p.rule :FROM,       [:from, :id]
   p.rule :WHERE,      [:where, :EXPR]
   p.rule :LIMIT,      [:limit, :number] # TODO, int type?
-  p.rule :GROUP_BY,   [:group, :by, :id] # TODO: multiple ids (ie FIELD_LIST)
+  p.rule :GROUP_BY,   [:group, :by, :ID_LIST]
+  p.rule :ID_LIST,    [:id]
+  p.rule :ID_LIST,    [:ID_LIST, :',', :id]
   p.rule :HAVING,     [:having, :EXPR]
   p.rule :ORDER_BY,   [:order, :by, :id, [:asc, :desc, :e]] # TODO expression instead of ID?
   p.rule :EXPR,       [[:EQ_EXPR]]
   p.rule :EQ_EXPR,    [:id, [:'=', :'<>', :'>', :'<', :'>=', :'<=', :like], :LITERAL]
   p.rule :EQ_EXPR,    [:LITERAL, [:'=', :'<>', :'>', :'<', :'>=', :'<=', :like], :id]
   p.rule :LITERAL,    [[:number, :string]]
+
+  p.rule :FN_CALL,    [:id, :'(', :id, :')']
 
   # TODO: distinct
   # TODO:

@@ -9,8 +9,11 @@
     this.lexer = lexer;
     this.stack = [0];
     this.trace = Trace.error;
+    this.accepted = false;
+    this.error = null;
     this.finalSymbol = finalSymbol;
     this.reduceCallbacks = {};
+    this.shiftCallbacks = {};
   }
 
   Parser.prototype.parse = function(input, callback) {
@@ -36,6 +39,7 @@
     if (this.trace >= Trace.debug) {
       this.log("At state " + this.state().num + " accepted token " + token.symbol);
     }
+
     this.processLookahead(token);
   };
 
@@ -73,10 +77,13 @@
     }
     this.stack.push(token);
     this.stack.push(next_state);
-  };
 
-  Parser.prototype.onReduce = function (symbol, callback) {
-    this.reduceCallbacks[symbol] = callback;
+    // Gives the client a chance to process or respond to the acceptance of a new token
+    this.triggerShift(token);
+    // Client may have set an error, check for this case
+    if (this.error) {
+      throw "Parse error: " + this.error;
+    }
   };
 
   Parser.prototype.reduce = function (reduction) {
@@ -92,9 +99,12 @@
 
     var node = { symbol: reduction.produces, children: children };
 
-    // Gives the client a chance to process the reduced AST node
-    if (this.reduceCallbacks[reduction.produces]) {
-      this.reduceCallbacks[reduction.produces](node);
+    // Gives the client a chance to process the reduced AST node,
+    // or simply respond to the reductino in some way.
+    this.triggerReduce(node);
+    // Client may have set an error, check for this case
+    if (this.error) {
+      throw "Parse error: " + this.error;
     }
 
     // Just reduced the final symbol? Accept.
@@ -107,6 +117,49 @@
 
     this.goto(node);
   };
+
+  Parser.prototype.onShift = function (symbol, callback) {
+    this.shiftCallbacks[symbol] = this.shiftCallbacks[symbol] || [];
+    this.shiftCallbacks[symbol].push(callback);
+  };
+
+  Parser.prototype.offShift = function (symbol, callback) {
+    this.shiftCallbacks[symbol] = _.reject(this.shiftCallbacks[symbol], function (cb) {
+      return cb == callback;
+    });
+  };
+
+  Parser.prototype.triggerShift = function (token) {
+    if (this.shiftCallbacks[token.symbol]) {
+      this.shiftCallbacks[token.symbol].forEach(function (cb) {
+        cb(token);
+      });
+    }
+  };
+
+  Parser.prototype.onReduce = function (symbol, callback) {
+    this.reduceCallbacks[symbol] = this.reduceCallbacks[symbol] || [];
+    this.reduceCallbacks[symbol].push(callback);
+  };
+
+  Parser.prototype.offReduce = function (symbol, callback) {
+    this.reduceCallbacks[symbol] = _.reject(this.reduceCallbacks[symbol], function (cb) {
+      return cb == callback;
+    });
+  };
+
+  Parser.prototype.triggerReduce = function (node) {
+    if (this.reduceCallbacks[node.symbol]) {
+      this.reduceCallbacks[node.symbol].forEach(function (cb) {
+        cb(node);
+      });
+    }
+  };
+
+  Parser.prototype.resetCallbacks = function () {
+    this.shiftCallbacks = {};
+    this.reduceCallbacks = {};
+  }
 
   Parser.prototype.goto = function (node) {
     // Now, push the new non-terminal, and the correct current state.
