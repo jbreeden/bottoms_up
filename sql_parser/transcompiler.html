@@ -1,0 +1,90 @@
+<html>
+  <head>
+    <script src="underscore.js"></script>
+    <script src="jquery.js"></script>
+    <script src="trace.js"></script>
+    <script src="lexer.js"></script>
+    <script src="parser.js"></script>
+    <script src="lex-sql.js"></script>
+    <script src="parse-sql.js"></script>
+    <style>
+.test {
+  margin-bottom: 10px;
+}
+
+.test, .test textarea {
+  font-size: 10pt;
+}
+
+.test .column {
+  display: inline-block;
+  padding: auto 0 auto 0;
+}
+
+.test textarea {
+  display: inline-block;
+}
+    </style>
+  </head>
+  <body>
+    <script>
+
+parser = new SQLParser();
+parser.setTraceLevel(Trace.debug);
+
+function test(title, sql) {
+  test.number = test.number || 0;
+  $('body').append($(
+    "<div id='test" + test.number + "' class='test'>" +
+      "<h1>" + title + "</h1>" +
+      "<div class='column'>SQL<br/><textarea class='sql-input' rows='20' cols='60'>" +
+        sql +
+      "</textarea></div>" +
+      "<div class='column'>AST<br/><textarea class='ast' rows='20' cols='60'>" +
+      "</textarea></div>" +
+      "<div class='column'>SPL<br/><textarea class='spl' rows='20' cols='60'>" +
+      "</textarea></div>" +
+      "<div><button class='refresh' onclick='refresh(" + test.number + ")'>Refresh</button></div>" +
+    "</div>"
+  ).get(0));
+  refresh(test.number);
+  test.number++;
+}
+
+function refresh (testNumber) {
+  var $test = $("#test" + testNumber)
+  var error = null;
+  var ast = null;
+  try {
+    parser.parse($test.find(".sql-input").val(), function (_error, _ast) {
+      if (_error) {
+        error = _error;
+      } else {
+        ast = _ast;
+      }
+    });
+  } catch (ex) {
+    error = ex;
+  }
+
+  if (error) {
+    $test.find('.ast').val(error);
+  } else {
+    $test.find('.ast').val(JSON.stringify(ast, null, 2));
+    console.log(ast);
+  }
+
+}
+
+test('Select *', 'select * \nfrom git');
+test('Select Fields', 'select author_name, author_date \nfrom git');
+test('Filter', 'select sha, author_date \nfrom git\nwhere author_name = \'Brian Krueger\'');
+test('Alias', 'select this as that, other from git where something < 5');
+test('Comments', '\n-- All Fields\nselect * \n--From the git index\nfrom git \n--Where some field < 5\nwhere something < 5');
+test('Limit', 'select *\nfrom default\nlimit 100');
+test('Order By', 'select *\nfrom default\norder by name');
+test('All Out', 'select last_name\nfrom index\nwhere name = \'steve\' \ngroup by last_name \nhaving last_name like \'%Burg%\'\norder by last_name\nlimit 100')
+
+    </script>
+  </body>
+</html>
