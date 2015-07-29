@@ -30,7 +30,7 @@
     <script>
 
 parser = new SQLParser();
-parser.setTraceLevel(Trace.debug);
+parser.setTraceLevel(Trace.error);
 
 function test(title, sql) {
   test.number = test.number || 0;
@@ -63,9 +63,6 @@ function refresh (testNumber) {
         $test.find('.ast').val(JSON.stringify(ast, null, 2));
         $test.find('.query').val(JSON.stringify(query, null, 2));
         $test.find('.spl').val(query.toSPL());
-        console.log(ast);
-        console.log(query);
-        console.log(query.toSPL());
       }
     });
   } catch (ex) {
@@ -79,69 +76,114 @@ function refresh (testNumber) {
   };
 }
 
-// test('Select *',
-// 'select * \n\
-// from git');
-//
-// test('Select Fields',
-// 'select author_name, author_date \n\
-// from git');
-//
-// test('Filter',
-// 'select sha, author_date \n\
-// from git\n\
-// where author_name = \'Brian Krueger\'');
-//
-// test('Alias', 'select this as that, other from git where something < 5');
-//
-// test('Select * and Alias',
-// 'select col as my_col, *\n\
-// from git');
-//
-// test('Comments',
-// '-- All Fields\n\
-// select * \n\
-// --From the git index\n\
-// from git \n\
-// --Where some field < 5\n\
-// where something < 5');
-//
-// test('Limit',
-// 'select *\n\
-// from default\n\
-// limit 100');
-//
-// test('Order By',
-// 'select *\n\
-// from default\n\
-// order by name');
-//
-// test('Group By',
-// 'select first_name, last_name as "Last Name" \n\
-// from index\n\
-// where name = \'steve\' \n\
-// group by first_name, last_name \n\
-// having last_name like \'%Burg%\'\n\
-// order by last_name\n\
-// limit 100');
+test('Select *',
+'select * \n\
+from git');
 
-test('Aggregates',
-'select first_name, last_name as "Last Name", max(age)\n\
+test('Select Distinct',
+'select distinct * \n\
+from git');
+
+test('Select Aggregate',
+'select max(sha) \n\
+from git');
+
+test('Select Aggregate Aliased',
+'select max(sha) as "Max Sha" \n\
+from git');
+
+test('Select Fields',
+'select author_name, author_date \n\
+from git');
+
+test('Filter',
+'select sha, author_date \n\
+from git\n\
+where author_name = \'Brian Krueger\'');
+
+test('Filter - Not Equal Conversion',
+'select sha, author_date \n\
+from git\n\
+where author_name <> \'Brian Krueger\'');
+
+test('Filter - Not Greater Conversion',
+'select num \n\
+from my_index\n\
+where num !> 5');
+
+test('Filter - Not Less Conversion',
+'select num \n\
+from my_index\n\
+where num !< 5');
+
+test('Alias', 'select this as that, other from git where something < 5');
+
+test('Select * and Alias',
+'select col as my_col, *\n\
+from git');
+
+test('Comments',
+'-- All Fields\n\
+select * \n\
+--From the git index\n\
+from git \n\
+--Where some field < 5\n\
+where something < 5');
+
+test('Limit',
+'select *\n\
+from default\n\
+limit 100');
+
+test('Order By',
+'select *\n\
+from default\n\
+order by name');
+
+test('Group By (No Aggregates yields uniq even without DISTINCT clause)',
+'select first_name, last_name as "Last Name" \n\
 from index\n\
-where name = \'steve\' \n\
-group by first_name, last_name \n\
+where first_name = \'steve\' \n\
+group by first_name, "Last Name" \n\
 having last_name like \'%Burg%\'\n\
 order by last_name\n\
 limit 100');
 
-// test('Cannot Group by *',
-// 'select last_name as "Last Name" \n\
-// from index\n\
-// where name = \'steve\' \n\
-// group by * \n\
-// having last_name like \'%Burg%\'\n\
-// order by last_name\n\
-// limit 100');
+test('Group By Handles Projection & Aggregate Aliases',
+'select distinct first_name, last_name as "Last Name", max(age)\n\
+from index\n\
+where first_name = \'steve\' \n\
+group by first_name, "Last Name" \n\
+having last_name like \'%Burg%\'\n\
+order by last_name\n\
+limit 100');
+
+test('Group By w/ Aggregates',
+'select distinct first_name, last_name as "Last Name", max(age)\n\
+from index\n\
+where first_name = \'steve\' \n\
+group by first_name, "Last Name" \n\
+having last_name like \'%Burg%\'\n\
+order by last_name\n\
+limit 100');
+
+test('Group By w/ Aggregates Aliased',
+'select distinct first_name, last_name as "Last Name", max(age) as "Max Age"\n\
+from index\n\
+where first_name = \'steve\' \n\
+group by first_name, "Last Name" \n\
+having last_name like \'%Burg%\'\n\
+order by last_name\n\
+limit 100');
+
+test('Cannot Group by *',
+'select last_name as "Last Name" \n\
+from index\n\
+where first_name = \'steve\' \n\
+group by * \n\
+having "Last Name" like \'%Burg%\'\n\
+order by last_name\n\
+limit 100');
 
     </script>
   </body>

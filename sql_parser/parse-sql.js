@@ -21,13 +21,13 @@
     ]
   },
   { "num": 3,
-    "shifts": { "FIELD_LIST": 6, "FIELD": 7, "id": 8, "*": 9, "FN_CALL": 10},
+    "shifts": { "distinct": 6, "FIELD_LIST": 7, "FIELD": 8, "id": 9, "*": 10, "AGGREGATE": 11},
     "reductions": [
 
     ]
   },
   { "num": 4,
-    "shifts": { "WHERE": 11, "GROUP_BY": 12, "ORDER_BY": 13, "LIMIT": 14, "where": 15, "group": 16, "order": 17, "limit": 18},
+    "shifts": { "WHERE": 12, "GROUP_BY": 13, "ORDER_BY": 14, "LIMIT": 15, "where": 16, "group": 17, "order": 18, "limit": 19},
     "reductions": [
       { "produces": "QUERY",
         "lookaheads": ["$"],
@@ -35,20 +35,26 @@
     ]
   },
   { "num": 5,
-    "shifts": { "id": 19},
+    "shifts": { "id": 20},
     "reductions": [
 
     ]
   },
   { "num": 6,
-    "shifts": { ",": 20},
+    "shifts": { "FIELD_LIST": 21, "FIELD": 8, "id": 9, "*": 10, "AGGREGATE": 11},
+    "reductions": [
+
+    ]
+  },
+  { "num": 7,
+    "shifts": { ",": 22},
     "reductions": [
       { "produces": "SELECT",
         "lookaheads": ["having", "limit", "order", "group", "where", "from"],
         "nReducedSymbols": 2 }
     ]
   },
-  { "num": 7,
+  { "num": 8,
     "shifts": { },
     "reductions": [
       { "produces": "FIELD_LIST",
@@ -56,16 +62,8 @@
         "nReducedSymbols": 1 }
     ]
   },
-  { "num": 8,
-    "shifts": { "as": 21, "(": 22},
-    "reductions": [
-      { "produces": "FIELD",
-        "lookaheads": [",", "having", "limit", "order", "group", "where", "from"],
-        "nReducedSymbols": 1 }
-    ]
-  },
   { "num": 9,
-    "shifts": { },
+    "shifts": { "as": 23, "(": 24},
     "reductions": [
       { "produces": "FIELD",
         "lookaheads": [",", "having", "limit", "order", "group", "where", "from"],
@@ -81,15 +79,15 @@
     ]
   },
   { "num": 11,
-    "shifts": { "GROUP_BY": 23, "ORDER_BY": 24, "LIMIT": 25, "group": 16, "order": 17, "limit": 18},
+    "shifts": { "as": 25},
     "reductions": [
-      { "produces": "QUERY",
-        "lookaheads": ["$"],
-        "nReducedSymbols": 3 }
+      { "produces": "FIELD",
+        "lookaheads": [",", "having", "limit", "order", "group", "where", "from"],
+        "nReducedSymbols": 1 }
     ]
   },
   { "num": 12,
-    "shifts": { "ORDER_BY": 26, "LIMIT": 27, "HAVING": 28, "order": 17, "limit": 18, "having": 29},
+    "shifts": { "GROUP_BY": 26, "ORDER_BY": 27, "LIMIT": 28, "group": 17, "order": 18, "limit": 19},
     "reductions": [
       { "produces": "QUERY",
         "lookaheads": ["$"],
@@ -97,7 +95,7 @@
     ]
   },
   { "num": 13,
-    "shifts": { "LIMIT": 30, "limit": 18},
+    "shifts": { "ORDER_BY": 29, "LIMIT": 30, "HAVING": 31, "order": 18, "limit": 19, "having": 32},
     "reductions": [
       { "produces": "QUERY",
         "lookaheads": ["$"],
@@ -105,7 +103,7 @@
     ]
   },
   { "num": 14,
-    "shifts": { },
+    "shifts": { "LIMIT": 33, "limit": 19},
     "reductions": [
       { "produces": "QUERY",
         "lookaheads": ["$"],
@@ -113,30 +111,38 @@
     ]
   },
   { "num": 15,
-    "shifts": { "EXPR": 31, "EQ_EXPR": 32, "id": 33, "LITERAL": 34, "number": 35, "string": 36},
+    "shifts": { },
     "reductions": [
-
+      { "produces": "QUERY",
+        "lookaheads": ["$"],
+        "nReducedSymbols": 3 }
     ]
   },
   { "num": 16,
-    "shifts": { "by": 37},
+    "shifts": { "EXPR": 34, "EQ_EXPR": 35, "id": 36, "LITERAL": 37, "number": 38, "string": 39},
     "reductions": [
 
     ]
   },
   { "num": 17,
-    "shifts": { "by": 38},
+    "shifts": { "by": 40},
     "reductions": [
 
     ]
   },
   { "num": 18,
-    "shifts": { "number": 39},
+    "shifts": { "by": 41},
     "reductions": [
 
     ]
   },
   { "num": 19,
+    "shifts": { "number": 42},
+    "reductions": [
+
+    ]
+  },
+  { "num": 20,
     "shifts": { },
     "reductions": [
       { "produces": "FROM",
@@ -144,50 +150,40 @@
         "nReducedSymbols": 2 }
     ]
   },
-  { "num": 20,
-    "shifts": { "FIELD": 40, "id": 8, "*": 9, "FN_CALL": 10},
-    "reductions": [
-
-    ]
-  },
   { "num": 21,
-    "shifts": { "id": 41},
+    "shifts": { ",": 22},
     "reductions": [
-
+      { "produces": "SELECT",
+        "lookaheads": ["having", "limit", "order", "group", "where", "from"],
+        "nReducedSymbols": 3 }
     ]
   },
   { "num": 22,
-    "shifts": { "id": 42},
+    "shifts": { "FIELD": 43, "id": 9, "*": 10, "AGGREGATE": 11},
     "reductions": [
 
     ]
   },
   { "num": 23,
-    "shifts": { "ORDER_BY": 43, "LIMIT": 44, "HAVING": 45, "order": 17, "limit": 18, "having": 29},
+    "shifts": { "id": 44},
     "reductions": [
-      { "produces": "QUERY",
-        "lookaheads": ["$"],
-        "nReducedSymbols": 4 }
+
     ]
   },
   { "num": 24,
-    "shifts": { "LIMIT": 46, "limit": 18},
+    "shifts": { "id": 45},
     "reductions": [
-      { "produces": "QUERY",
-        "lookaheads": ["$"],
-        "nReducedSymbols": 4 }
+
     ]
   },
   { "num": 25,
-    "shifts": { },
+    "shifts": { "id": 46},
     "reductions": [
-      { "produces": "QUERY",
-        "lookaheads": ["$"],
-        "nReducedSymbols": 4 }
+
     ]
   },
   { "num": 26,
-    "shifts": { "LIMIT": 47, "limit": 18},
+    "shifts": { "ORDER_BY": 47, "LIMIT": 48, "HAVING": 49, "order": 18, "limit": 19, "having": 32},
     "reductions": [
       { "produces": "QUERY",
         "lookaheads": ["$"],
@@ -195,7 +191,7 @@
     ]
   },
   { "num": 27,
-    "shifts": { },
+    "shifts": { "LIMIT": 50, "limit": 19},
     "reductions": [
       { "produces": "QUERY",
         "lookaheads": ["$"],
@@ -203,7 +199,7 @@
     ]
   },
   { "num": 28,
-    "shifts": { "ORDER_BY": 48, "LIMIT": 49, "order": 17, "limit": 18},
+    "shifts": { },
     "reductions": [
       { "produces": "QUERY",
         "lookaheads": ["$"],
@@ -211,9 +207,11 @@
     ]
   },
   { "num": 29,
-    "shifts": { "EXPR": 50, "EQ_EXPR": 32, "id": 33, "LITERAL": 34, "number": 35, "string": 36},
+    "shifts": { "LIMIT": 51, "limit": 19},
     "reductions": [
-
+      { "produces": "QUERY",
+        "lookaheads": ["$"],
+        "nReducedSymbols": 4 }
     ]
   },
   { "num": 30,
@@ -225,6 +223,28 @@
     ]
   },
   { "num": 31,
+    "shifts": { "ORDER_BY": 52, "LIMIT": 53, "order": 18, "limit": 19},
+    "reductions": [
+      { "produces": "QUERY",
+        "lookaheads": ["$"],
+        "nReducedSymbols": 4 }
+    ]
+  },
+  { "num": 32,
+    "shifts": { "EXPR": 54, "EQ_EXPR": 35, "id": 36, "LITERAL": 37, "number": 38, "string": 39},
+    "reductions": [
+
+    ]
+  },
+  { "num": 33,
+    "shifts": { },
+    "reductions": [
+      { "produces": "QUERY",
+        "lookaheads": ["$"],
+        "nReducedSymbols": 4 }
+    ]
+  },
+  { "num": 34,
     "shifts": { },
     "reductions": [
       { "produces": "WHERE",
@@ -232,7 +252,7 @@
         "nReducedSymbols": 2 }
     ]
   },
-  { "num": 32,
+  { "num": 35,
     "shifts": { },
     "reductions": [
       { "produces": "EXPR",
@@ -240,47 +260,47 @@
         "nReducedSymbols": 1 }
     ]
   },
-  { "num": 33,
-    "shifts": { "=": 51, "<>": 52, ">": 53, "<": 54, ">=": 55, "<=": 56, "like": 57},
-    "reductions": [
-
-    ]
-  },
-  { "num": 34,
-    "shifts": { "=": 58, "<>": 59, ">": 60, "<": 61, ">=": 62, "<=": 63, "like": 64},
-    "reductions": [
-
-    ]
-  },
-  { "num": 35,
-    "shifts": { },
-    "reductions": [
-      { "produces": "LITERAL",
-        "lookaheads": ["like", "<=", ">=", "<", ">", "<>", "=", "having", "$", "limit", "order", "group"],
-        "nReducedSymbols": 1 }
-    ]
-  },
   { "num": 36,
-    "shifts": { },
+    "shifts": { "=": 55, "<>": 56, ">": 57, "<": 58, "!>": 59, "!<": 60, ">=": 61, "<=": 62, "like": 63},
     "reductions": [
-      { "produces": "LITERAL",
-        "lookaheads": ["like", "<=", ">=", "<", ">", "<>", "=", "having", "$", "limit", "order", "group"],
-        "nReducedSymbols": 1 }
+
     ]
   },
   { "num": 37,
-    "shifts": { "ID_LIST": 65, "id": 66},
+    "shifts": { "=": 64, "<>": 65, ">": 66, "<": 67, "!>": 68, "!<": 69, ">=": 70, "<=": 71, "like": 72},
     "reductions": [
 
     ]
   },
   { "num": 38,
-    "shifts": { "id": 67},
+    "shifts": { },
+    "reductions": [
+      { "produces": "LITERAL",
+        "lookaheads": ["like", "<=", ">=", "!<", "!>", "<", ">", "<>", "=", "having", "$", "limit", "order", "group"],
+        "nReducedSymbols": 1 }
+    ]
+  },
+  { "num": 39,
+    "shifts": { },
+    "reductions": [
+      { "produces": "LITERAL",
+        "lookaheads": ["like", "<=", ">=", "!<", "!>", "<", ">", "<>", "=", "having", "$", "limit", "order", "group"],
+        "nReducedSymbols": 1 }
+    ]
+  },
+  { "num": 40,
+    "shifts": { "ID_LIST": 73, "id": 74},
     "reductions": [
 
     ]
   },
-  { "num": 39,
+  { "num": 41,
+    "shifts": { "id": 75},
+    "reductions": [
+
+    ]
+  },
+  { "num": 42,
     "shifts": { },
     "reductions": [
       { "produces": "LIMIT",
@@ -288,7 +308,7 @@
         "nReducedSymbols": 2 }
     ]
   },
-  { "num": 40,
+  { "num": 43,
     "shifts": { },
     "reductions": [
       { "produces": "FIELD_LIST",
@@ -296,7 +316,7 @@
         "nReducedSymbols": 3 }
     ]
   },
-  { "num": 41,
+  { "num": 44,
     "shifts": { },
     "reductions": [
       { "produces": "FIELD",
@@ -304,46 +324,22 @@
         "nReducedSymbols": 3 }
     ]
   },
-  { "num": 42,
-    "shifts": { ")": 68},
+  { "num": 45,
+    "shifts": { ")": 76},
     "reductions": [
 
-    ]
-  },
-  { "num": 43,
-    "shifts": { "LIMIT": 69, "limit": 18},
-    "reductions": [
-      { "produces": "QUERY",
-        "lookaheads": ["$"],
-        "nReducedSymbols": 5 }
-    ]
-  },
-  { "num": 44,
-    "shifts": { },
-    "reductions": [
-      { "produces": "QUERY",
-        "lookaheads": ["$"],
-        "nReducedSymbols": 5 }
-    ]
-  },
-  { "num": 45,
-    "shifts": { "ORDER_BY": 70, "LIMIT": 71, "order": 17, "limit": 18},
-    "reductions": [
-      { "produces": "QUERY",
-        "lookaheads": ["$"],
-        "nReducedSymbols": 5 }
     ]
   },
   { "num": 46,
     "shifts": { },
     "reductions": [
-      { "produces": "QUERY",
-        "lookaheads": ["$"],
-        "nReducedSymbols": 5 }
+      { "produces": "FIELD",
+        "lookaheads": [",", "having", "limit", "order", "group", "where", "from"],
+        "nReducedSymbols": 3 }
     ]
   },
   { "num": 47,
-    "shifts": { },
+    "shifts": { "LIMIT": 77, "limit": 19},
     "reductions": [
       { "produces": "QUERY",
         "lookaheads": ["$"],
@@ -351,7 +347,7 @@
     ]
   },
   { "num": 48,
-    "shifts": { "LIMIT": 72, "limit": 18},
+    "shifts": { },
     "reductions": [
       { "produces": "QUERY",
         "lookaheads": ["$"],
@@ -359,7 +355,7 @@
     ]
   },
   { "num": 49,
-    "shifts": { },
+    "shifts": { "ORDER_BY": 78, "LIMIT": 79, "order": 18, "limit": 19},
     "reductions": [
       { "produces": "QUERY",
         "lookaheads": ["$"],
@@ -369,104 +365,160 @@
   { "num": 50,
     "shifts": { },
     "reductions": [
+      { "produces": "QUERY",
+        "lookaheads": ["$"],
+        "nReducedSymbols": 5 }
+    ]
+  },
+  { "num": 51,
+    "shifts": { },
+    "reductions": [
+      { "produces": "QUERY",
+        "lookaheads": ["$"],
+        "nReducedSymbols": 5 }
+    ]
+  },
+  { "num": 52,
+    "shifts": { "LIMIT": 80, "limit": 19},
+    "reductions": [
+      { "produces": "QUERY",
+        "lookaheads": ["$"],
+        "nReducedSymbols": 5 }
+    ]
+  },
+  { "num": 53,
+    "shifts": { },
+    "reductions": [
+      { "produces": "QUERY",
+        "lookaheads": ["$"],
+        "nReducedSymbols": 5 }
+    ]
+  },
+  { "num": 54,
+    "shifts": { },
+    "reductions": [
       { "produces": "HAVING",
         "lookaheads": ["$", "limit", "order"],
         "nReducedSymbols": 2 }
     ]
   },
-  { "num": 51,
-    "shifts": { "LITERAL": 73, "number": 35, "string": 36},
-    "reductions": [
-
-    ]
-  },
-  { "num": 52,
-    "shifts": { "LITERAL": 74, "number": 35, "string": 36},
-    "reductions": [
-
-    ]
-  },
-  { "num": 53,
-    "shifts": { "LITERAL": 75, "number": 35, "string": 36},
-    "reductions": [
-
-    ]
-  },
-  { "num": 54,
-    "shifts": { "LITERAL": 76, "number": 35, "string": 36},
-    "reductions": [
-
-    ]
-  },
   { "num": 55,
-    "shifts": { "LITERAL": 77, "number": 35, "string": 36},
+    "shifts": { "LITERAL": 81, "number": 38, "string": 39},
     "reductions": [
 
     ]
   },
   { "num": 56,
-    "shifts": { "LITERAL": 78, "number": 35, "string": 36},
+    "shifts": { "LITERAL": 82, "number": 38, "string": 39},
     "reductions": [
 
     ]
   },
   { "num": 57,
-    "shifts": { "LITERAL": 79, "number": 35, "string": 36},
+    "shifts": { "LITERAL": 83, "number": 38, "string": 39},
     "reductions": [
 
     ]
   },
   { "num": 58,
-    "shifts": { "id": 80},
+    "shifts": { "LITERAL": 84, "number": 38, "string": 39},
     "reductions": [
 
     ]
   },
   { "num": 59,
-    "shifts": { "id": 81},
+    "shifts": { "LITERAL": 85, "number": 38, "string": 39},
     "reductions": [
 
     ]
   },
   { "num": 60,
-    "shifts": { "id": 82},
+    "shifts": { "LITERAL": 86, "number": 38, "string": 39},
     "reductions": [
 
     ]
   },
   { "num": 61,
-    "shifts": { "id": 83},
+    "shifts": { "LITERAL": 87, "number": 38, "string": 39},
     "reductions": [
 
     ]
   },
   { "num": 62,
-    "shifts": { "id": 84},
+    "shifts": { "LITERAL": 88, "number": 38, "string": 39},
     "reductions": [
 
     ]
   },
   { "num": 63,
-    "shifts": { "id": 85},
+    "shifts": { "LITERAL": 89, "number": 38, "string": 39},
     "reductions": [
 
     ]
   },
   { "num": 64,
-    "shifts": { "id": 86},
+    "shifts": { "id": 90},
     "reductions": [
 
     ]
   },
   { "num": 65,
-    "shifts": { ",": 87},
+    "shifts": { "id": 91},
+    "reductions": [
+
+    ]
+  },
+  { "num": 66,
+    "shifts": { "id": 92},
+    "reductions": [
+
+    ]
+  },
+  { "num": 67,
+    "shifts": { "id": 93},
+    "reductions": [
+
+    ]
+  },
+  { "num": 68,
+    "shifts": { "id": 94},
+    "reductions": [
+
+    ]
+  },
+  { "num": 69,
+    "shifts": { "id": 95},
+    "reductions": [
+
+    ]
+  },
+  { "num": 70,
+    "shifts": { "id": 96},
+    "reductions": [
+
+    ]
+  },
+  { "num": 71,
+    "shifts": { "id": 97},
+    "reductions": [
+
+    ]
+  },
+  { "num": 72,
+    "shifts": { "id": 98},
+    "reductions": [
+
+    ]
+  },
+  { "num": 73,
+    "shifts": { ",": 99},
     "reductions": [
       { "produces": "GROUP_BY",
         "lookaheads": ["having", "$", "limit", "order"],
         "nReducedSymbols": 3 }
     ]
   },
-  { "num": 66,
+  { "num": 74,
     "shifts": { },
     "reductions": [
       { "produces": "ID_LIST",
@@ -474,116 +526,52 @@
         "nReducedSymbols": 1 }
     ]
   },
-  { "num": 67,
-    "shifts": { "asc": 88, "desc": 89},
+  { "num": 75,
+    "shifts": { "asc": 100, "desc": 101},
     "reductions": [
       { "produces": "ORDER_BY",
         "lookaheads": ["$", "limit"],
         "nReducedSymbols": 3 }
     ]
   },
-  { "num": 68,
-    "shifts": { },
-    "reductions": [
-      { "produces": "FN_CALL",
-        "lookaheads": [",", "having", "limit", "order", "group", "where", "from"],
-        "nReducedSymbols": 4 }
-    ]
-  },
-  { "num": 69,
-    "shifts": { },
-    "reductions": [
-      { "produces": "QUERY",
-        "lookaheads": ["$"],
-        "nReducedSymbols": 6 }
-    ]
-  },
-  { "num": 70,
-    "shifts": { "LIMIT": 90, "limit": 18},
-    "reductions": [
-      { "produces": "QUERY",
-        "lookaheads": ["$"],
-        "nReducedSymbols": 6 }
-    ]
-  },
-  { "num": 71,
-    "shifts": { },
-    "reductions": [
-      { "produces": "QUERY",
-        "lookaheads": ["$"],
-        "nReducedSymbols": 6 }
-    ]
-  },
-  { "num": 72,
-    "shifts": { },
-    "reductions": [
-      { "produces": "QUERY",
-        "lookaheads": ["$"],
-        "nReducedSymbols": 6 }
-    ]
-  },
-  { "num": 73,
-    "shifts": { },
-    "reductions": [
-      { "produces": "EQ_EXPR",
-        "lookaheads": ["having", "$", "limit", "order", "group"],
-        "nReducedSymbols": 3 }
-    ]
-  },
-  { "num": 74,
-    "shifts": { },
-    "reductions": [
-      { "produces": "EQ_EXPR",
-        "lookaheads": ["having", "$", "limit", "order", "group"],
-        "nReducedSymbols": 3 }
-    ]
-  },
-  { "num": 75,
-    "shifts": { },
-    "reductions": [
-      { "produces": "EQ_EXPR",
-        "lookaheads": ["having", "$", "limit", "order", "group"],
-        "nReducedSymbols": 3 }
-    ]
-  },
   { "num": 76,
     "shifts": { },
     "reductions": [
-      { "produces": "EQ_EXPR",
-        "lookaheads": ["having", "$", "limit", "order", "group"],
-        "nReducedSymbols": 3 }
+      { "produces": "AGGREGATE",
+        "lookaheads": ["as", ",", "having", "limit", "order", "group", "where", "from"],
+        "nReducedSymbols": 4 }
     ]
   },
   { "num": 77,
     "shifts": { },
     "reductions": [
-      { "produces": "EQ_EXPR",
-        "lookaheads": ["having", "$", "limit", "order", "group"],
-        "nReducedSymbols": 3 }
+      { "produces": "QUERY",
+        "lookaheads": ["$"],
+        "nReducedSymbols": 6 }
     ]
   },
   { "num": 78,
-    "shifts": { },
+    "shifts": { "LIMIT": 102, "limit": 19},
     "reductions": [
-      { "produces": "EQ_EXPR",
-        "lookaheads": ["having", "$", "limit", "order", "group"],
-        "nReducedSymbols": 3 }
+      { "produces": "QUERY",
+        "lookaheads": ["$"],
+        "nReducedSymbols": 6 }
     ]
   },
   { "num": 79,
     "shifts": { },
     "reductions": [
-      { "produces": "EQ_EXPR",
-        "lookaheads": ["having", "$", "limit", "order", "group"],
-        "nReducedSymbols": 3 }
+      { "produces": "QUERY",
+        "lookaheads": ["$"],
+        "nReducedSymbols": 6 }
     ]
   },
   { "num": 80,
     "shifts": { },
     "reductions": [
-      { "produces": "EQ_EXPR",
-        "lookaheads": ["having", "$", "limit", "order", "group"],
-        "nReducedSymbols": 3 }
+      { "produces": "QUERY",
+        "lookaheads": ["$"],
+        "nReducedSymbols": 6 }
     ]
   },
   { "num": 81,
@@ -635,20 +623,108 @@
     ]
   },
   { "num": 87,
-    "shifts": { "id": 91},
+    "shifts": { },
     "reductions": [
-
+      { "produces": "EQ_EXPR",
+        "lookaheads": ["having", "$", "limit", "order", "group"],
+        "nReducedSymbols": 3 }
     ]
   },
   { "num": 88,
     "shifts": { },
     "reductions": [
-      { "produces": "ORDER_BY",
-        "lookaheads": ["$", "limit"],
-        "nReducedSymbols": 4 }
+      { "produces": "EQ_EXPR",
+        "lookaheads": ["having", "$", "limit", "order", "group"],
+        "nReducedSymbols": 3 }
     ]
   },
   { "num": 89,
+    "shifts": { },
+    "reductions": [
+      { "produces": "EQ_EXPR",
+        "lookaheads": ["having", "$", "limit", "order", "group"],
+        "nReducedSymbols": 3 }
+    ]
+  },
+  { "num": 90,
+    "shifts": { },
+    "reductions": [
+      { "produces": "EQ_EXPR",
+        "lookaheads": ["having", "$", "limit", "order", "group"],
+        "nReducedSymbols": 3 }
+    ]
+  },
+  { "num": 91,
+    "shifts": { },
+    "reductions": [
+      { "produces": "EQ_EXPR",
+        "lookaheads": ["having", "$", "limit", "order", "group"],
+        "nReducedSymbols": 3 }
+    ]
+  },
+  { "num": 92,
+    "shifts": { },
+    "reductions": [
+      { "produces": "EQ_EXPR",
+        "lookaheads": ["having", "$", "limit", "order", "group"],
+        "nReducedSymbols": 3 }
+    ]
+  },
+  { "num": 93,
+    "shifts": { },
+    "reductions": [
+      { "produces": "EQ_EXPR",
+        "lookaheads": ["having", "$", "limit", "order", "group"],
+        "nReducedSymbols": 3 }
+    ]
+  },
+  { "num": 94,
+    "shifts": { },
+    "reductions": [
+      { "produces": "EQ_EXPR",
+        "lookaheads": ["having", "$", "limit", "order", "group"],
+        "nReducedSymbols": 3 }
+    ]
+  },
+  { "num": 95,
+    "shifts": { },
+    "reductions": [
+      { "produces": "EQ_EXPR",
+        "lookaheads": ["having", "$", "limit", "order", "group"],
+        "nReducedSymbols": 3 }
+    ]
+  },
+  { "num": 96,
+    "shifts": { },
+    "reductions": [
+      { "produces": "EQ_EXPR",
+        "lookaheads": ["having", "$", "limit", "order", "group"],
+        "nReducedSymbols": 3 }
+    ]
+  },
+  { "num": 97,
+    "shifts": { },
+    "reductions": [
+      { "produces": "EQ_EXPR",
+        "lookaheads": ["having", "$", "limit", "order", "group"],
+        "nReducedSymbols": 3 }
+    ]
+  },
+  { "num": 98,
+    "shifts": { },
+    "reductions": [
+      { "produces": "EQ_EXPR",
+        "lookaheads": ["having", "$", "limit", "order", "group"],
+        "nReducedSymbols": 3 }
+    ]
+  },
+  { "num": 99,
+    "shifts": { "id": 103},
+    "reductions": [
+
+    ]
+  },
+  { "num": 100,
     "shifts": { },
     "reductions": [
       { "produces": "ORDER_BY",
@@ -656,7 +732,15 @@
         "nReducedSymbols": 4 }
     ]
   },
-  { "num": 90,
+  { "num": 101,
+    "shifts": { },
+    "reductions": [
+      { "produces": "ORDER_BY",
+        "lookaheads": ["$", "limit"],
+        "nReducedSymbols": 4 }
+    ]
+  },
+  { "num": 102,
     "shifts": { },
     "reductions": [
       { "produces": "QUERY",
@@ -664,7 +748,7 @@
         "nReducedSymbols": 7 }
     ]
   },
-  { "num": 91,
+  { "num": 103,
     "shifts": { },
     "reductions": [
       { "produces": "ID_LIST",
@@ -681,6 +765,8 @@
       projectAll: false,
       projection: [],
       aliases: {},
+      evals: [],
+      distinct: false,
       from: null,
       filter: null,
       groupby: [],
@@ -695,35 +781,42 @@
       var search = "index=" + self.from;
 
       // Perform projection
-      if (!self.projectAll) {
-        search = search + "\n  | fields " + self.projection.join(' ');
+      // Note: Don't generate a `fields` command if there are groupings,
+      //       the `stats` command will handle this
+      if (!self.projectAll && self.groupby.length == 0) {
+        search = search + "\n  | fields "
+          + self.projection.map(quoteForSearch).join(' ');
       }
 
       // Apply aliases
       if (Object.keys(self.aliases).length != 0) {
         search = search + "\n  | rename " + Object.keys(self.aliases).map(function (field) {
-          return field + " AS " + self.aliases[field];
+          return quoteForSearch(field) + " AS " + quoteForSearch(self.aliases[field]);
         }).join(' ');
       }
 
       if (self.filter) {
-        search = search + "\n  | search "
-          + self.filter.field + " "
-          + self.filter.comparison + " " // TODO: Convert
-          + self.filter.literal;   // TODO: Convert
+        search = search + "\n  | where " + filterToEvalExpr(self.filter);
       }
 
-      if (self.groupby) {
-        // Stats needs aggregate functions from select, & any ids in the groupby
-        // TODO
+      if (self.distinct) {
+        search = search + "\n  | uniq"
+      }
+
+      if (self.groupby.length > 0) {
         var aggregate_clause = self.aggregates.map(function (agg) {
-          return agg.fn + "(\"" + agg.field + "\")"
+          return agg.fn + "(\"" + agg.field + "\")" + " AS " + quoteForSearch(agg.alias);
         }).join(' ');
-        search = search + "\n  | stats " + aggregate_clause + " by " + self.groupby.join(', ');
+
+        search = search
+          + "\n  | stats "
+          + aggregate_clause
+          + " by "
+          + self.groupby.map(quoteForSearch).join(', ');
       }
 
       if (self.having) {
-        search = search + "\n  | search " + self.having;
+        search = search + "\n  | where " + filterToEvalExpr(self.having);
       }
 
       if (self.order) {
@@ -737,6 +830,44 @@
       }
 
       return search;
+    }
+
+    function filterToEvalExpr(expr) {
+      var literal = (typeof expr.literal == 'number'
+          ? expr.literal
+          : quoteStringForEval(expr.literal));
+
+      console.log("Expr to eval: ", expr)
+
+      if (expr.comparison == 'like') {
+        return "like("
+          + quoteFieldForEval(expr.field)
+          + ", "
+          + literal + ')';
+      } else if (expr.comparison == '<>') {
+        return quoteFieldForEval(expr.field) + " != " + literal + ')';
+      } else if (expr.comparison == '!<') {
+        return quoteFieldForEval(expr.field) + " >= " + literal + ')';
+      } else if (expr.comparison == '!>') {
+        return quoteFieldForEval(expr.field) + " <= " + literal + ')';
+      } else {
+        // Default best effort
+        return quoteFieldForEval(expr.field) + " "
+        + expr.comparison + " "
+        + literal;
+      }
+    }
+
+    function quoteForSearch(field) {
+      return '"' + field + '"';
+    }
+
+    function quoteFieldForEval(field) {
+      return "'" + field + "'";
+    }
+
+    function quoteStringForEval(str) {
+      return '"' + str + '"';
     }
   }
 
@@ -753,9 +884,21 @@
     self.transcompile = function (input, callback) {
       reset();
       self.internalParse(input, function (error, ast) {
+        runSemanticAnalysis(self.query);
         callback(error, ast, self.query);
       });
     };
+
+    function runSemanticAnalysis(query) {
+      convertGroupByWithoutAggregratesToUniq(query);
+
+      function convertGroupByWithoutAggregratesToUniq(query) {
+        if (query.groupby.length > 0 && query.aggregates.length == 0) {
+          query.groupby = [];
+          query.distinct = true;
+        }
+      }
+    }
 
     function reset() {
       self.query = new QueryObject();
@@ -775,11 +918,22 @@
           var firstChildSymbol = node.children[0].symbol;
           if (firstChildSymbol == '*') {
             self.query.projectAll = true;
-          } else if (firstChildSymbol == 'FN_CALL') {
-            // FIELD -> FN_CALL -> id ( id )
+          } else if (firstChildSymbol == 'AGGREGATE') {
+            // FIELD -> AGGREGATE -> id ( id )
+            // FIELD -> AGGREGATE as id
+            var aggregate = node.children[0];
+            var fnname = aggregate.children[0].name;
+            var field = aggregate.children[2].name;
+            var alias = null;
+            if  (node.children.length == 3) {
+              alias = node.children[2].name;
+            } else {
+              alias = fnname + '(' + field + ')';
+            }
             self.query.aggregates.push({
-              fn: node.children[0].children[0].name,
-              field: node.children[0].children[2].name
+              fn: fnname,
+              field: field,
+              alias: alias
             });
           } else {
             var fieldName = node.children[0].name;
@@ -794,6 +948,10 @@
         self.onReduce('SELECT', function () {
           self.offReduce('FIELD', addFieldToProjection);
         });
+      });
+
+      self.onShift('distinct', function () {
+        self.query.distinct = true;
       });
 
       self.onReduce('FROM', function (node) {

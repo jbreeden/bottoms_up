@@ -32,6 +32,10 @@
         this.input = this.input.slice(skip[0].length);
       }
 
+      // The skip may get us to end of input.
+      // Better check for that and break if it happens
+      if (this.input.length == 0) break;
+
       var matched = false;
       for (var i = 0; i < this.matchers.length; i++) {
         var matcher = this.matchers[i];
