@@ -25,15 +25,11 @@ $parser = BottomsUp.new(:QUERY) do |p|
   p.rule :EQ_EXPR,    [:id, [:'=', :'<>', :'>', :'<', :'!>', :'!<', :'>=', :'<=', :like], :LITERAL]
   p.rule :EQ_EXPR,    [:LITERAL, [:'=', :'<>', :'>', :'<', :'!>', :'!<', :'>=', :'<=', :like], :id]
   p.rule :LITERAL,    [[:number, :string]]
+  p.rule :AGGREGATE,  [:id, :'(', [:id, :'*'], :')'] # So far only single param aggregate functions supported
 
-  p.rule :AGGREGATE,    [:id, :'(', :id, :')']
-
-  # TODO: distinct
-  # TODO:
   # TODO: Aggregate function expressions | eg: max(field) (e| as id)
   #   SPL: avg(), count(), first(), last(), max(), min(), sum()
   #   SQL: avg(), count(), first(), last(), max(), min(), sum()
   # TODO: If groupby present, select fields must = groupby fields + aggregate functions
-  # TODO: convert eq_exprs to eval expressions in SPL
   # TODO: Multi eq expressions in where/having
 end

@@ -4,4 +4,4 @@ window.Trace = {
   warning: 2,
   info: 3,
   debug: 4
-}
+};

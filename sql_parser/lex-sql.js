@@ -56,31 +56,31 @@
       .on(/^(,)/, function (match) {
         return { symbol: ',' };
       })
-      .on(/^(\*)(\s|,)/, function (match) {
+      .on(/^(\*)/, function (match) {
         return { symbol: '*' };
       })
-      .on(/^(=)\s+/, function (match) {
+      .on(/^(=)/, function (match) {
         return { symbol: '=' };
       })
-      .on(/^(<>)\s+/, function (match) {
+      .on(/^(<>)/, function (match) {
         return { symbol: '<>' };
       })
-      .on(/^(>)\s+/, function (match) {
+      .on(/^(>)/, function (match) {
         return { symbol: '>' };
       })
-      .on(/^(<)\s+/, function (match) {
+      .on(/^(<)/, function (match) {
         return { symbol: '<' };
       })
-      .on(/^(!>)\s+/, function (match) {
+      .on(/^(!>)/, function (match) {
         return { symbol: '!>' };
       })
-      .on(/^(!<)\s+/, function (match) {
+      .on(/^(!<)/, function (match) {
         return { symbol: '!<' };
       })
-      .on(/^(>=)\s+/, function (match) {
+      .on(/^(>=)/, function (match) {
         return { symbol: '>=' };
       })
-      .on(/^(<=)\s+/, function (match) {
+      .on(/^(<=)/, function (match) {
         return { symbol: '<=' };
       })
       .on(/^((\+|-)?[0-9]+(\.[0-9]+)?)(\s*|$)/, function (match) {

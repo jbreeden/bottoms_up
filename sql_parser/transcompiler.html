@@ -1,11 +1,14 @@
 <html>
   <head>
-    <script src="underscore.js"></script>
-    <script src="jquery.js"></script>
+    <script src="lib/underscore.js"></script>
+    <script src="lib/jquery.js"></script>
     <script src="trace.js"></script>
     <script src="lexer.js"></script>
     <script src="parser.js"></script>
     <script src="lex-sql.js"></script>
+    <script src="parse-table-sql.js"></script>
+    <script src="query-ir.js"></script>
+    <script src="query-ir-semantic-analysis.js"></script>
     <script src="parse-sql.js"></script>
     <style>
 .test {
@@ -42,9 +45,9 @@ function test(title, sql) {
       "</textarea></div>" +
       "<div class='column'>AST<br/><textarea class='ast' rows='20' cols='40'>" +
       "</textarea></div>" +
-      "<div class='column'>Query<br/><textarea class='query' rows='20' cols='40'>" +
+      "<div class='column'>Query (Intermediate Representation)<br/><textarea class='query' rows='20' cols='40'>" +
       "</textarea></div>" +
-      "<div class='column'>SPL<br/><textarea class='spl' rows='20' cols='40'>" +
+      "<div class='column'>SPL<br/><textarea class='spl' rows='20' cols='60'>" +
       "</textarea></div>" +
       "<div><button class='refresh' onclick='refresh(" + test.number + ")'>Refresh</button></div>" +
     "</div>"
@@ -84,14 +87,6 @@ test('Select Distinct',
 'select distinct * \n\
 from git');
 
-test('Select Aggregate',
-'select max(sha) \n\
-from git');
-
-test('Select Aggregate Aliased',
-'select max(sha) as "Max Sha" \n\
-from git');
-
 test('Select Fields',
 'select author_name, author_date \n\
 from git');
@@ -116,7 +111,10 @@ test('Filter - Not Less Conversion',
 from my_index\n\
 where num !< 5');
 
-test('Alias', 'select this as that, other from git where something < 5');
+test('Alias',
+'select this as that, other \n\
+from git \n\
+where this < 5');
 
 test('Select * and Alias',
 'select col as my_col, *\n\
@@ -140,29 +138,57 @@ test('Order By',
 from default\n\
 order by name');
 
-test('Group By (No Aggregates yields uniq even without DISTINCT clause)',
+test('Select Aggregate',
+'select max(sha) \n\
+from git');
+
+test('Select Count of Field',
+'select count(name) \n\
+from git');
+
+test('Select Count of Records',
+'select count(*) \n\
+from git');
+
+test('Only Count takes *',
+'select max(*) \n\
+from git');
+
+test('Select Aggregate Aliased',
+'select max(sha) as "Max Sha" \n\
+from git');
+
+test('Select Aggregate & Project - Duplicates in SQL, none in SPL due to stats',
+'select author_name, max(sha) as "Max Sha" \n\
+from git');
+
+test('Select All & Aggregate',
+'select *, max(sha) as "Max Sha" \n\
+from git');
+
+test('Group By - No Aggregates yields uniq even without DISTINCT clause',
 'select first_name, last_name as "Last Name" \n\
 from index\n\
 where first_name = \'steve\' \n\
-group by first_name, "Last Name" \n\
+group by first_name, last_name \n\
 having last_name like \'%Burg%\'\n\
 order by last_name\n\
 limit 100');
 
-test('Group By Handles Projection & Aggregate Aliases',
-'select distinct first_name, last_name as "Last Name", max(age)\n\
+test('Group By - Aggregates Render DISTINCT Redundant',
+'select distinct first_name, last_name as "Last Name", max(age) \n\
 from index\n\
 where first_name = \'steve\' \n\
-group by first_name, "Last Name" \n\
+group by first_name, last_name \n\
 having last_name like \'%Burg%\'\n\
 order by last_name\n\
 limit 100');
 
-test('Group By w/ Aggregates',
+test('Group By Handles Projection',
 'select distinct first_name, last_name as "Last Name", max(age)\n\
 from index\n\
 where first_name = \'steve\' \n\
-group by first_name, "Last Name" \n\
+group by first_name, last_name \n\
 having last_name like \'%Burg%\'\n\
 order by last_name\n\
 limit 100');
@@ -171,8 +197,17 @@ test('Group By w/ Aggregates Aliased',
 'select distinct first_name, last_name as "Last Name", max(age) as "Max Age"\n\
 from index\n\
 where first_name = \'steve\' \n\
-group by first_name, "Last Name" \n\
+group by first_name, last_name \n\
 having last_name like \'%Burg%\'\n\
+order by last_name\n\
+limit 100');
+
+test('Group By w/ Aggregate Value Having Condition - non-std SQL: alias in Having',
+'select distinct first_name, last_name as "Last Name", max(age) as "Max Age"\n\
+from index\n\
+where first_name = \'steve\' \n\
+group by first_name, last_name \n\
+having "Max Age" < 40\n\
 order by last_name\n\
 limit 100');
 
@@ -181,7 +216,7 @@ test('Cannot Group by *',
 from index\n\
 where first_name = \'steve\' \n\
 group by * \n\
-having "Last Name" like \'%Burg%\'\n\
+having last_name like \'%Burg%\'\n\
 order by last_name\n\
 limit 100');
 

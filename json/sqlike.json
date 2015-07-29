@@ -170,19 +170,19 @@
   ]
 },
 { "num": 24, 
-  "shifts": { "id": 45},
+  "shifts": { "id": 45, "*": 46},
   "reductions": [ 
 
   ]
 },
 { "num": 25, 
-  "shifts": { "id": 46},
+  "shifts": { "id": 47},
   "reductions": [ 
 
   ]
 },
 { "num": 26, 
-  "shifts": { "ORDER_BY": 47, "LIMIT": 48, "HAVING": 49, "order": 18, "limit": 19, "having": 32},
+  "shifts": { "ORDER_BY": 48, "LIMIT": 49, "HAVING": 50, "order": 18, "limit": 19, "having": 32},
   "reductions": [ 
     { "produces": "QUERY", 
       "lookaheads": ["$"], 
@@ -190,7 +190,7 @@
   ]
 },
 { "num": 27, 
-  "shifts": { "LIMIT": 50, "limit": 19},
+  "shifts": { "LIMIT": 51, "limit": 19},
   "reductions": [ 
     { "produces": "QUERY", 
       "lookaheads": ["$"], 
@@ -206,7 +206,7 @@
   ]
 },
 { "num": 29, 
-  "shifts": { "LIMIT": 51, "limit": 19},
+  "shifts": { "LIMIT": 52, "limit": 19},
   "reductions": [ 
     { "produces": "QUERY", 
       "lookaheads": ["$"], 
@@ -222,7 +222,7 @@
   ]
 },
 { "num": 31, 
-  "shifts": { "ORDER_BY": 52, "LIMIT": 53, "order": 18, "limit": 19},
+  "shifts": { "ORDER_BY": 53, "LIMIT": 54, "order": 18, "limit": 19},
   "reductions": [ 
     { "produces": "QUERY", 
       "lookaheads": ["$"], 
@@ -230,7 +230,7 @@
   ]
 },
 { "num": 32, 
-  "shifts": { "EXPR": 54, "EQ_EXPR": 35, "id": 36, "LITERAL": 37, "number": 38, "string": 39},
+  "shifts": { "EXPR": 55, "EQ_EXPR": 35, "id": 36, "LITERAL": 37, "number": 38, "string": 39},
   "reductions": [ 
 
   ]
@@ -260,13 +260,13 @@
   ]
 },
 { "num": 36, 
-  "shifts": { "=": 55, "<>": 56, ">": 57, "<": 58, "!>": 59, "!<": 60, ">=": 61, "<=": 62, "like": 63},
+  "shifts": { "=": 56, "<>": 57, ">": 58, "<": 59, "!>": 60, "!<": 61, ">=": 62, "<=": 63, "like": 64},
   "reductions": [ 
 
   ]
 },
 { "num": 37, 
-  "shifts": { "=": 64, "<>": 65, ">": 66, "<": 67, "!>": 68, "!<": 69, ">=": 70, "<=": 71, "like": 72},
+  "shifts": { "=": 65, "<>": 66, ">": 67, "<": 68, "!>": 69, "!<": 70, ">=": 71, "<=": 72, "like": 73},
   "reductions": [ 
 
   ]
@@ -288,13 +288,13 @@
   ]
 },
 { "num": 40, 
-  "shifts": { "ID_LIST": 73, "id": 74},
+  "shifts": { "ID_LIST": 74, "id": 75},
   "reductions": [ 
 
   ]
 },
 { "num": 41, 
-  "shifts": { "id": 75},
+  "shifts": { "id": 76},
   "reductions": [ 
 
   ]
@@ -324,12 +324,18 @@
   ]
 },
 { "num": 45, 
-  "shifts": { ")": 76},
+  "shifts": { ")": 77},
   "reductions": [ 
 
   ]
 },
 { "num": 46, 
+  "shifts": { ")": 78},
+  "reductions": [ 
+
+  ]
+},
+{ "num": 47, 
   "shifts": { },
   "reductions": [ 
     { "produces": "FIELD", 
@@ -337,16 +343,8 @@
       "nReducedSymbols": 3 }
   ]
 },
-{ "num": 47, 
-  "shifts": { "LIMIT": 77, "limit": 19},
-  "reductions": [ 
-    { "produces": "QUERY", 
-      "lookaheads": ["$"], 
-      "nReducedSymbols": 5 }
-  ]
-},
 { "num": 48, 
-  "shifts": { },
+  "shifts": { "LIMIT": 79, "limit": 19},
   "reductions": [ 
     { "produces": "QUERY", 
       "lookaheads": ["$"], 
@@ -354,7 +352,7 @@
   ]
 },
 { "num": 49, 
-  "shifts": { "ORDER_BY": 78, "LIMIT": 79, "order": 18, "limit": 19},
+  "shifts": { },
   "reductions": [ 
     { "produces": "QUERY", 
       "lookaheads": ["$"], 
@@ -362,7 +360,7 @@
   ]
 },
 { "num": 50, 
-  "shifts": { },
+  "shifts": { "ORDER_BY": 80, "LIMIT": 81, "order": 18, "limit": 19},
   "reductions": [ 
     { "produces": "QUERY", 
       "lookaheads": ["$"], 
@@ -378,7 +376,7 @@
   ]
 },
 { "num": 52, 
-  "shifts": { "LIMIT": 80, "limit": 19},
+  "shifts": { },
   "reductions": [ 
     { "produces": "QUERY", 
       "lookaheads": ["$"], 
@@ -386,7 +384,7 @@
   ]
 },
 { "num": 53, 
-  "shifts": { },
+  "shifts": { "LIMIT": 82, "limit": 19},
   "reductions": [ 
     { "produces": "QUERY", 
       "lookaheads": ["$"], 
@@ -396,128 +394,136 @@
 { "num": 54, 
   "shifts": { },
   "reductions": [ 
+    { "produces": "QUERY", 
+      "lookaheads": ["$"], 
+      "nReducedSymbols": 5 }
+  ]
+},
+{ "num": 55, 
+  "shifts": { },
+  "reductions": [ 
     { "produces": "HAVING", 
       "lookaheads": ["$", "limit", "order"], 
       "nReducedSymbols": 2 }
   ]
 },
-{ "num": 55, 
-  "shifts": { "LITERAL": 81, "number": 38, "string": 39},
-  "reductions": [ 
-
-  ]
-},
 { "num": 56, 
-  "shifts": { "LITERAL": 82, "number": 38, "string": 39},
-  "reductions": [ 
-
-  ]
-},
-{ "num": 57, 
   "shifts": { "LITERAL": 83, "number": 38, "string": 39},
   "reductions": [ 
 
   ]
 },
-{ "num": 58, 
+{ "num": 57, 
   "shifts": { "LITERAL": 84, "number": 38, "string": 39},
   "reductions": [ 
 
   ]
 },
-{ "num": 59, 
+{ "num": 58, 
   "shifts": { "LITERAL": 85, "number": 38, "string": 39},
   "reductions": [ 
 
   ]
 },
-{ "num": 60, 
+{ "num": 59, 
   "shifts": { "LITERAL": 86, "number": 38, "string": 39},
   "reductions": [ 
 
   ]
 },
-{ "num": 61, 
+{ "num": 60, 
   "shifts": { "LITERAL": 87, "number": 38, "string": 39},
   "reductions": [ 
 
   ]
 },
-{ "num": 62, 
+{ "num": 61, 
   "shifts": { "LITERAL": 88, "number": 38, "string": 39},
   "reductions": [ 
 
   ]
 },
-{ "num": 63, 
+{ "num": 62, 
   "shifts": { "LITERAL": 89, "number": 38, "string": 39},
   "reductions": [ 
 
   ]
 },
+{ "num": 63, 
+  "shifts": { "LITERAL": 90, "number": 38, "string": 39},
+  "reductions": [ 
+
+  ]
+},
 { "num": 64, 
-  "shifts": { "id": 90},
+  "shifts": { "LITERAL": 91, "number": 38, "string": 39},
   "reductions": [ 
 
   ]
 },
 { "num": 65, 
-  "shifts": { "id": 91},
-  "reductions": [ 
-
-  ]
-},
-{ "num": 66, 
   "shifts": { "id": 92},
   "reductions": [ 
 
   ]
 },
-{ "num": 67, 
+{ "num": 66, 
   "shifts": { "id": 93},
   "reductions": [ 
 
   ]
 },
-{ "num": 68, 
+{ "num": 67, 
   "shifts": { "id": 94},
   "reductions": [ 
 
   ]
 },
-{ "num": 69, 
+{ "num": 68, 
   "shifts": { "id": 95},
   "reductions": [ 
 
   ]
 },
-{ "num": 70, 
+{ "num": 69, 
   "shifts": { "id": 96},
   "reductions": [ 
 
   ]
 },
-{ "num": 71, 
+{ "num": 70, 
   "shifts": { "id": 97},
   "reductions": [ 
 
   ]
 },
-{ "num": 72, 
+{ "num": 71, 
   "shifts": { "id": 98},
   "reductions": [ 
 
   ]
 },
+{ "num": 72, 
+  "shifts": { "id": 99},
+  "reductions": [ 
+
+  ]
+},
 { "num": 73, 
-  "shifts": { ",": 99},
+  "shifts": { "id": 100},
+  "reductions": [ 
+
+  ]
+},
+{ "num": 74, 
+  "shifts": { ",": 101},
   "reductions": [ 
     { "produces": "GROUP_BY", 
       "lookaheads": ["having", "$", "limit", "order"], 
       "nReducedSymbols": 3 }
   ]
 },
-{ "num": 74, 
+{ "num": 75, 
   "shifts": { },
   "reductions": [ 
     { "produces": "ID_LIST", 
@@ -525,15 +531,15 @@
       "nReducedSymbols": 1 }
   ]
 },
-{ "num": 75, 
-  "shifts": { "asc": 100, "desc": 101},
+{ "num": 76, 
+  "shifts": { "asc": 102, "desc": 103},
   "reductions": [ 
     { "produces": "ORDER_BY", 
       "lookaheads": ["$", "limit"], 
       "nReducedSymbols": 3 }
   ]
 },
-{ "num": 76, 
+{ "num": 77, 
   "shifts": { },
   "reductions": [ 
     { "produces": "AGGREGATE", 
@@ -541,20 +547,12 @@
       "nReducedSymbols": 4 }
   ]
 },
-{ "num": 77, 
+{ "num": 78, 
   "shifts": { },
   "reductions": [ 
-    { "produces": "QUERY", 
-      "lookaheads": ["$"], 
-      "nReducedSymbols": 6 }
-  ]
-},
-{ "num": 78, 
-  "shifts": { "LIMIT": 102, "limit": 19},
-  "reductions": [ 
-    { "produces": "QUERY", 
-      "lookaheads": ["$"], 
-      "nReducedSymbols": 6 }
+    { "produces": "AGGREGATE", 
+      "lookaheads": ["as", ",", "having", "limit", "order", "group", "where", "from"], 
+      "nReducedSymbols": 4 }
   ]
 },
 { "num": 79, 
@@ -566,7 +564,7 @@
   ]
 },
 { "num": 80, 
-  "shifts": { },
+  "shifts": { "LIMIT": 104, "limit": 19},
   "reductions": [ 
     { "produces": "QUERY", 
       "lookaheads": ["$"], 
@@ -576,17 +574,17 @@
 { "num": 81, 
   "shifts": { },
   "reductions": [ 
-    { "produces": "EQ_EXPR", 
-      "lookaheads": ["having", "$", "limit", "order", "group"], 
-      "nReducedSymbols": 3 }
+    { "produces": "QUERY", 
+      "lookaheads": ["$"], 
+      "nReducedSymbols": 6 }
   ]
 },
 { "num": 82, 
   "shifts": { },
   "reductions": [ 
-    { "produces": "EQ_EXPR", 
-      "lookaheads": ["having", "$", "limit", "order", "group"], 
-      "nReducedSymbols": 3 }
+    { "produces": "QUERY", 
+      "lookaheads": ["$"], 
+      "nReducedSymbols": 6 }
   ]
 },
 { "num": 83, 
@@ -718,20 +716,28 @@
   ]
 },
 { "num": 99, 
-  "shifts": { "id": 103},
+  "shifts": { },
   "reductions": [ 
-
+    { "produces": "EQ_EXPR", 
+      "lookaheads": ["having", "$", "limit", "order", "group"], 
+      "nReducedSymbols": 3 }
   ]
 },
 { "num": 100, 
   "shifts": { },
   "reductions": [ 
-    { "produces": "ORDER_BY", 
-      "lookaheads": ["$", "limit"], 
-      "nReducedSymbols": 4 }
+    { "produces": "EQ_EXPR", 
+      "lookaheads": ["having", "$", "limit", "order", "group"], 
+      "nReducedSymbols": 3 }
   ]
 },
 { "num": 101, 
+  "shifts": { "id": 105},
+  "reductions": [ 
+
+  ]
+},
+{ "num": 102, 
   "shifts": { },
   "reductions": [ 
     { "produces": "ORDER_BY", 
@@ -739,7 +745,15 @@
       "nReducedSymbols": 4 }
   ]
 },
-{ "num": 102, 
+{ "num": 103, 
+  "shifts": { },
+  "reductions": [ 
+    { "produces": "ORDER_BY", 
+      "lookaheads": ["$", "limit"], 
+      "nReducedSymbols": 4 }
+  ]
+},
+{ "num": 104, 
   "shifts": { },
   "reductions": [ 
     { "produces": "QUERY", 
@@ -747,7 +761,7 @@
       "nReducedSymbols": 7 }
   ]
 },
-{ "num": 103, 
+{ "num": 105, 
   "shifts": { },
   "reductions": [ 
     { "produces": "ID_LIST", 

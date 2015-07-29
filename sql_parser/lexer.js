@@ -42,10 +42,7 @@
         match = this.input.match(matcher.regex);
 
         if (this.trace >= Trace.debug) {
-          if (match == null)
-            this.log(this.getContext() + " did not match " + matcher.regex.toString());
-          else
-            this.log("Matched input " + match[0] + " to " + matcher.regex.toString());
+          if (match) this.log("Matched input " + match[0] + " to " + matcher.regex.toString());
         }
 
         if (match != null) {
