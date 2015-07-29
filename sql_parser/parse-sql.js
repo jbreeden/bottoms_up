@@ -845,11 +845,11 @@
           + ", "
           + literal + ')';
       } else if (expr.comparison == '<>') {
-        return quoteFieldForEval(expr.field) + " != " + literal + ')';
+        return quoteFieldForEval(expr.field) + " != " + literal;
       } else if (expr.comparison == '!<') {
-        return quoteFieldForEval(expr.field) + " >= " + literal + ')';
+        return quoteFieldForEval(expr.field) + " >= " + literal;
       } else if (expr.comparison == '!>') {
-        return quoteFieldForEval(expr.field) + " <= " + literal + ')';
+        return quoteFieldForEval(expr.field) + " <= " + literal;
       } else {
         // Default best effort
         return quoteFieldForEval(expr.field) + " "
@@ -884,18 +884,37 @@
     self.transcompile = function (input, callback) {
       reset();
       self.internalParse(input, function (error, ast) {
-        runSemanticAnalysis(self.query);
-        callback(error, ast, self.query);
+        if (!error) {
+          error = runSemanticAnalysis(self.query);
+        }
+        if (error) {
+          callback(error);
+        } else {
+          callback(null, ast, self.query);
+        }
       });
     };
 
     function runSemanticAnalysis(query) {
-      convertGroupByWithoutAggregratesToUniq(query);
+      return getFirstError([
+        convertGroupByWithoutAggregratesToUniq,
+        aggregatesOnlyValidWithGroupBy
+      ]);
 
-      function convertGroupByWithoutAggregratesToUniq(query) {
+      function getFirstError(functions) {
+        return _.find(functions, function (fn) { return fn(); });
+      }
+
+      function convertGroupByWithoutAggregratesToUniq() {
         if (query.groupby.length > 0 && query.aggregates.length == 0) {
           query.groupby = [];
           query.distinct = true;
+        }
+      }
+
+      function aggregatesOnlyValidWithGroupBy() {
+        if (query.aggregates.length > 0 && query.groupby.length == 0) {
+          return "Aggregate functions are only supported in combination with a GROUP BY clause"
         }
       }
     }
