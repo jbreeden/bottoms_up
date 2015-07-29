@@ -29,7 +29,7 @@
       .on(/^(asc)\s+/i, function (match) {
         return { symbol: 'asc' };
       })
-      .on(/^(desc)\s+/i, function (match) {
+      .on(/^(desc)(\s+|$)/i, function (match) {
         return { symbol: 'desc' };
       })
       .on(/^(group)\s+/i, function (match) {
@@ -70,6 +70,12 @@
       })
       .on(/^(<)\s+/, function (match) {
         return { symbol: '<' };
+      })
+      .on(/^(!>)\s+/, function (match) {
+        return { symbol: '!>' };
+      })
+      .on(/^(!<)\s+/, function (match) {
+        return { symbol: '!<' };
       })
       .on(/^(>=)\s+/, function (match) {
         return { symbol: '>=' };
