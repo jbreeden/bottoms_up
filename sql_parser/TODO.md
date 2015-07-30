@@ -1,2 +1,0 @@
-- Map aggregate functions that need mapping (count, at least)
-- Playground UI

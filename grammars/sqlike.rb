@@ -3,7 +3,7 @@ require_relative '../parser'
 $parser = BottomsUp.new(:QUERY) do |p|
   # Using (NON_TERMINAL | e) for option parts makes it easier to decord while reducing.
   # If the non terminals themselves were nullable, that would have to be detected on reduction.
-  # With this grammar construction, we can safely assume they have contents on reuction.
+  # With this grammar construction, we can safely assume they have contents on reuction
   p.rule :QUERY,      [:SELECT, :FROM, [:WHERE, :e], [:GROUP_BY, :e], [:ORDER_BY, :e], [:LIMIT, :e]]
   p.rule :QUERY,      [:SELECT, :FROM, [:WHERE, :e], :GROUP_BY, :HAVING, [:ORDER_BY, :e], [:LIMIT, :e]]
   p.rule :SELECT,     [:select, [:distinct, :e], :FIELD_LIST]
