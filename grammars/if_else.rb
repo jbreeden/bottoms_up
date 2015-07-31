@@ -1,4 +1,4 @@
-require_relative '../parser'
+require_relative '../bottoms_up'
 
 $parser = BottomsUp.new(:S) do |p|
   p.rule :S, [[:I, :other]]

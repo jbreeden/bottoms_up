@@ -1,4 +1,4 @@
-require_relative '../parser'
+require_relative '../bottoms_up'
 
 $parser = BottomsUp.new(:ARITHMETIC) do |p|
   p.rule(:ARITHMETIC, [:EXPR_LIST])

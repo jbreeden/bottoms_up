@@ -1,12 +1,12 @@
-require_relative './parser/symcheck.rb'
-require_relative './parser/nonterminal'
-require_relative './parser/production'
-require_relative './parser/item'
-require_relative './parser/action'
-require_relative './parser/nfa'
-require_relative './parser/dfa'
-require_relative './parser/ffsets'
-require_relative './parser/printing'
+require_relative './bottoms_up/symcheck.rb'
+require_relative './bottoms_up/nonterminal'
+require_relative './bottoms_up/production'
+require_relative './bottoms_up/item'
+require_relative './bottoms_up/action'
+require_relative './bottoms_up/nfa'
+require_relative './bottoms_up/dfa'
+require_relative './bottoms_up/ffsets'
+require_relative './bottoms_up/printing'
 
 class BottomsUp
   attr_reader :start_symbol,

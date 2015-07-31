@@ -1,4 +1,4 @@
-require_relative '../parser'
+require_relative '../bottoms_up'
 
 $parser = BottomsUp.new(:GLOB) do |p|
   p.rule(:GLOB, [:SEGMENT_LIST, :'$'])

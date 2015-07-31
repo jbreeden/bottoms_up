@@ -1,4 +1,4 @@
-require_relative '../parser'
+require_relative '../bottoms_up'
 
 $parser = BottomsUp.new(:QUERY) do |p|
   expr_operators = [:'=', :'!=', :'<>', :'>', :'<', :'!>', :'!<', :'>=', :'<=', :like, :'~']
@@ -33,6 +33,5 @@ $parser = BottomsUp.new(:QUERY) do |p|
   p.rule :LITERAL,     [[:number, :string]]
   p.rule :AGGREGATE,   [:id, :'(', [:id, :'*'], :')'] # So far only single param aggregate functions supported
 
-  # TODO: If groupby present, select fields must = groupby fields + aggregate functions
   # TODO: Multi eq expressions in where/having
 end
