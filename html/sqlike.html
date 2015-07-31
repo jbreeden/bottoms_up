@@ -34,6 +34,8 @@ QUERY ->
   | SELECT FROM GROUP_BY HAVING ORDER_BY
   | SELECT FROM WHERE GROUP_BY HAVING
   | SELECT FROM GROUP_BY HAVING
+  | delete FROM WHERE
+  | delete FROM
 
 SELECT ->
   select distinct FIELD_LIST
@@ -58,6 +60,8 @@ WHERE ->
 
 LIMIT ->
   limit number
+  | fetch first number rows only
+  | fetch first number row only
 
 GROUP_BY ->
   group by ID_LIST
@@ -68,17 +72,43 @@ ID_LIST ->
 
 HAVING ->
   having EXPR
+  | having HAVING_EXPR
 
 ORDER_BY ->
   order by id asc
   | order by id desc
   | order by id
 
+HAVING_EXPR ->
+  AGGREGATE = LITERAL
+  | AGGREGATE != LITERAL
+  | AGGREGATE <> LITERAL
+  | AGGREGATE > LITERAL
+  | AGGREGATE < LITERAL
+  | AGGREGATE !> LITERAL
+  | AGGREGATE !< LITERAL
+  | AGGREGATE >= LITERAL
+  | AGGREGATE <= LITERAL
+  | AGGREGATE like LITERAL
+  | AGGREGATE ~ LITERAL
+  | LITERAL = AGGREGATE
+  | LITERAL != AGGREGATE
+  | LITERAL <> AGGREGATE
+  | LITERAL > AGGREGATE
+  | LITERAL < AGGREGATE
+  | LITERAL !> AGGREGATE
+  | LITERAL !< AGGREGATE
+  | LITERAL >= AGGREGATE
+  | LITERAL <= AGGREGATE
+  | LITERAL like AGGREGATE
+  | LITERAL ~ AGGREGATE
+
 EXPR ->
   EQ_EXPR
 
 EQ_EXPR ->
   id = LITERAL
+  | id != LITERAL
   | id <> LITERAL
   | id > LITERAL
   | id < LITERAL
@@ -87,7 +117,9 @@ EQ_EXPR ->
   | id >= LITERAL
   | id <= LITERAL
   | id like LITERAL
+  | id ~ LITERAL
   | LITERAL = id
+  | LITERAL != id
   | LITERAL <> id
   | LITERAL > id
   | LITERAL < id
@@ -96,6 +128,7 @@ EQ_EXPR ->
   | LITERAL >= id
   | LITERAL <= id
   | LITERAL like id
+  | LITERAL ~ id
 
 LITERAL ->
   number
@@ -112,18 +145,19 @@ AGGREGATE ->
     <th>Firsts</th>
   </thead>
   <tbody>
-<tr><td>QUERY'</td><td>select</td></tr>
-<tr><td>QUERY</td><td>select</td></tr>
+<tr><td>QUERY'</td><td>delete select</td></tr>
+<tr><td>QUERY</td><td>delete select</td></tr>
 <tr><td>SELECT</td><td>select</td></tr>
 <tr><td>FIELD_LIST</td><td>* id</td></tr>
 <tr><td>FIELD</td><td>* id</td></tr>
 <tr><td>FROM</td><td>from</td></tr>
 <tr><td>WHERE</td><td>where</td></tr>
-<tr><td>LIMIT</td><td>limit</td></tr>
+<tr><td>LIMIT</td><td>fetch limit</td></tr>
 <tr><td>GROUP_BY</td><td>group</td></tr>
 <tr><td>ID_LIST</td><td>id</td></tr>
 <tr><td>HAVING</td><td>having</td></tr>
 <tr><td>ORDER_BY</td><td>order</td></tr>
+<tr><td>HAVING_EXPR</td><td>id string number</td></tr>
 <tr><td>EXPR</td><td>id string number</td></tr>
 <tr><td>EQ_EXPR</td><td>id string number</td></tr>
 <tr><td>LITERAL</td><td>string number</td></tr>
@@ -138,311 +172,438 @@ AGGREGATE ->
   <tbody>
 <tr><td>QUERY'</td><td>$</td></tr>
 <tr><td>QUERY</td><td>$</td></tr>
-<tr><td>SELECT</td><td>having limit order group where from</td></tr>
-<tr><td>FIELD_LIST</td><td>, having limit order group where from</td></tr>
-<tr><td>FIELD</td><td>, having limit order group where from</td></tr>
-<tr><td>FROM</td><td>having $ limit order group where</td></tr>
-<tr><td>WHERE</td><td>having $ limit order group</td></tr>
+<tr><td>SELECT</td><td>having fetch limit order group where from</td></tr>
+<tr><td>FIELD_LIST</td><td>, having fetch limit order group where from</td></tr>
+<tr><td>FIELD</td><td>, having fetch limit order group where from</td></tr>
+<tr><td>FROM</td><td>having $ fetch limit order group where</td></tr>
+<tr><td>WHERE</td><td>having $ fetch limit order group</td></tr>
 <tr><td>LIMIT</td><td>$</td></tr>
-<tr><td>GROUP_BY</td><td>having $ limit order</td></tr>
-<tr><td>ID_LIST</td><td>, having $ limit order</td></tr>
-<tr><td>HAVING</td><td>$ limit order</td></tr>
-<tr><td>ORDER_BY</td><td>$ limit</td></tr>
-<tr><td>EXPR</td><td>having $ limit order group</td></tr>
-<tr><td>EQ_EXPR</td><td>having $ limit order group</td></tr>
-<tr><td>LITERAL</td><td>like <= >= !< !> < > <> = having $ limit order group</td></tr>
-<tr><td>AGGREGATE</td><td>as , having limit order group where from</td></tr>
+<tr><td>GROUP_BY</td><td>having $ fetch limit order</td></tr>
+<tr><td>ID_LIST</td><td>, having $ fetch limit order</td></tr>
+<tr><td>HAVING</td><td>$ fetch limit order</td></tr>
+<tr><td>ORDER_BY</td><td>$ fetch limit</td></tr>
+<tr><td>HAVING_EXPR</td><td>$ fetch limit order</td></tr>
+<tr><td>EXPR</td><td>having $ fetch limit order group</td></tr>
+<tr><td>EQ_EXPR</td><td>having $ fetch limit order group</td></tr>
+<tr><td>LITERAL</td><td>having group ~ like <= >= !< !> < > <> != = $ fetch limit order</td></tr>
+<tr><td>AGGREGATE</td><td>$ ~ like <= >= !< !> < > <> != = as , having fetch limit order group where from</td></tr>
   </tbody>
 </table>
 <h1>NFA Table</h1>
 <table>
   <thead><th>State</th><th>Item</th><th>Epsilon Transitions</th><th>Action</th></thead>
   <tbody>
-<tr><td>0</td><td>QUERY' = . QUERY</td><td>[2, 9, 15, 21, 26, 32, 37, 42, 46, 52, 57, 62, 66, 71, 75, 79, 82, 90, 97, 104, 110, 117, 123, 129]</td><td>goto(1)</td></tr>
+<tr><td>0</td><td>QUERY' = . QUERY</td><td>[2, 9, 15, 21, 26, 32, 37, 42, 46, 52, 57, 62, 66, 71, 75, 79, 82, 90, 97, 104, 110, 117, 123, 129, 134, 138]</td><td>goto(1)</td></tr>
 <tr><td>1</td><td>QUERY' = QUERY .</td><td>[]</td><td>reduce(QUERY' -> QUERY)</td></tr>
-<tr><td>2</td><td>QUERY = . SELECT FROM WHERE GROUP_BY ORDER_BY LIMIT</td><td>[134, 138]</td><td>goto(3)</td></tr>
-<tr><td>3</td><td>QUERY = SELECT . FROM WHERE GROUP_BY ORDER_BY LIMIT</td><td>[161]</td><td>goto(4)</td></tr>
-<tr><td>4</td><td>QUERY = SELECT FROM . WHERE GROUP_BY ORDER_BY LIMIT</td><td>[164]</td><td>goto(5)</td></tr>
-<tr><td>5</td><td>QUERY = SELECT FROM WHERE . GROUP_BY ORDER_BY LIMIT</td><td>[170]</td><td>goto(6)</td></tr>
-<tr><td>6</td><td>QUERY = SELECT FROM WHERE GROUP_BY . ORDER_BY LIMIT</td><td>[183, 188, 193]</td><td>goto(7)</td></tr>
-<tr><td>7</td><td>QUERY = SELECT FROM WHERE GROUP_BY ORDER_BY . LIMIT</td><td>[167]</td><td>goto(8)</td></tr>
+<tr><td>2</td><td>QUERY = . SELECT FROM WHERE GROUP_BY ORDER_BY LIMIT</td><td>[141, 145]</td><td>goto(3)</td></tr>
+<tr><td>3</td><td>QUERY = SELECT . FROM WHERE GROUP_BY ORDER_BY LIMIT</td><td>[168]</td><td>goto(4)</td></tr>
+<tr><td>4</td><td>QUERY = SELECT FROM . WHERE GROUP_BY ORDER_BY LIMIT</td><td>[171]</td><td>goto(5)</td></tr>
+<tr><td>5</td><td>QUERY = SELECT FROM WHERE . GROUP_BY ORDER_BY LIMIT</td><td>[189]</td><td>goto(6)</td></tr>
+<tr><td>6</td><td>QUERY = SELECT FROM WHERE GROUP_BY . ORDER_BY LIMIT</td><td>[205, 210, 215]</td><td>goto(7)</td></tr>
+<tr><td>7</td><td>QUERY = SELECT FROM WHERE GROUP_BY ORDER_BY . LIMIT</td><td>[174, 177, 183]</td><td>goto(8)</td></tr>
 <tr><td>8</td><td>QUERY = SELECT FROM WHERE GROUP_BY ORDER_BY LIMIT .</td><td>[]</td><td>reduce(QUERY -> SELECT FROM WHERE GROUP_BY ORDER_BY LIMIT)</td></tr>
-<tr><td>9</td><td>QUERY = . SELECT FROM GROUP_BY ORDER_BY LIMIT</td><td>[134, 138]</td><td>goto(10)</td></tr>
-<tr><td>10</td><td>QUERY = SELECT . FROM GROUP_BY ORDER_BY LIMIT</td><td>[161]</td><td>goto(11)</td></tr>
-<tr><td>11</td><td>QUERY = SELECT FROM . GROUP_BY ORDER_BY LIMIT</td><td>[170]</td><td>goto(12)</td></tr>
-<tr><td>12</td><td>QUERY = SELECT FROM GROUP_BY . ORDER_BY LIMIT</td><td>[183, 188, 193]</td><td>goto(13)</td></tr>
-<tr><td>13</td><td>QUERY = SELECT FROM GROUP_BY ORDER_BY . LIMIT</td><td>[167]</td><td>goto(14)</td></tr>
+<tr><td>9</td><td>QUERY = . SELECT FROM GROUP_BY ORDER_BY LIMIT</td><td>[141, 145]</td><td>goto(10)</td></tr>
+<tr><td>10</td><td>QUERY = SELECT . FROM GROUP_BY ORDER_BY LIMIT</td><td>[168]</td><td>goto(11)</td></tr>
+<tr><td>11</td><td>QUERY = SELECT FROM . GROUP_BY ORDER_BY LIMIT</td><td>[189]</td><td>goto(12)</td></tr>
+<tr><td>12</td><td>QUERY = SELECT FROM GROUP_BY . ORDER_BY LIMIT</td><td>[205, 210, 215]</td><td>goto(13)</td></tr>
+<tr><td>13</td><td>QUERY = SELECT FROM GROUP_BY ORDER_BY . LIMIT</td><td>[174, 177, 183]</td><td>goto(14)</td></tr>
 <tr><td>14</td><td>QUERY = SELECT FROM GROUP_BY ORDER_BY LIMIT .</td><td>[]</td><td>reduce(QUERY -> SELECT FROM GROUP_BY ORDER_BY LIMIT)</td></tr>
-<tr><td>15</td><td>QUERY = . SELECT FROM WHERE ORDER_BY LIMIT</td><td>[134, 138]</td><td>goto(16)</td></tr>
-<tr><td>16</td><td>QUERY = SELECT . FROM WHERE ORDER_BY LIMIT</td><td>[161]</td><td>goto(17)</td></tr>
-<tr><td>17</td><td>QUERY = SELECT FROM . WHERE ORDER_BY LIMIT</td><td>[164]</td><td>goto(18)</td></tr>
-<tr><td>18</td><td>QUERY = SELECT FROM WHERE . ORDER_BY LIMIT</td><td>[183, 188, 193]</td><td>goto(19)</td></tr>
-<tr><td>19</td><td>QUERY = SELECT FROM WHERE ORDER_BY . LIMIT</td><td>[167]</td><td>goto(20)</td></tr>
+<tr><td>15</td><td>QUERY = . SELECT FROM WHERE ORDER_BY LIMIT</td><td>[141, 145]</td><td>goto(16)</td></tr>
+<tr><td>16</td><td>QUERY = SELECT . FROM WHERE ORDER_BY LIMIT</td><td>[168]</td><td>goto(17)</td></tr>
+<tr><td>17</td><td>QUERY = SELECT FROM . WHERE ORDER_BY LIMIT</td><td>[171]</td><td>goto(18)</td></tr>
+<tr><td>18</td><td>QUERY = SELECT FROM WHERE . ORDER_BY LIMIT</td><td>[205, 210, 215]</td><td>goto(19)</td></tr>
+<tr><td>19</td><td>QUERY = SELECT FROM WHERE ORDER_BY . LIMIT</td><td>[174, 177, 183]</td><td>goto(20)</td></tr>
 <tr><td>20</td><td>QUERY = SELECT FROM WHERE ORDER_BY LIMIT .</td><td>[]</td><td>reduce(QUERY -> SELECT FROM WHERE ORDER_BY LIMIT)</td></tr>
-<tr><td>21</td><td>QUERY = . SELECT FROM ORDER_BY LIMIT</td><td>[134, 138]</td><td>goto(22)</td></tr>
-<tr><td>22</td><td>QUERY = SELECT . FROM ORDER_BY LIMIT</td><td>[161]</td><td>goto(23)</td></tr>
-<tr><td>23</td><td>QUERY = SELECT FROM . ORDER_BY LIMIT</td><td>[183, 188, 193]</td><td>goto(24)</td></tr>
-<tr><td>24</td><td>QUERY = SELECT FROM ORDER_BY . LIMIT</td><td>[167]</td><td>goto(25)</td></tr>
+<tr><td>21</td><td>QUERY = . SELECT FROM ORDER_BY LIMIT</td><td>[141, 145]</td><td>goto(22)</td></tr>
+<tr><td>22</td><td>QUERY = SELECT . FROM ORDER_BY LIMIT</td><td>[168]</td><td>goto(23)</td></tr>
+<tr><td>23</td><td>QUERY = SELECT FROM . ORDER_BY LIMIT</td><td>[205, 210, 215]</td><td>goto(24)</td></tr>
+<tr><td>24</td><td>QUERY = SELECT FROM ORDER_BY . LIMIT</td><td>[174, 177, 183]</td><td>goto(25)</td></tr>
 <tr><td>25</td><td>QUERY = SELECT FROM ORDER_BY LIMIT .</td><td>[]</td><td>reduce(QUERY -> SELECT FROM ORDER_BY LIMIT)</td></tr>
-<tr><td>26</td><td>QUERY = . SELECT FROM WHERE GROUP_BY LIMIT</td><td>[134, 138]</td><td>goto(27)</td></tr>
-<tr><td>27</td><td>QUERY = SELECT . FROM WHERE GROUP_BY LIMIT</td><td>[161]</td><td>goto(28)</td></tr>
-<tr><td>28</td><td>QUERY = SELECT FROM . WHERE GROUP_BY LIMIT</td><td>[164]</td><td>goto(29)</td></tr>
-<tr><td>29</td><td>QUERY = SELECT FROM WHERE . GROUP_BY LIMIT</td><td>[170]</td><td>goto(30)</td></tr>
-<tr><td>30</td><td>QUERY = SELECT FROM WHERE GROUP_BY . LIMIT</td><td>[167]</td><td>goto(31)</td></tr>
+<tr><td>26</td><td>QUERY = . SELECT FROM WHERE GROUP_BY LIMIT</td><td>[141, 145]</td><td>goto(27)</td></tr>
+<tr><td>27</td><td>QUERY = SELECT . FROM WHERE GROUP_BY LIMIT</td><td>[168]</td><td>goto(28)</td></tr>
+<tr><td>28</td><td>QUERY = SELECT FROM . WHERE GROUP_BY LIMIT</td><td>[171]</td><td>goto(29)</td></tr>
+<tr><td>29</td><td>QUERY = SELECT FROM WHERE . GROUP_BY LIMIT</td><td>[189]</td><td>goto(30)</td></tr>
+<tr><td>30</td><td>QUERY = SELECT FROM WHERE GROUP_BY . LIMIT</td><td>[174, 177, 183]</td><td>goto(31)</td></tr>
 <tr><td>31</td><td>QUERY = SELECT FROM WHERE GROUP_BY LIMIT .</td><td>[]</td><td>reduce(QUERY -> SELECT FROM WHERE GROUP_BY LIMIT)</td></tr>
-<tr><td>32</td><td>QUERY = . SELECT FROM GROUP_BY LIMIT</td><td>[134, 138]</td><td>goto(33)</td></tr>
-<tr><td>33</td><td>QUERY = SELECT . FROM GROUP_BY LIMIT</td><td>[161]</td><td>goto(34)</td></tr>
-<tr><td>34</td><td>QUERY = SELECT FROM . GROUP_BY LIMIT</td><td>[170]</td><td>goto(35)</td></tr>
-<tr><td>35</td><td>QUERY = SELECT FROM GROUP_BY . LIMIT</td><td>[167]</td><td>goto(36)</td></tr>
+<tr><td>32</td><td>QUERY = . SELECT FROM GROUP_BY LIMIT</td><td>[141, 145]</td><td>goto(33)</td></tr>
+<tr><td>33</td><td>QUERY = SELECT . FROM GROUP_BY LIMIT</td><td>[168]</td><td>goto(34)</td></tr>
+<tr><td>34</td><td>QUERY = SELECT FROM . GROUP_BY LIMIT</td><td>[189]</td><td>goto(35)</td></tr>
+<tr><td>35</td><td>QUERY = SELECT FROM GROUP_BY . LIMIT</td><td>[174, 177, 183]</td><td>goto(36)</td></tr>
 <tr><td>36</td><td>QUERY = SELECT FROM GROUP_BY LIMIT .</td><td>[]</td><td>reduce(QUERY -> SELECT FROM GROUP_BY LIMIT)</td></tr>
-<tr><td>37</td><td>QUERY = . SELECT FROM WHERE LIMIT</td><td>[134, 138]</td><td>goto(38)</td></tr>
-<tr><td>38</td><td>QUERY = SELECT . FROM WHERE LIMIT</td><td>[161]</td><td>goto(39)</td></tr>
-<tr><td>39</td><td>QUERY = SELECT FROM . WHERE LIMIT</td><td>[164]</td><td>goto(40)</td></tr>
-<tr><td>40</td><td>QUERY = SELECT FROM WHERE . LIMIT</td><td>[167]</td><td>goto(41)</td></tr>
+<tr><td>37</td><td>QUERY = . SELECT FROM WHERE LIMIT</td><td>[141, 145]</td><td>goto(38)</td></tr>
+<tr><td>38</td><td>QUERY = SELECT . FROM WHERE LIMIT</td><td>[168]</td><td>goto(39)</td></tr>
+<tr><td>39</td><td>QUERY = SELECT FROM . WHERE LIMIT</td><td>[171]</td><td>goto(40)</td></tr>
+<tr><td>40</td><td>QUERY = SELECT FROM WHERE . LIMIT</td><td>[174, 177, 183]</td><td>goto(41)</td></tr>
 <tr><td>41</td><td>QUERY = SELECT FROM WHERE LIMIT .</td><td>[]</td><td>reduce(QUERY -> SELECT FROM WHERE LIMIT)</td></tr>
-<tr><td>42</td><td>QUERY = . SELECT FROM LIMIT</td><td>[134, 138]</td><td>goto(43)</td></tr>
-<tr><td>43</td><td>QUERY = SELECT . FROM LIMIT</td><td>[161]</td><td>goto(44)</td></tr>
-<tr><td>44</td><td>QUERY = SELECT FROM . LIMIT</td><td>[167]</td><td>goto(45)</td></tr>
+<tr><td>42</td><td>QUERY = . SELECT FROM LIMIT</td><td>[141, 145]</td><td>goto(43)</td></tr>
+<tr><td>43</td><td>QUERY = SELECT . FROM LIMIT</td><td>[168]</td><td>goto(44)</td></tr>
+<tr><td>44</td><td>QUERY = SELECT FROM . LIMIT</td><td>[174, 177, 183]</td><td>goto(45)</td></tr>
 <tr><td>45</td><td>QUERY = SELECT FROM LIMIT .</td><td>[]</td><td>reduce(QUERY -> SELECT FROM LIMIT)</td></tr>
-<tr><td>46</td><td>QUERY = . SELECT FROM WHERE GROUP_BY ORDER_BY</td><td>[134, 138]</td><td>goto(47)</td></tr>
-<tr><td>47</td><td>QUERY = SELECT . FROM WHERE GROUP_BY ORDER_BY</td><td>[161]</td><td>goto(48)</td></tr>
-<tr><td>48</td><td>QUERY = SELECT FROM . WHERE GROUP_BY ORDER_BY</td><td>[164]</td><td>goto(49)</td></tr>
-<tr><td>49</td><td>QUERY = SELECT FROM WHERE . GROUP_BY ORDER_BY</td><td>[170]</td><td>goto(50)</td></tr>
-<tr><td>50</td><td>QUERY = SELECT FROM WHERE GROUP_BY . ORDER_BY</td><td>[183, 188, 193]</td><td>goto(51)</td></tr>
+<tr><td>46</td><td>QUERY = . SELECT FROM WHERE GROUP_BY ORDER_BY</td><td>[141, 145]</td><td>goto(47)</td></tr>
+<tr><td>47</td><td>QUERY = SELECT . FROM WHERE GROUP_BY ORDER_BY</td><td>[168]</td><td>goto(48)</td></tr>
+<tr><td>48</td><td>QUERY = SELECT FROM . WHERE GROUP_BY ORDER_BY</td><td>[171]</td><td>goto(49)</td></tr>
+<tr><td>49</td><td>QUERY = SELECT FROM WHERE . GROUP_BY ORDER_BY</td><td>[189]</td><td>goto(50)</td></tr>
+<tr><td>50</td><td>QUERY = SELECT FROM WHERE GROUP_BY . ORDER_BY</td><td>[205, 210, 215]</td><td>goto(51)</td></tr>
 <tr><td>51</td><td>QUERY = SELECT FROM WHERE GROUP_BY ORDER_BY .</td><td>[]</td><td>reduce(QUERY -> SELECT FROM WHERE GROUP_BY ORDER_BY)</td></tr>
-<tr><td>52</td><td>QUERY = . SELECT FROM GROUP_BY ORDER_BY</td><td>[134, 138]</td><td>goto(53)</td></tr>
-<tr><td>53</td><td>QUERY = SELECT . FROM GROUP_BY ORDER_BY</td><td>[161]</td><td>goto(54)</td></tr>
-<tr><td>54</td><td>QUERY = SELECT FROM . GROUP_BY ORDER_BY</td><td>[170]</td><td>goto(55)</td></tr>
-<tr><td>55</td><td>QUERY = SELECT FROM GROUP_BY . ORDER_BY</td><td>[183, 188, 193]</td><td>goto(56)</td></tr>
+<tr><td>52</td><td>QUERY = . SELECT FROM GROUP_BY ORDER_BY</td><td>[141, 145]</td><td>goto(53)</td></tr>
+<tr><td>53</td><td>QUERY = SELECT . FROM GROUP_BY ORDER_BY</td><td>[168]</td><td>goto(54)</td></tr>
+<tr><td>54</td><td>QUERY = SELECT FROM . GROUP_BY ORDER_BY</td><td>[189]</td><td>goto(55)</td></tr>
+<tr><td>55</td><td>QUERY = SELECT FROM GROUP_BY . ORDER_BY</td><td>[205, 210, 215]</td><td>goto(56)</td></tr>
 <tr><td>56</td><td>QUERY = SELECT FROM GROUP_BY ORDER_BY .</td><td>[]</td><td>reduce(QUERY -> SELECT FROM GROUP_BY ORDER_BY)</td></tr>
-<tr><td>57</td><td>QUERY = . SELECT FROM WHERE ORDER_BY</td><td>[134, 138]</td><td>goto(58)</td></tr>
-<tr><td>58</td><td>QUERY = SELECT . FROM WHERE ORDER_BY</td><td>[161]</td><td>goto(59)</td></tr>
-<tr><td>59</td><td>QUERY = SELECT FROM . WHERE ORDER_BY</td><td>[164]</td><td>goto(60)</td></tr>
-<tr><td>60</td><td>QUERY = SELECT FROM WHERE . ORDER_BY</td><td>[183, 188, 193]</td><td>goto(61)</td></tr>
+<tr><td>57</td><td>QUERY = . SELECT FROM WHERE ORDER_BY</td><td>[141, 145]</td><td>goto(58)</td></tr>
+<tr><td>58</td><td>QUERY = SELECT . FROM WHERE ORDER_BY</td><td>[168]</td><td>goto(59)</td></tr>
+<tr><td>59</td><td>QUERY = SELECT FROM . WHERE ORDER_BY</td><td>[171]</td><td>goto(60)</td></tr>
+<tr><td>60</td><td>QUERY = SELECT FROM WHERE . ORDER_BY</td><td>[205, 210, 215]</td><td>goto(61)</td></tr>
 <tr><td>61</td><td>QUERY = SELECT FROM WHERE ORDER_BY .</td><td>[]</td><td>reduce(QUERY -> SELECT FROM WHERE ORDER_BY)</td></tr>
-<tr><td>62</td><td>QUERY = . SELECT FROM ORDER_BY</td><td>[134, 138]</td><td>goto(63)</td></tr>
-<tr><td>63</td><td>QUERY = SELECT . FROM ORDER_BY</td><td>[161]</td><td>goto(64)</td></tr>
-<tr><td>64</td><td>QUERY = SELECT FROM . ORDER_BY</td><td>[183, 188, 193]</td><td>goto(65)</td></tr>
+<tr><td>62</td><td>QUERY = . SELECT FROM ORDER_BY</td><td>[141, 145]</td><td>goto(63)</td></tr>
+<tr><td>63</td><td>QUERY = SELECT . FROM ORDER_BY</td><td>[168]</td><td>goto(64)</td></tr>
+<tr><td>64</td><td>QUERY = SELECT FROM . ORDER_BY</td><td>[205, 210, 215]</td><td>goto(65)</td></tr>
 <tr><td>65</td><td>QUERY = SELECT FROM ORDER_BY .</td><td>[]</td><td>reduce(QUERY -> SELECT FROM ORDER_BY)</td></tr>
-<tr><td>66</td><td>QUERY = . SELECT FROM WHERE GROUP_BY</td><td>[134, 138]</td><td>goto(67)</td></tr>
-<tr><td>67</td><td>QUERY = SELECT . FROM WHERE GROUP_BY</td><td>[161]</td><td>goto(68)</td></tr>
-<tr><td>68</td><td>QUERY = SELECT FROM . WHERE GROUP_BY</td><td>[164]</td><td>goto(69)</td></tr>
-<tr><td>69</td><td>QUERY = SELECT FROM WHERE . GROUP_BY</td><td>[170]</td><td>goto(70)</td></tr>
+<tr><td>66</td><td>QUERY = . SELECT FROM WHERE GROUP_BY</td><td>[141, 145]</td><td>goto(67)</td></tr>
+<tr><td>67</td><td>QUERY = SELECT . FROM WHERE GROUP_BY</td><td>[168]</td><td>goto(68)</td></tr>
+<tr><td>68</td><td>QUERY = SELECT FROM . WHERE GROUP_BY</td><td>[171]</td><td>goto(69)</td></tr>
+<tr><td>69</td><td>QUERY = SELECT FROM WHERE . GROUP_BY</td><td>[189]</td><td>goto(70)</td></tr>
 <tr><td>70</td><td>QUERY = SELECT FROM WHERE GROUP_BY .</td><td>[]</td><td>reduce(QUERY -> SELECT FROM WHERE GROUP_BY)</td></tr>
-<tr><td>71</td><td>QUERY = . SELECT FROM GROUP_BY</td><td>[134, 138]</td><td>goto(72)</td></tr>
-<tr><td>72</td><td>QUERY = SELECT . FROM GROUP_BY</td><td>[161]</td><td>goto(73)</td></tr>
-<tr><td>73</td><td>QUERY = SELECT FROM . GROUP_BY</td><td>[170]</td><td>goto(74)</td></tr>
+<tr><td>71</td><td>QUERY = . SELECT FROM GROUP_BY</td><td>[141, 145]</td><td>goto(72)</td></tr>
+<tr><td>72</td><td>QUERY = SELECT . FROM GROUP_BY</td><td>[168]</td><td>goto(73)</td></tr>
+<tr><td>73</td><td>QUERY = SELECT FROM . GROUP_BY</td><td>[189]</td><td>goto(74)</td></tr>
 <tr><td>74</td><td>QUERY = SELECT FROM GROUP_BY .</td><td>[]</td><td>reduce(QUERY -> SELECT FROM GROUP_BY)</td></tr>
-<tr><td>75</td><td>QUERY = . SELECT FROM WHERE</td><td>[134, 138]</td><td>goto(76)</td></tr>
-<tr><td>76</td><td>QUERY = SELECT . FROM WHERE</td><td>[161]</td><td>goto(77)</td></tr>
-<tr><td>77</td><td>QUERY = SELECT FROM . WHERE</td><td>[164]</td><td>goto(78)</td></tr>
+<tr><td>75</td><td>QUERY = . SELECT FROM WHERE</td><td>[141, 145]</td><td>goto(76)</td></tr>
+<tr><td>76</td><td>QUERY = SELECT . FROM WHERE</td><td>[168]</td><td>goto(77)</td></tr>
+<tr><td>77</td><td>QUERY = SELECT FROM . WHERE</td><td>[171]</td><td>goto(78)</td></tr>
 <tr><td>78</td><td>QUERY = SELECT FROM WHERE .</td><td>[]</td><td>reduce(QUERY -> SELECT FROM WHERE)</td></tr>
-<tr><td>79</td><td>QUERY = . SELECT FROM</td><td>[134, 138]</td><td>goto(80)</td></tr>
-<tr><td>80</td><td>QUERY = SELECT . FROM</td><td>[161]</td><td>goto(81)</td></tr>
+<tr><td>79</td><td>QUERY = . SELECT FROM</td><td>[141, 145]</td><td>goto(80)</td></tr>
+<tr><td>80</td><td>QUERY = SELECT . FROM</td><td>[168]</td><td>goto(81)</td></tr>
 <tr><td>81</td><td>QUERY = SELECT FROM .</td><td>[]</td><td>reduce(QUERY -> SELECT FROM)</td></tr>
-<tr><td>82</td><td>QUERY = . SELECT FROM WHERE GROUP_BY HAVING ORDER_BY LIMIT</td><td>[134, 138]</td><td>goto(83)</td></tr>
-<tr><td>83</td><td>QUERY = SELECT . FROM WHERE GROUP_BY HAVING ORDER_BY LIMIT</td><td>[161]</td><td>goto(84)</td></tr>
-<tr><td>84</td><td>QUERY = SELECT FROM . WHERE GROUP_BY HAVING ORDER_BY LIMIT</td><td>[164]</td><td>goto(85)</td></tr>
-<tr><td>85</td><td>QUERY = SELECT FROM WHERE . GROUP_BY HAVING ORDER_BY LIMIT</td><td>[170]</td><td>goto(86)</td></tr>
-<tr><td>86</td><td>QUERY = SELECT FROM WHERE GROUP_BY . HAVING ORDER_BY LIMIT</td><td>[180]</td><td>goto(87)</td></tr>
-<tr><td>87</td><td>QUERY = SELECT FROM WHERE GROUP_BY HAVING . ORDER_BY LIMIT</td><td>[183, 188, 193]</td><td>goto(88)</td></tr>
-<tr><td>88</td><td>QUERY = SELECT FROM WHERE GROUP_BY HAVING ORDER_BY . LIMIT</td><td>[167]</td><td>goto(89)</td></tr>
+<tr><td>82</td><td>QUERY = . SELECT FROM WHERE GROUP_BY HAVING ORDER_BY LIMIT</td><td>[141, 145]</td><td>goto(83)</td></tr>
+<tr><td>83</td><td>QUERY = SELECT . FROM WHERE GROUP_BY HAVING ORDER_BY LIMIT</td><td>[168]</td><td>goto(84)</td></tr>
+<tr><td>84</td><td>QUERY = SELECT FROM . WHERE GROUP_BY HAVING ORDER_BY LIMIT</td><td>[171]</td><td>goto(85)</td></tr>
+<tr><td>85</td><td>QUERY = SELECT FROM WHERE . GROUP_BY HAVING ORDER_BY LIMIT</td><td>[189]</td><td>goto(86)</td></tr>
+<tr><td>86</td><td>QUERY = SELECT FROM WHERE GROUP_BY . HAVING ORDER_BY LIMIT</td><td>[199, 202]</td><td>goto(87)</td></tr>
+<tr><td>87</td><td>QUERY = SELECT FROM WHERE GROUP_BY HAVING . ORDER_BY LIMIT</td><td>[205, 210, 215]</td><td>goto(88)</td></tr>
+<tr><td>88</td><td>QUERY = SELECT FROM WHERE GROUP_BY HAVING ORDER_BY . LIMIT</td><td>[174, 177, 183]</td><td>goto(89)</td></tr>
 <tr><td>89</td><td>QUERY = SELECT FROM WHERE GROUP_BY HAVING ORDER_BY LIMIT .</td><td>[]</td><td>reduce(QUERY -> SELECT FROM WHERE GROUP_BY HAVING ORDER_BY LIMIT)</td></tr>
-<tr><td>90</td><td>QUERY = . SELECT FROM GROUP_BY HAVING ORDER_BY LIMIT</td><td>[134, 138]</td><td>goto(91)</td></tr>
-<tr><td>91</td><td>QUERY = SELECT . FROM GROUP_BY HAVING ORDER_BY LIMIT</td><td>[161]</td><td>goto(92)</td></tr>
-<tr><td>92</td><td>QUERY = SELECT FROM . GROUP_BY HAVING ORDER_BY LIMIT</td><td>[170]</td><td>goto(93)</td></tr>
-<tr><td>93</td><td>QUERY = SELECT FROM GROUP_BY . HAVING ORDER_BY LIMIT</td><td>[180]</td><td>goto(94)</td></tr>
-<tr><td>94</td><td>QUERY = SELECT FROM GROUP_BY HAVING . ORDER_BY LIMIT</td><td>[183, 188, 193]</td><td>goto(95)</td></tr>
-<tr><td>95</td><td>QUERY = SELECT FROM GROUP_BY HAVING ORDER_BY . LIMIT</td><td>[167]</td><td>goto(96)</td></tr>
+<tr><td>90</td><td>QUERY = . SELECT FROM GROUP_BY HAVING ORDER_BY LIMIT</td><td>[141, 145]</td><td>goto(91)</td></tr>
+<tr><td>91</td><td>QUERY = SELECT . FROM GROUP_BY HAVING ORDER_BY LIMIT</td><td>[168]</td><td>goto(92)</td></tr>
+<tr><td>92</td><td>QUERY = SELECT FROM . GROUP_BY HAVING ORDER_BY LIMIT</td><td>[189]</td><td>goto(93)</td></tr>
+<tr><td>93</td><td>QUERY = SELECT FROM GROUP_BY . HAVING ORDER_BY LIMIT</td><td>[199, 202]</td><td>goto(94)</td></tr>
+<tr><td>94</td><td>QUERY = SELECT FROM GROUP_BY HAVING . ORDER_BY LIMIT</td><td>[205, 210, 215]</td><td>goto(95)</td></tr>
+<tr><td>95</td><td>QUERY = SELECT FROM GROUP_BY HAVING ORDER_BY . LIMIT</td><td>[174, 177, 183]</td><td>goto(96)</td></tr>
 <tr><td>96</td><td>QUERY = SELECT FROM GROUP_BY HAVING ORDER_BY LIMIT .</td><td>[]</td><td>reduce(QUERY -> SELECT FROM GROUP_BY HAVING ORDER_BY LIMIT)</td></tr>
-<tr><td>97</td><td>QUERY = . SELECT FROM WHERE GROUP_BY HAVING LIMIT</td><td>[134, 138]</td><td>goto(98)</td></tr>
-<tr><td>98</td><td>QUERY = SELECT . FROM WHERE GROUP_BY HAVING LIMIT</td><td>[161]</td><td>goto(99)</td></tr>
-<tr><td>99</td><td>QUERY = SELECT FROM . WHERE GROUP_BY HAVING LIMIT</td><td>[164]</td><td>goto(100)</td></tr>
-<tr><td>100</td><td>QUERY = SELECT FROM WHERE . GROUP_BY HAVING LIMIT</td><td>[170]</td><td>goto(101)</td></tr>
-<tr><td>101</td><td>QUERY = SELECT FROM WHERE GROUP_BY . HAVING LIMIT</td><td>[180]</td><td>goto(102)</td></tr>
-<tr><td>102</td><td>QUERY = SELECT FROM WHERE GROUP_BY HAVING . LIMIT</td><td>[167]</td><td>goto(103)</td></tr>
+<tr><td>97</td><td>QUERY = . SELECT FROM WHERE GROUP_BY HAVING LIMIT</td><td>[141, 145]</td><td>goto(98)</td></tr>
+<tr><td>98</td><td>QUERY = SELECT . FROM WHERE GROUP_BY HAVING LIMIT</td><td>[168]</td><td>goto(99)</td></tr>
+<tr><td>99</td><td>QUERY = SELECT FROM . WHERE GROUP_BY HAVING LIMIT</td><td>[171]</td><td>goto(100)</td></tr>
+<tr><td>100</td><td>QUERY = SELECT FROM WHERE . GROUP_BY HAVING LIMIT</td><td>[189]</td><td>goto(101)</td></tr>
+<tr><td>101</td><td>QUERY = SELECT FROM WHERE GROUP_BY . HAVING LIMIT</td><td>[199, 202]</td><td>goto(102)</td></tr>
+<tr><td>102</td><td>QUERY = SELECT FROM WHERE GROUP_BY HAVING . LIMIT</td><td>[174, 177, 183]</td><td>goto(103)</td></tr>
 <tr><td>103</td><td>QUERY = SELECT FROM WHERE GROUP_BY HAVING LIMIT .</td><td>[]</td><td>reduce(QUERY -> SELECT FROM WHERE GROUP_BY HAVING LIMIT)</td></tr>
-<tr><td>104</td><td>QUERY = . SELECT FROM GROUP_BY HAVING LIMIT</td><td>[134, 138]</td><td>goto(105)</td></tr>
-<tr><td>105</td><td>QUERY = SELECT . FROM GROUP_BY HAVING LIMIT</td><td>[161]</td><td>goto(106)</td></tr>
-<tr><td>106</td><td>QUERY = SELECT FROM . GROUP_BY HAVING LIMIT</td><td>[170]</td><td>goto(107)</td></tr>
-<tr><td>107</td><td>QUERY = SELECT FROM GROUP_BY . HAVING LIMIT</td><td>[180]</td><td>goto(108)</td></tr>
-<tr><td>108</td><td>QUERY = SELECT FROM GROUP_BY HAVING . LIMIT</td><td>[167]</td><td>goto(109)</td></tr>
+<tr><td>104</td><td>QUERY = . SELECT FROM GROUP_BY HAVING LIMIT</td><td>[141, 145]</td><td>goto(105)</td></tr>
+<tr><td>105</td><td>QUERY = SELECT . FROM GROUP_BY HAVING LIMIT</td><td>[168]</td><td>goto(106)</td></tr>
+<tr><td>106</td><td>QUERY = SELECT FROM . GROUP_BY HAVING LIMIT</td><td>[189]</td><td>goto(107)</td></tr>
+<tr><td>107</td><td>QUERY = SELECT FROM GROUP_BY . HAVING LIMIT</td><td>[199, 202]</td><td>goto(108)</td></tr>
+<tr><td>108</td><td>QUERY = SELECT FROM GROUP_BY HAVING . LIMIT</td><td>[174, 177, 183]</td><td>goto(109)</td></tr>
 <tr><td>109</td><td>QUERY = SELECT FROM GROUP_BY HAVING LIMIT .</td><td>[]</td><td>reduce(QUERY -> SELECT FROM GROUP_BY HAVING LIMIT)</td></tr>
-<tr><td>110</td><td>QUERY = . SELECT FROM WHERE GROUP_BY HAVING ORDER_BY</td><td>[134, 138]</td><td>goto(111)</td></tr>
-<tr><td>111</td><td>QUERY = SELECT . FROM WHERE GROUP_BY HAVING ORDER_BY</td><td>[161]</td><td>goto(112)</td></tr>
-<tr><td>112</td><td>QUERY = SELECT FROM . WHERE GROUP_BY HAVING ORDER_BY</td><td>[164]</td><td>goto(113)</td></tr>
-<tr><td>113</td><td>QUERY = SELECT FROM WHERE . GROUP_BY HAVING ORDER_BY</td><td>[170]</td><td>goto(114)</td></tr>
-<tr><td>114</td><td>QUERY = SELECT FROM WHERE GROUP_BY . HAVING ORDER_BY</td><td>[180]</td><td>goto(115)</td></tr>
-<tr><td>115</td><td>QUERY = SELECT FROM WHERE GROUP_BY HAVING . ORDER_BY</td><td>[183, 188, 193]</td><td>goto(116)</td></tr>
+<tr><td>110</td><td>QUERY = . SELECT FROM WHERE GROUP_BY HAVING ORDER_BY</td><td>[141, 145]</td><td>goto(111)</td></tr>
+<tr><td>111</td><td>QUERY = SELECT . FROM WHERE GROUP_BY HAVING ORDER_BY</td><td>[168]</td><td>goto(112)</td></tr>
+<tr><td>112</td><td>QUERY = SELECT FROM . WHERE GROUP_BY HAVING ORDER_BY</td><td>[171]</td><td>goto(113)</td></tr>
+<tr><td>113</td><td>QUERY = SELECT FROM WHERE . GROUP_BY HAVING ORDER_BY</td><td>[189]</td><td>goto(114)</td></tr>
+<tr><td>114</td><td>QUERY = SELECT FROM WHERE GROUP_BY . HAVING ORDER_BY</td><td>[199, 202]</td><td>goto(115)</td></tr>
+<tr><td>115</td><td>QUERY = SELECT FROM WHERE GROUP_BY HAVING . ORDER_BY</td><td>[205, 210, 215]</td><td>goto(116)</td></tr>
 <tr><td>116</td><td>QUERY = SELECT FROM WHERE GROUP_BY HAVING ORDER_BY .</td><td>[]</td><td>reduce(QUERY -> SELECT FROM WHERE GROUP_BY HAVING ORDER_BY)</td></tr>
-<tr><td>117</td><td>QUERY = . SELECT FROM GROUP_BY HAVING ORDER_BY</td><td>[134, 138]</td><td>goto(118)</td></tr>
-<tr><td>118</td><td>QUERY = SELECT . FROM GROUP_BY HAVING ORDER_BY</td><td>[161]</td><td>goto(119)</td></tr>
-<tr><td>119</td><td>QUERY = SELECT FROM . GROUP_BY HAVING ORDER_BY</td><td>[170]</td><td>goto(120)</td></tr>
-<tr><td>120</td><td>QUERY = SELECT FROM GROUP_BY . HAVING ORDER_BY</td><td>[180]</td><td>goto(121)</td></tr>
-<tr><td>121</td><td>QUERY = SELECT FROM GROUP_BY HAVING . ORDER_BY</td><td>[183, 188, 193]</td><td>goto(122)</td></tr>
+<tr><td>117</td><td>QUERY = . SELECT FROM GROUP_BY HAVING ORDER_BY</td><td>[141, 145]</td><td>goto(118)</td></tr>
+<tr><td>118</td><td>QUERY = SELECT . FROM GROUP_BY HAVING ORDER_BY</td><td>[168]</td><td>goto(119)</td></tr>
+<tr><td>119</td><td>QUERY = SELECT FROM . GROUP_BY HAVING ORDER_BY</td><td>[189]</td><td>goto(120)</td></tr>
+<tr><td>120</td><td>QUERY = SELECT FROM GROUP_BY . HAVING ORDER_BY</td><td>[199, 202]</td><td>goto(121)</td></tr>
+<tr><td>121</td><td>QUERY = SELECT FROM GROUP_BY HAVING . ORDER_BY</td><td>[205, 210, 215]</td><td>goto(122)</td></tr>
 <tr><td>122</td><td>QUERY = SELECT FROM GROUP_BY HAVING ORDER_BY .</td><td>[]</td><td>reduce(QUERY -> SELECT FROM GROUP_BY HAVING ORDER_BY)</td></tr>
-<tr><td>123</td><td>QUERY = . SELECT FROM WHERE GROUP_BY HAVING</td><td>[134, 138]</td><td>goto(124)</td></tr>
-<tr><td>124</td><td>QUERY = SELECT . FROM WHERE GROUP_BY HAVING</td><td>[161]</td><td>goto(125)</td></tr>
-<tr><td>125</td><td>QUERY = SELECT FROM . WHERE GROUP_BY HAVING</td><td>[164]</td><td>goto(126)</td></tr>
-<tr><td>126</td><td>QUERY = SELECT FROM WHERE . GROUP_BY HAVING</td><td>[170]</td><td>goto(127)</td></tr>
-<tr><td>127</td><td>QUERY = SELECT FROM WHERE GROUP_BY . HAVING</td><td>[180]</td><td>goto(128)</td></tr>
+<tr><td>123</td><td>QUERY = . SELECT FROM WHERE GROUP_BY HAVING</td><td>[141, 145]</td><td>goto(124)</td></tr>
+<tr><td>124</td><td>QUERY = SELECT . FROM WHERE GROUP_BY HAVING</td><td>[168]</td><td>goto(125)</td></tr>
+<tr><td>125</td><td>QUERY = SELECT FROM . WHERE GROUP_BY HAVING</td><td>[171]</td><td>goto(126)</td></tr>
+<tr><td>126</td><td>QUERY = SELECT FROM WHERE . GROUP_BY HAVING</td><td>[189]</td><td>goto(127)</td></tr>
+<tr><td>127</td><td>QUERY = SELECT FROM WHERE GROUP_BY . HAVING</td><td>[199, 202]</td><td>goto(128)</td></tr>
 <tr><td>128</td><td>QUERY = SELECT FROM WHERE GROUP_BY HAVING .</td><td>[]</td><td>reduce(QUERY -> SELECT FROM WHERE GROUP_BY HAVING)</td></tr>
-<tr><td>129</td><td>QUERY = . SELECT FROM GROUP_BY HAVING</td><td>[134, 138]</td><td>goto(130)</td></tr>
-<tr><td>130</td><td>QUERY = SELECT . FROM GROUP_BY HAVING</td><td>[161]</td><td>goto(131)</td></tr>
-<tr><td>131</td><td>QUERY = SELECT FROM . GROUP_BY HAVING</td><td>[170]</td><td>goto(132)</td></tr>
-<tr><td>132</td><td>QUERY = SELECT FROM GROUP_BY . HAVING</td><td>[180]</td><td>goto(133)</td></tr>
+<tr><td>129</td><td>QUERY = . SELECT FROM GROUP_BY HAVING</td><td>[141, 145]</td><td>goto(130)</td></tr>
+<tr><td>130</td><td>QUERY = SELECT . FROM GROUP_BY HAVING</td><td>[168]</td><td>goto(131)</td></tr>
+<tr><td>131</td><td>QUERY = SELECT FROM . GROUP_BY HAVING</td><td>[189]</td><td>goto(132)</td></tr>
+<tr><td>132</td><td>QUERY = SELECT FROM GROUP_BY . HAVING</td><td>[199, 202]</td><td>goto(133)</td></tr>
 <tr><td>133</td><td>QUERY = SELECT FROM GROUP_BY HAVING .</td><td>[]</td><td>reduce(QUERY -> SELECT FROM GROUP_BY HAVING)</td></tr>
-<tr><td>134</td><td>SELECT = . select distinct FIELD_LIST</td><td>[]</td><td>shift(135)</td></tr>
-<tr><td>135</td><td>SELECT = select . distinct FIELD_LIST</td><td>[]</td><td>shift(136)</td></tr>
-<tr><td>136</td><td>SELECT = select distinct . FIELD_LIST</td><td>[141, 145]</td><td>goto(137)</td></tr>
-<tr><td>137</td><td>SELECT = select distinct FIELD_LIST .</td><td>[]</td><td>reduce(SELECT -> select distinct FIELD_LIST)</td></tr>
-<tr><td>138</td><td>SELECT = . select FIELD_LIST</td><td>[]</td><td>shift(139)</td></tr>
-<tr><td>139</td><td>SELECT = select . FIELD_LIST</td><td>[141, 145]</td><td>goto(140)</td></tr>
-<tr><td>140</td><td>SELECT = select FIELD_LIST .</td><td>[]</td><td>reduce(SELECT -> select FIELD_LIST)</td></tr>
-<tr><td>141</td><td>FIELD_LIST = . FIELD_LIST , FIELD</td><td>[141, 145]</td><td>goto(142)</td></tr>
-<tr><td>142</td><td>FIELD_LIST = FIELD_LIST . , FIELD</td><td>[]</td><td>shift(143)</td></tr>
-<tr><td>143</td><td>FIELD_LIST = FIELD_LIST , . FIELD</td><td>[147, 149, 151, 155, 157]</td><td>goto(144)</td></tr>
-<tr><td>144</td><td>FIELD_LIST = FIELD_LIST , FIELD .</td><td>[]</td><td>reduce(FIELD_LIST -> FIELD_LIST , FIELD)</td></tr>
-<tr><td>145</td><td>FIELD_LIST = . FIELD</td><td>[147, 149, 151, 155, 157]</td><td>goto(146)</td></tr>
-<tr><td>146</td><td>FIELD_LIST = FIELD .</td><td>[]</td><td>reduce(FIELD_LIST -> FIELD)</td></tr>
-<tr><td>147</td><td>FIELD = . id</td><td>[]</td><td>shift(148)</td></tr>
-<tr><td>148</td><td>FIELD = id .</td><td>[]</td><td>reduce(FIELD -> id)</td></tr>
-<tr><td>149</td><td>FIELD = . *</td><td>[]</td><td>shift(150)</td></tr>
-<tr><td>150</td><td>FIELD = * .</td><td>[]</td><td>reduce(FIELD -> *)</td></tr>
-<tr><td>151</td><td>FIELD = . id as id</td><td>[]</td><td>shift(152)</td></tr>
-<tr><td>152</td><td>FIELD = id . as id</td><td>[]</td><td>shift(153)</td></tr>
-<tr><td>153</td><td>FIELD = id as . id</td><td>[]</td><td>shift(154)</td></tr>
-<tr><td>154</td><td>FIELD = id as id .</td><td>[]</td><td>reduce(FIELD -> id as id)</td></tr>
-<tr><td>155</td><td>FIELD = . AGGREGATE</td><td>[275, 280]</td><td>goto(156)</td></tr>
-<tr><td>156</td><td>FIELD = AGGREGATE .</td><td>[]</td><td>reduce(FIELD -> AGGREGATE)</td></tr>
-<tr><td>157</td><td>FIELD = . AGGREGATE as id</td><td>[275, 280]</td><td>goto(158)</td></tr>
-<tr><td>158</td><td>FIELD = AGGREGATE . as id</td><td>[]</td><td>shift(159)</td></tr>
-<tr><td>159</td><td>FIELD = AGGREGATE as . id</td><td>[]</td><td>shift(160)</td></tr>
-<tr><td>160</td><td>FIELD = AGGREGATE as id .</td><td>[]</td><td>reduce(FIELD -> AGGREGATE as id)</td></tr>
-<tr><td>161</td><td>FROM = . from id</td><td>[]</td><td>shift(162)</td></tr>
-<tr><td>162</td><td>FROM = from . id</td><td>[]</td><td>shift(163)</td></tr>
-<tr><td>163</td><td>FROM = from id .</td><td>[]</td><td>reduce(FROM -> from id)</td></tr>
-<tr><td>164</td><td>WHERE = . where EXPR</td><td>[]</td><td>shift(165)</td></tr>
-<tr><td>165</td><td>WHERE = where . EXPR</td><td>[197]</td><td>goto(166)</td></tr>
-<tr><td>166</td><td>WHERE = where EXPR .</td><td>[]</td><td>reduce(WHERE -> where EXPR)</td></tr>
-<tr><td>167</td><td>LIMIT = . limit number</td><td>[]</td><td>shift(168)</td></tr>
-<tr><td>168</td><td>LIMIT = limit . number</td><td>[]</td><td>shift(169)</td></tr>
-<tr><td>169</td><td>LIMIT = limit number .</td><td>[]</td><td>reduce(LIMIT -> limit number)</td></tr>
-<tr><td>170</td><td>GROUP_BY = . group by ID_LIST</td><td>[]</td><td>shift(171)</td></tr>
-<tr><td>171</td><td>GROUP_BY = group . by ID_LIST</td><td>[]</td><td>shift(172)</td></tr>
-<tr><td>172</td><td>GROUP_BY = group by . ID_LIST</td><td>[174, 176]</td><td>goto(173)</td></tr>
-<tr><td>173</td><td>GROUP_BY = group by ID_LIST .</td><td>[]</td><td>reduce(GROUP_BY -> group by ID_LIST)</td></tr>
-<tr><td>174</td><td>ID_LIST = . id</td><td>[]</td><td>shift(175)</td></tr>
-<tr><td>175</td><td>ID_LIST = id .</td><td>[]</td><td>reduce(ID_LIST -> id)</td></tr>
-<tr><td>176</td><td>ID_LIST = . ID_LIST , id</td><td>[174, 176]</td><td>goto(177)</td></tr>
-<tr><td>177</td><td>ID_LIST = ID_LIST . , id</td><td>[]</td><td>shift(178)</td></tr>
-<tr><td>178</td><td>ID_LIST = ID_LIST , . id</td><td>[]</td><td>shift(179)</td></tr>
-<tr><td>179</td><td>ID_LIST = ID_LIST , id .</td><td>[]</td><td>reduce(ID_LIST -> ID_LIST , id)</td></tr>
-<tr><td>180</td><td>HAVING = . having EXPR</td><td>[]</td><td>shift(181)</td></tr>
-<tr><td>181</td><td>HAVING = having . EXPR</td><td>[197]</td><td>goto(182)</td></tr>
-<tr><td>182</td><td>HAVING = having EXPR .</td><td>[]</td><td>reduce(HAVING -> having EXPR)</td></tr>
-<tr><td>183</td><td>ORDER_BY = . order by id asc</td><td>[]</td><td>shift(184)</td></tr>
-<tr><td>184</td><td>ORDER_BY = order . by id asc</td><td>[]</td><td>shift(185)</td></tr>
-<tr><td>185</td><td>ORDER_BY = order by . id asc</td><td>[]</td><td>shift(186)</td></tr>
-<tr><td>186</td><td>ORDER_BY = order by id . asc</td><td>[]</td><td>shift(187)</td></tr>
-<tr><td>187</td><td>ORDER_BY = order by id asc .</td><td>[]</td><td>reduce(ORDER_BY -> order by id asc)</td></tr>
-<tr><td>188</td><td>ORDER_BY = . order by id desc</td><td>[]</td><td>shift(189)</td></tr>
-<tr><td>189</td><td>ORDER_BY = order . by id desc</td><td>[]</td><td>shift(190)</td></tr>
-<tr><td>190</td><td>ORDER_BY = order by . id desc</td><td>[]</td><td>shift(191)</td></tr>
-<tr><td>191</td><td>ORDER_BY = order by id . desc</td><td>[]</td><td>shift(192)</td></tr>
-<tr><td>192</td><td>ORDER_BY = order by id desc .</td><td>[]</td><td>reduce(ORDER_BY -> order by id desc)</td></tr>
-<tr><td>193</td><td>ORDER_BY = . order by id</td><td>[]</td><td>shift(194)</td></tr>
-<tr><td>194</td><td>ORDER_BY = order . by id</td><td>[]</td><td>shift(195)</td></tr>
-<tr><td>195</td><td>ORDER_BY = order by . id</td><td>[]</td><td>shift(196)</td></tr>
-<tr><td>196</td><td>ORDER_BY = order by id .</td><td>[]</td><td>reduce(ORDER_BY -> order by id)</td></tr>
-<tr><td>197</td><td>EXPR = . EQ_EXPR</td><td>[199, 203, 207, 211, 215, 219, 223, 227, 231, 235, 239, 243, 247, 251, 255, 259, 263, 267]</td><td>goto(198)</td></tr>
-<tr><td>198</td><td>EXPR = EQ_EXPR .</td><td>[]</td><td>reduce(EXPR -> EQ_EXPR)</td></tr>
-<tr><td>199</td><td>EQ_EXPR = . id = LITERAL</td><td>[]</td><td>shift(200)</td></tr>
-<tr><td>200</td><td>EQ_EXPR = id . = LITERAL</td><td>[]</td><td>shift(201)</td></tr>
-<tr><td>201</td><td>EQ_EXPR = id = . LITERAL</td><td>[271, 273]</td><td>goto(202)</td></tr>
-<tr><td>202</td><td>EQ_EXPR = id = LITERAL .</td><td>[]</td><td>reduce(EQ_EXPR -> id = LITERAL)</td></tr>
-<tr><td>203</td><td>EQ_EXPR = . id <> LITERAL</td><td>[]</td><td>shift(204)</td></tr>
-<tr><td>204</td><td>EQ_EXPR = id . <> LITERAL</td><td>[]</td><td>shift(205)</td></tr>
-<tr><td>205</td><td>EQ_EXPR = id <> . LITERAL</td><td>[271, 273]</td><td>goto(206)</td></tr>
-<tr><td>206</td><td>EQ_EXPR = id <> LITERAL .</td><td>[]</td><td>reduce(EQ_EXPR -> id <> LITERAL)</td></tr>
-<tr><td>207</td><td>EQ_EXPR = . id > LITERAL</td><td>[]</td><td>shift(208)</td></tr>
-<tr><td>208</td><td>EQ_EXPR = id . > LITERAL</td><td>[]</td><td>shift(209)</td></tr>
-<tr><td>209</td><td>EQ_EXPR = id > . LITERAL</td><td>[271, 273]</td><td>goto(210)</td></tr>
-<tr><td>210</td><td>EQ_EXPR = id > LITERAL .</td><td>[]</td><td>reduce(EQ_EXPR -> id > LITERAL)</td></tr>
-<tr><td>211</td><td>EQ_EXPR = . id < LITERAL</td><td>[]</td><td>shift(212)</td></tr>
-<tr><td>212</td><td>EQ_EXPR = id . < LITERAL</td><td>[]</td><td>shift(213)</td></tr>
-<tr><td>213</td><td>EQ_EXPR = id < . LITERAL</td><td>[271, 273]</td><td>goto(214)</td></tr>
-<tr><td>214</td><td>EQ_EXPR = id < LITERAL .</td><td>[]</td><td>reduce(EQ_EXPR -> id < LITERAL)</td></tr>
-<tr><td>215</td><td>EQ_EXPR = . id !> LITERAL</td><td>[]</td><td>shift(216)</td></tr>
-<tr><td>216</td><td>EQ_EXPR = id . !> LITERAL</td><td>[]</td><td>shift(217)</td></tr>
-<tr><td>217</td><td>EQ_EXPR = id !> . LITERAL</td><td>[271, 273]</td><td>goto(218)</td></tr>
-<tr><td>218</td><td>EQ_EXPR = id !> LITERAL .</td><td>[]</td><td>reduce(EQ_EXPR -> id !> LITERAL)</td></tr>
-<tr><td>219</td><td>EQ_EXPR = . id !< LITERAL</td><td>[]</td><td>shift(220)</td></tr>
-<tr><td>220</td><td>EQ_EXPR = id . !< LITERAL</td><td>[]</td><td>shift(221)</td></tr>
-<tr><td>221</td><td>EQ_EXPR = id !< . LITERAL</td><td>[271, 273]</td><td>goto(222)</td></tr>
-<tr><td>222</td><td>EQ_EXPR = id !< LITERAL .</td><td>[]</td><td>reduce(EQ_EXPR -> id !< LITERAL)</td></tr>
-<tr><td>223</td><td>EQ_EXPR = . id >= LITERAL</td><td>[]</td><td>shift(224)</td></tr>
-<tr><td>224</td><td>EQ_EXPR = id . >= LITERAL</td><td>[]</td><td>shift(225)</td></tr>
-<tr><td>225</td><td>EQ_EXPR = id >= . LITERAL</td><td>[271, 273]</td><td>goto(226)</td></tr>
-<tr><td>226</td><td>EQ_EXPR = id >= LITERAL .</td><td>[]</td><td>reduce(EQ_EXPR -> id >= LITERAL)</td></tr>
-<tr><td>227</td><td>EQ_EXPR = . id <= LITERAL</td><td>[]</td><td>shift(228)</td></tr>
-<tr><td>228</td><td>EQ_EXPR = id . <= LITERAL</td><td>[]</td><td>shift(229)</td></tr>
-<tr><td>229</td><td>EQ_EXPR = id <= . LITERAL</td><td>[271, 273]</td><td>goto(230)</td></tr>
-<tr><td>230</td><td>EQ_EXPR = id <= LITERAL .</td><td>[]</td><td>reduce(EQ_EXPR -> id <= LITERAL)</td></tr>
-<tr><td>231</td><td>EQ_EXPR = . id like LITERAL</td><td>[]</td><td>shift(232)</td></tr>
-<tr><td>232</td><td>EQ_EXPR = id . like LITERAL</td><td>[]</td><td>shift(233)</td></tr>
-<tr><td>233</td><td>EQ_EXPR = id like . LITERAL</td><td>[271, 273]</td><td>goto(234)</td></tr>
-<tr><td>234</td><td>EQ_EXPR = id like LITERAL .</td><td>[]</td><td>reduce(EQ_EXPR -> id like LITERAL)</td></tr>
-<tr><td>235</td><td>EQ_EXPR = . LITERAL = id</td><td>[271, 273]</td><td>goto(236)</td></tr>
-<tr><td>236</td><td>EQ_EXPR = LITERAL . = id</td><td>[]</td><td>shift(237)</td></tr>
-<tr><td>237</td><td>EQ_EXPR = LITERAL = . id</td><td>[]</td><td>shift(238)</td></tr>
-<tr><td>238</td><td>EQ_EXPR = LITERAL = id .</td><td>[]</td><td>reduce(EQ_EXPR -> LITERAL = id)</td></tr>
-<tr><td>239</td><td>EQ_EXPR = . LITERAL <> id</td><td>[271, 273]</td><td>goto(240)</td></tr>
-<tr><td>240</td><td>EQ_EXPR = LITERAL . <> id</td><td>[]</td><td>shift(241)</td></tr>
-<tr><td>241</td><td>EQ_EXPR = LITERAL <> . id</td><td>[]</td><td>shift(242)</td></tr>
-<tr><td>242</td><td>EQ_EXPR = LITERAL <> id .</td><td>[]</td><td>reduce(EQ_EXPR -> LITERAL <> id)</td></tr>
-<tr><td>243</td><td>EQ_EXPR = . LITERAL > id</td><td>[271, 273]</td><td>goto(244)</td></tr>
-<tr><td>244</td><td>EQ_EXPR = LITERAL . > id</td><td>[]</td><td>shift(245)</td></tr>
-<tr><td>245</td><td>EQ_EXPR = LITERAL > . id</td><td>[]</td><td>shift(246)</td></tr>
-<tr><td>246</td><td>EQ_EXPR = LITERAL > id .</td><td>[]</td><td>reduce(EQ_EXPR -> LITERAL > id)</td></tr>
-<tr><td>247</td><td>EQ_EXPR = . LITERAL < id</td><td>[271, 273]</td><td>goto(248)</td></tr>
-<tr><td>248</td><td>EQ_EXPR = LITERAL . < id</td><td>[]</td><td>shift(249)</td></tr>
-<tr><td>249</td><td>EQ_EXPR = LITERAL < . id</td><td>[]</td><td>shift(250)</td></tr>
-<tr><td>250</td><td>EQ_EXPR = LITERAL < id .</td><td>[]</td><td>reduce(EQ_EXPR -> LITERAL < id)</td></tr>
-<tr><td>251</td><td>EQ_EXPR = . LITERAL !> id</td><td>[271, 273]</td><td>goto(252)</td></tr>
-<tr><td>252</td><td>EQ_EXPR = LITERAL . !> id</td><td>[]</td><td>shift(253)</td></tr>
-<tr><td>253</td><td>EQ_EXPR = LITERAL !> . id</td><td>[]</td><td>shift(254)</td></tr>
-<tr><td>254</td><td>EQ_EXPR = LITERAL !> id .</td><td>[]</td><td>reduce(EQ_EXPR -> LITERAL !> id)</td></tr>
-<tr><td>255</td><td>EQ_EXPR = . LITERAL !< id</td><td>[271, 273]</td><td>goto(256)</td></tr>
-<tr><td>256</td><td>EQ_EXPR = LITERAL . !< id</td><td>[]</td><td>shift(257)</td></tr>
-<tr><td>257</td><td>EQ_EXPR = LITERAL !< . id</td><td>[]</td><td>shift(258)</td></tr>
-<tr><td>258</td><td>EQ_EXPR = LITERAL !< id .</td><td>[]</td><td>reduce(EQ_EXPR -> LITERAL !< id)</td></tr>
-<tr><td>259</td><td>EQ_EXPR = . LITERAL >= id</td><td>[271, 273]</td><td>goto(260)</td></tr>
-<tr><td>260</td><td>EQ_EXPR = LITERAL . >= id</td><td>[]</td><td>shift(261)</td></tr>
-<tr><td>261</td><td>EQ_EXPR = LITERAL >= . id</td><td>[]</td><td>shift(262)</td></tr>
-<tr><td>262</td><td>EQ_EXPR = LITERAL >= id .</td><td>[]</td><td>reduce(EQ_EXPR -> LITERAL >= id)</td></tr>
-<tr><td>263</td><td>EQ_EXPR = . LITERAL <= id</td><td>[271, 273]</td><td>goto(264)</td></tr>
-<tr><td>264</td><td>EQ_EXPR = LITERAL . <= id</td><td>[]</td><td>shift(265)</td></tr>
-<tr><td>265</td><td>EQ_EXPR = LITERAL <= . id</td><td>[]</td><td>shift(266)</td></tr>
-<tr><td>266</td><td>EQ_EXPR = LITERAL <= id .</td><td>[]</td><td>reduce(EQ_EXPR -> LITERAL <= id)</td></tr>
-<tr><td>267</td><td>EQ_EXPR = . LITERAL like id</td><td>[271, 273]</td><td>goto(268)</td></tr>
-<tr><td>268</td><td>EQ_EXPR = LITERAL . like id</td><td>[]</td><td>shift(269)</td></tr>
-<tr><td>269</td><td>EQ_EXPR = LITERAL like . id</td><td>[]</td><td>shift(270)</td></tr>
-<tr><td>270</td><td>EQ_EXPR = LITERAL like id .</td><td>[]</td><td>reduce(EQ_EXPR -> LITERAL like id)</td></tr>
-<tr><td>271</td><td>LITERAL = . number</td><td>[]</td><td>shift(272)</td></tr>
-<tr><td>272</td><td>LITERAL = number .</td><td>[]</td><td>reduce(LITERAL -> number)</td></tr>
-<tr><td>273</td><td>LITERAL = . string</td><td>[]</td><td>shift(274)</td></tr>
-<tr><td>274</td><td>LITERAL = string .</td><td>[]</td><td>reduce(LITERAL -> string)</td></tr>
-<tr><td>275</td><td>AGGREGATE = . id ( id )</td><td>[]</td><td>shift(276)</td></tr>
-<tr><td>276</td><td>AGGREGATE = id . ( id )</td><td>[]</td><td>shift(277)</td></tr>
-<tr><td>277</td><td>AGGREGATE = id ( . id )</td><td>[]</td><td>shift(278)</td></tr>
-<tr><td>278</td><td>AGGREGATE = id ( id . )</td><td>[]</td><td>shift(279)</td></tr>
-<tr><td>279</td><td>AGGREGATE = id ( id ) .</td><td>[]</td><td>reduce(AGGREGATE -> id ( id ))</td></tr>
-<tr><td>280</td><td>AGGREGATE = . id ( * )</td><td>[]</td><td>shift(281)</td></tr>
-<tr><td>281</td><td>AGGREGATE = id . ( * )</td><td>[]</td><td>shift(282)</td></tr>
-<tr><td>282</td><td>AGGREGATE = id ( . * )</td><td>[]</td><td>shift(283)</td></tr>
-<tr><td>283</td><td>AGGREGATE = id ( * . )</td><td>[]</td><td>shift(284)</td></tr>
-<tr><td>284</td><td>AGGREGATE = id ( * ) .</td><td>[]</td><td>reduce(AGGREGATE -> id ( * ))</td></tr>
+<tr><td>134</td><td>QUERY = . delete FROM WHERE</td><td>[]</td><td>shift(135)</td></tr>
+<tr><td>135</td><td>QUERY = delete . FROM WHERE</td><td>[168]</td><td>goto(136)</td></tr>
+<tr><td>136</td><td>QUERY = delete FROM . WHERE</td><td>[171]</td><td>goto(137)</td></tr>
+<tr><td>137</td><td>QUERY = delete FROM WHERE .</td><td>[]</td><td>reduce(QUERY -> delete FROM WHERE)</td></tr>
+<tr><td>138</td><td>QUERY = . delete FROM</td><td>[]</td><td>shift(139)</td></tr>
+<tr><td>139</td><td>QUERY = delete . FROM</td><td>[168]</td><td>goto(140)</td></tr>
+<tr><td>140</td><td>QUERY = delete FROM .</td><td>[]</td><td>reduce(QUERY -> delete FROM)</td></tr>
+<tr><td>141</td><td>SELECT = . select distinct FIELD_LIST</td><td>[]</td><td>shift(142)</td></tr>
+<tr><td>142</td><td>SELECT = select . distinct FIELD_LIST</td><td>[]</td><td>shift(143)</td></tr>
+<tr><td>143</td><td>SELECT = select distinct . FIELD_LIST</td><td>[148, 152]</td><td>goto(144)</td></tr>
+<tr><td>144</td><td>SELECT = select distinct FIELD_LIST .</td><td>[]</td><td>reduce(SELECT -> select distinct FIELD_LIST)</td></tr>
+<tr><td>145</td><td>SELECT = . select FIELD_LIST</td><td>[]</td><td>shift(146)</td></tr>
+<tr><td>146</td><td>SELECT = select . FIELD_LIST</td><td>[148, 152]</td><td>goto(147)</td></tr>
+<tr><td>147</td><td>SELECT = select FIELD_LIST .</td><td>[]</td><td>reduce(SELECT -> select FIELD_LIST)</td></tr>
+<tr><td>148</td><td>FIELD_LIST = . FIELD_LIST , FIELD</td><td>[148, 152]</td><td>goto(149)</td></tr>
+<tr><td>149</td><td>FIELD_LIST = FIELD_LIST . , FIELD</td><td>[]</td><td>shift(150)</td></tr>
+<tr><td>150</td><td>FIELD_LIST = FIELD_LIST , . FIELD</td><td>[154, 156, 158, 162, 164]</td><td>goto(151)</td></tr>
+<tr><td>151</td><td>FIELD_LIST = FIELD_LIST , FIELD .</td><td>[]</td><td>reduce(FIELD_LIST -> FIELD_LIST , FIELD)</td></tr>
+<tr><td>152</td><td>FIELD_LIST = . FIELD</td><td>[154, 156, 158, 162, 164]</td><td>goto(153)</td></tr>
+<tr><td>153</td><td>FIELD_LIST = FIELD .</td><td>[]</td><td>reduce(FIELD_LIST -> FIELD)</td></tr>
+<tr><td>154</td><td>FIELD = . id</td><td>[]</td><td>shift(155)</td></tr>
+<tr><td>155</td><td>FIELD = id .</td><td>[]</td><td>reduce(FIELD -> id)</td></tr>
+<tr><td>156</td><td>FIELD = . *</td><td>[]</td><td>shift(157)</td></tr>
+<tr><td>157</td><td>FIELD = * .</td><td>[]</td><td>reduce(FIELD -> *)</td></tr>
+<tr><td>158</td><td>FIELD = . id as id</td><td>[]</td><td>shift(159)</td></tr>
+<tr><td>159</td><td>FIELD = id . as id</td><td>[]</td><td>shift(160)</td></tr>
+<tr><td>160</td><td>FIELD = id as . id</td><td>[]</td><td>shift(161)</td></tr>
+<tr><td>161</td><td>FIELD = id as id .</td><td>[]</td><td>reduce(FIELD -> id as id)</td></tr>
+<tr><td>162</td><td>FIELD = . AGGREGATE</td><td>[401, 406]</td><td>goto(163)</td></tr>
+<tr><td>163</td><td>FIELD = AGGREGATE .</td><td>[]</td><td>reduce(FIELD -> AGGREGATE)</td></tr>
+<tr><td>164</td><td>FIELD = . AGGREGATE as id</td><td>[401, 406]</td><td>goto(165)</td></tr>
+<tr><td>165</td><td>FIELD = AGGREGATE . as id</td><td>[]</td><td>shift(166)</td></tr>
+<tr><td>166</td><td>FIELD = AGGREGATE as . id</td><td>[]</td><td>shift(167)</td></tr>
+<tr><td>167</td><td>FIELD = AGGREGATE as id .</td><td>[]</td><td>reduce(FIELD -> AGGREGATE as id)</td></tr>
+<tr><td>168</td><td>FROM = . from id</td><td>[]</td><td>shift(169)</td></tr>
+<tr><td>169</td><td>FROM = from . id</td><td>[]</td><td>shift(170)</td></tr>
+<tr><td>170</td><td>FROM = from id .</td><td>[]</td><td>reduce(FROM -> from id)</td></tr>
+<tr><td>171</td><td>WHERE = . where EXPR</td><td>[]</td><td>shift(172)</td></tr>
+<tr><td>172</td><td>WHERE = where . EXPR</td><td>[307]</td><td>goto(173)</td></tr>
+<tr><td>173</td><td>WHERE = where EXPR .</td><td>[]</td><td>reduce(WHERE -> where EXPR)</td></tr>
+<tr><td>174</td><td>LIMIT = . limit number</td><td>[]</td><td>shift(175)</td></tr>
+<tr><td>175</td><td>LIMIT = limit . number</td><td>[]</td><td>shift(176)</td></tr>
+<tr><td>176</td><td>LIMIT = limit number .</td><td>[]</td><td>reduce(LIMIT -> limit number)</td></tr>
+<tr><td>177</td><td>LIMIT = . fetch first number rows only</td><td>[]</td><td>shift(178)</td></tr>
+<tr><td>178</td><td>LIMIT = fetch . first number rows only</td><td>[]</td><td>shift(179)</td></tr>
+<tr><td>179</td><td>LIMIT = fetch first . number rows only</td><td>[]</td><td>shift(180)</td></tr>
+<tr><td>180</td><td>LIMIT = fetch first number . rows only</td><td>[]</td><td>shift(181)</td></tr>
+<tr><td>181</td><td>LIMIT = fetch first number rows . only</td><td>[]</td><td>shift(182)</td></tr>
+<tr><td>182</td><td>LIMIT = fetch first number rows only .</td><td>[]</td><td>reduce(LIMIT -> fetch first number rows only)</td></tr>
+<tr><td>183</td><td>LIMIT = . fetch first number row only</td><td>[]</td><td>shift(184)</td></tr>
+<tr><td>184</td><td>LIMIT = fetch . first number row only</td><td>[]</td><td>shift(185)</td></tr>
+<tr><td>185</td><td>LIMIT = fetch first . number row only</td><td>[]</td><td>shift(186)</td></tr>
+<tr><td>186</td><td>LIMIT = fetch first number . row only</td><td>[]</td><td>shift(187)</td></tr>
+<tr><td>187</td><td>LIMIT = fetch first number row . only</td><td>[]</td><td>shift(188)</td></tr>
+<tr><td>188</td><td>LIMIT = fetch first number row only .</td><td>[]</td><td>reduce(LIMIT -> fetch first number row only)</td></tr>
+<tr><td>189</td><td>GROUP_BY = . group by ID_LIST</td><td>[]</td><td>shift(190)</td></tr>
+<tr><td>190</td><td>GROUP_BY = group . by ID_LIST</td><td>[]</td><td>shift(191)</td></tr>
+<tr><td>191</td><td>GROUP_BY = group by . ID_LIST</td><td>[193, 195]</td><td>goto(192)</td></tr>
+<tr><td>192</td><td>GROUP_BY = group by ID_LIST .</td><td>[]</td><td>reduce(GROUP_BY -> group by ID_LIST)</td></tr>
+<tr><td>193</td><td>ID_LIST = . id</td><td>[]</td><td>shift(194)</td></tr>
+<tr><td>194</td><td>ID_LIST = id .</td><td>[]</td><td>reduce(ID_LIST -> id)</td></tr>
+<tr><td>195</td><td>ID_LIST = . ID_LIST , id</td><td>[193, 195]</td><td>goto(196)</td></tr>
+<tr><td>196</td><td>ID_LIST = ID_LIST . , id</td><td>[]</td><td>shift(197)</td></tr>
+<tr><td>197</td><td>ID_LIST = ID_LIST , . id</td><td>[]</td><td>shift(198)</td></tr>
+<tr><td>198</td><td>ID_LIST = ID_LIST , id .</td><td>[]</td><td>reduce(ID_LIST -> ID_LIST , id)</td></tr>
+<tr><td>199</td><td>HAVING = . having EXPR</td><td>[]</td><td>shift(200)</td></tr>
+<tr><td>200</td><td>HAVING = having . EXPR</td><td>[307]</td><td>goto(201)</td></tr>
+<tr><td>201</td><td>HAVING = having EXPR .</td><td>[]</td><td>reduce(HAVING -> having EXPR)</td></tr>
+<tr><td>202</td><td>HAVING = . having HAVING_EXPR</td><td>[]</td><td>shift(203)</td></tr>
+<tr><td>203</td><td>HAVING = having . HAVING_EXPR</td><td>[219, 223, 227, 231, 235, 239, 243, 247, 251, 255, 259, 263, 267, 271, 275, 279, 283, 287, 291, 295, 299, 303]</td><td>goto(204)</td></tr>
+<tr><td>204</td><td>HAVING = having HAVING_EXPR .</td><td>[]</td><td>reduce(HAVING -> having HAVING_EXPR)</td></tr>
+<tr><td>205</td><td>ORDER_BY = . order by id asc</td><td>[]</td><td>shift(206)</td></tr>
+<tr><td>206</td><td>ORDER_BY = order . by id asc</td><td>[]</td><td>shift(207)</td></tr>
+<tr><td>207</td><td>ORDER_BY = order by . id asc</td><td>[]</td><td>shift(208)</td></tr>
+<tr><td>208</td><td>ORDER_BY = order by id . asc</td><td>[]</td><td>shift(209)</td></tr>
+<tr><td>209</td><td>ORDER_BY = order by id asc .</td><td>[]</td><td>reduce(ORDER_BY -> order by id asc)</td></tr>
+<tr><td>210</td><td>ORDER_BY = . order by id desc</td><td>[]</td><td>shift(211)</td></tr>
+<tr><td>211</td><td>ORDER_BY = order . by id desc</td><td>[]</td><td>shift(212)</td></tr>
+<tr><td>212</td><td>ORDER_BY = order by . id desc</td><td>[]</td><td>shift(213)</td></tr>
+<tr><td>213</td><td>ORDER_BY = order by id . desc</td><td>[]</td><td>shift(214)</td></tr>
+<tr><td>214</td><td>ORDER_BY = order by id desc .</td><td>[]</td><td>reduce(ORDER_BY -> order by id desc)</td></tr>
+<tr><td>215</td><td>ORDER_BY = . order by id</td><td>[]</td><td>shift(216)</td></tr>
+<tr><td>216</td><td>ORDER_BY = order . by id</td><td>[]</td><td>shift(217)</td></tr>
+<tr><td>217</td><td>ORDER_BY = order by . id</td><td>[]</td><td>shift(218)</td></tr>
+<tr><td>218</td><td>ORDER_BY = order by id .</td><td>[]</td><td>reduce(ORDER_BY -> order by id)</td></tr>
+<tr><td>219</td><td>HAVING_EXPR = . AGGREGATE = LITERAL</td><td>[401, 406]</td><td>goto(220)</td></tr>
+<tr><td>220</td><td>HAVING_EXPR = AGGREGATE . = LITERAL</td><td>[]</td><td>shift(221)</td></tr>
+<tr><td>221</td><td>HAVING_EXPR = AGGREGATE = . LITERAL</td><td>[397, 399]</td><td>goto(222)</td></tr>
+<tr><td>222</td><td>HAVING_EXPR = AGGREGATE = LITERAL .</td><td>[]</td><td>reduce(HAVING_EXPR -> AGGREGATE = LITERAL)</td></tr>
+<tr><td>223</td><td>HAVING_EXPR = . AGGREGATE != LITERAL</td><td>[401, 406]</td><td>goto(224)</td></tr>
+<tr><td>224</td><td>HAVING_EXPR = AGGREGATE . != LITERAL</td><td>[]</td><td>shift(225)</td></tr>
+<tr><td>225</td><td>HAVING_EXPR = AGGREGATE != . LITERAL</td><td>[397, 399]</td><td>goto(226)</td></tr>
+<tr><td>226</td><td>HAVING_EXPR = AGGREGATE != LITERAL .</td><td>[]</td><td>reduce(HAVING_EXPR -> AGGREGATE != LITERAL)</td></tr>
+<tr><td>227</td><td>HAVING_EXPR = . AGGREGATE <> LITERAL</td><td>[401, 406]</td><td>goto(228)</td></tr>
+<tr><td>228</td><td>HAVING_EXPR = AGGREGATE . <> LITERAL</td><td>[]</td><td>shift(229)</td></tr>
+<tr><td>229</td><td>HAVING_EXPR = AGGREGATE <> . LITERAL</td><td>[397, 399]</td><td>goto(230)</td></tr>
+<tr><td>230</td><td>HAVING_EXPR = AGGREGATE <> LITERAL .</td><td>[]</td><td>reduce(HAVING_EXPR -> AGGREGATE <> LITERAL)</td></tr>
+<tr><td>231</td><td>HAVING_EXPR = . AGGREGATE > LITERAL</td><td>[401, 406]</td><td>goto(232)</td></tr>
+<tr><td>232</td><td>HAVING_EXPR = AGGREGATE . > LITERAL</td><td>[]</td><td>shift(233)</td></tr>
+<tr><td>233</td><td>HAVING_EXPR = AGGREGATE > . LITERAL</td><td>[397, 399]</td><td>goto(234)</td></tr>
+<tr><td>234</td><td>HAVING_EXPR = AGGREGATE > LITERAL .</td><td>[]</td><td>reduce(HAVING_EXPR -> AGGREGATE > LITERAL)</td></tr>
+<tr><td>235</td><td>HAVING_EXPR = . AGGREGATE < LITERAL</td><td>[401, 406]</td><td>goto(236)</td></tr>
+<tr><td>236</td><td>HAVING_EXPR = AGGREGATE . < LITERAL</td><td>[]</td><td>shift(237)</td></tr>
+<tr><td>237</td><td>HAVING_EXPR = AGGREGATE < . LITERAL</td><td>[397, 399]</td><td>goto(238)</td></tr>
+<tr><td>238</td><td>HAVING_EXPR = AGGREGATE < LITERAL .</td><td>[]</td><td>reduce(HAVING_EXPR -> AGGREGATE < LITERAL)</td></tr>
+<tr><td>239</td><td>HAVING_EXPR = . AGGREGATE !> LITERAL</td><td>[401, 406]</td><td>goto(240)</td></tr>
+<tr><td>240</td><td>HAVING_EXPR = AGGREGATE . !> LITERAL</td><td>[]</td><td>shift(241)</td></tr>
+<tr><td>241</td><td>HAVING_EXPR = AGGREGATE !> . LITERAL</td><td>[397, 399]</td><td>goto(242)</td></tr>
+<tr><td>242</td><td>HAVING_EXPR = AGGREGATE !> LITERAL .</td><td>[]</td><td>reduce(HAVING_EXPR -> AGGREGATE !> LITERAL)</td></tr>
+<tr><td>243</td><td>HAVING_EXPR = . AGGREGATE !< LITERAL</td><td>[401, 406]</td><td>goto(244)</td></tr>
+<tr><td>244</td><td>HAVING_EXPR = AGGREGATE . !< LITERAL</td><td>[]</td><td>shift(245)</td></tr>
+<tr><td>245</td><td>HAVING_EXPR = AGGREGATE !< . LITERAL</td><td>[397, 399]</td><td>goto(246)</td></tr>
+<tr><td>246</td><td>HAVING_EXPR = AGGREGATE !< LITERAL .</td><td>[]</td><td>reduce(HAVING_EXPR -> AGGREGATE !< LITERAL)</td></tr>
+<tr><td>247</td><td>HAVING_EXPR = . AGGREGATE >= LITERAL</td><td>[401, 406]</td><td>goto(248)</td></tr>
+<tr><td>248</td><td>HAVING_EXPR = AGGREGATE . >= LITERAL</td><td>[]</td><td>shift(249)</td></tr>
+<tr><td>249</td><td>HAVING_EXPR = AGGREGATE >= . LITERAL</td><td>[397, 399]</td><td>goto(250)</td></tr>
+<tr><td>250</td><td>HAVING_EXPR = AGGREGATE >= LITERAL .</td><td>[]</td><td>reduce(HAVING_EXPR -> AGGREGATE >= LITERAL)</td></tr>
+<tr><td>251</td><td>HAVING_EXPR = . AGGREGATE <= LITERAL</td><td>[401, 406]</td><td>goto(252)</td></tr>
+<tr><td>252</td><td>HAVING_EXPR = AGGREGATE . <= LITERAL</td><td>[]</td><td>shift(253)</td></tr>
+<tr><td>253</td><td>HAVING_EXPR = AGGREGATE <= . LITERAL</td><td>[397, 399]</td><td>goto(254)</td></tr>
+<tr><td>254</td><td>HAVING_EXPR = AGGREGATE <= LITERAL .</td><td>[]</td><td>reduce(HAVING_EXPR -> AGGREGATE <= LITERAL)</td></tr>
+<tr><td>255</td><td>HAVING_EXPR = . AGGREGATE like LITERAL</td><td>[401, 406]</td><td>goto(256)</td></tr>
+<tr><td>256</td><td>HAVING_EXPR = AGGREGATE . like LITERAL</td><td>[]</td><td>shift(257)</td></tr>
+<tr><td>257</td><td>HAVING_EXPR = AGGREGATE like . LITERAL</td><td>[397, 399]</td><td>goto(258)</td></tr>
+<tr><td>258</td><td>HAVING_EXPR = AGGREGATE like LITERAL .</td><td>[]</td><td>reduce(HAVING_EXPR -> AGGREGATE like LITERAL)</td></tr>
+<tr><td>259</td><td>HAVING_EXPR = . AGGREGATE ~ LITERAL</td><td>[401, 406]</td><td>goto(260)</td></tr>
+<tr><td>260</td><td>HAVING_EXPR = AGGREGATE . ~ LITERAL</td><td>[]</td><td>shift(261)</td></tr>
+<tr><td>261</td><td>HAVING_EXPR = AGGREGATE ~ . LITERAL</td><td>[397, 399]</td><td>goto(262)</td></tr>
+<tr><td>262</td><td>HAVING_EXPR = AGGREGATE ~ LITERAL .</td><td>[]</td><td>reduce(HAVING_EXPR -> AGGREGATE ~ LITERAL)</td></tr>
+<tr><td>263</td><td>HAVING_EXPR = . LITERAL = AGGREGATE</td><td>[397, 399]</td><td>goto(264)</td></tr>
+<tr><td>264</td><td>HAVING_EXPR = LITERAL . = AGGREGATE</td><td>[]</td><td>shift(265)</td></tr>
+<tr><td>265</td><td>HAVING_EXPR = LITERAL = . AGGREGATE</td><td>[401, 406]</td><td>goto(266)</td></tr>
+<tr><td>266</td><td>HAVING_EXPR = LITERAL = AGGREGATE .</td><td>[]</td><td>reduce(HAVING_EXPR -> LITERAL = AGGREGATE)</td></tr>
+<tr><td>267</td><td>HAVING_EXPR = . LITERAL != AGGREGATE</td><td>[397, 399]</td><td>goto(268)</td></tr>
+<tr><td>268</td><td>HAVING_EXPR = LITERAL . != AGGREGATE</td><td>[]</td><td>shift(269)</td></tr>
+<tr><td>269</td><td>HAVING_EXPR = LITERAL != . AGGREGATE</td><td>[401, 406]</td><td>goto(270)</td></tr>
+<tr><td>270</td><td>HAVING_EXPR = LITERAL != AGGREGATE .</td><td>[]</td><td>reduce(HAVING_EXPR -> LITERAL != AGGREGATE)</td></tr>
+<tr><td>271</td><td>HAVING_EXPR = . LITERAL <> AGGREGATE</td><td>[397, 399]</td><td>goto(272)</td></tr>
+<tr><td>272</td><td>HAVING_EXPR = LITERAL . <> AGGREGATE</td><td>[]</td><td>shift(273)</td></tr>
+<tr><td>273</td><td>HAVING_EXPR = LITERAL <> . AGGREGATE</td><td>[401, 406]</td><td>goto(274)</td></tr>
+<tr><td>274</td><td>HAVING_EXPR = LITERAL <> AGGREGATE .</td><td>[]</td><td>reduce(HAVING_EXPR -> LITERAL <> AGGREGATE)</td></tr>
+<tr><td>275</td><td>HAVING_EXPR = . LITERAL > AGGREGATE</td><td>[397, 399]</td><td>goto(276)</td></tr>
+<tr><td>276</td><td>HAVING_EXPR = LITERAL . > AGGREGATE</td><td>[]</td><td>shift(277)</td></tr>
+<tr><td>277</td><td>HAVING_EXPR = LITERAL > . AGGREGATE</td><td>[401, 406]</td><td>goto(278)</td></tr>
+<tr><td>278</td><td>HAVING_EXPR = LITERAL > AGGREGATE .</td><td>[]</td><td>reduce(HAVING_EXPR -> LITERAL > AGGREGATE)</td></tr>
+<tr><td>279</td><td>HAVING_EXPR = . LITERAL < AGGREGATE</td><td>[397, 399]</td><td>goto(280)</td></tr>
+<tr><td>280</td><td>HAVING_EXPR = LITERAL . < AGGREGATE</td><td>[]</td><td>shift(281)</td></tr>
+<tr><td>281</td><td>HAVING_EXPR = LITERAL < . AGGREGATE</td><td>[401, 406]</td><td>goto(282)</td></tr>
+<tr><td>282</td><td>HAVING_EXPR = LITERAL < AGGREGATE .</td><td>[]</td><td>reduce(HAVING_EXPR -> LITERAL < AGGREGATE)</td></tr>
+<tr><td>283</td><td>HAVING_EXPR = . LITERAL !> AGGREGATE</td><td>[397, 399]</td><td>goto(284)</td></tr>
+<tr><td>284</td><td>HAVING_EXPR = LITERAL . !> AGGREGATE</td><td>[]</td><td>shift(285)</td></tr>
+<tr><td>285</td><td>HAVING_EXPR = LITERAL !> . AGGREGATE</td><td>[401, 406]</td><td>goto(286)</td></tr>
+<tr><td>286</td><td>HAVING_EXPR = LITERAL !> AGGREGATE .</td><td>[]</td><td>reduce(HAVING_EXPR -> LITERAL !> AGGREGATE)</td></tr>
+<tr><td>287</td><td>HAVING_EXPR = . LITERAL !< AGGREGATE</td><td>[397, 399]</td><td>goto(288)</td></tr>
+<tr><td>288</td><td>HAVING_EXPR = LITERAL . !< AGGREGATE</td><td>[]</td><td>shift(289)</td></tr>
+<tr><td>289</td><td>HAVING_EXPR = LITERAL !< . AGGREGATE</td><td>[401, 406]</td><td>goto(290)</td></tr>
+<tr><td>290</td><td>HAVING_EXPR = LITERAL !< AGGREGATE .</td><td>[]</td><td>reduce(HAVING_EXPR -> LITERAL !< AGGREGATE)</td></tr>
+<tr><td>291</td><td>HAVING_EXPR = . LITERAL >= AGGREGATE</td><td>[397, 399]</td><td>goto(292)</td></tr>
+<tr><td>292</td><td>HAVING_EXPR = LITERAL . >= AGGREGATE</td><td>[]</td><td>shift(293)</td></tr>
+<tr><td>293</td><td>HAVING_EXPR = LITERAL >= . AGGREGATE</td><td>[401, 406]</td><td>goto(294)</td></tr>
+<tr><td>294</td><td>HAVING_EXPR = LITERAL >= AGGREGATE .</td><td>[]</td><td>reduce(HAVING_EXPR -> LITERAL >= AGGREGATE)</td></tr>
+<tr><td>295</td><td>HAVING_EXPR = . LITERAL <= AGGREGATE</td><td>[397, 399]</td><td>goto(296)</td></tr>
+<tr><td>296</td><td>HAVING_EXPR = LITERAL . <= AGGREGATE</td><td>[]</td><td>shift(297)</td></tr>
+<tr><td>297</td><td>HAVING_EXPR = LITERAL <= . AGGREGATE</td><td>[401, 406]</td><td>goto(298)</td></tr>
+<tr><td>298</td><td>HAVING_EXPR = LITERAL <= AGGREGATE .</td><td>[]</td><td>reduce(HAVING_EXPR -> LITERAL <= AGGREGATE)</td></tr>
+<tr><td>299</td><td>HAVING_EXPR = . LITERAL like AGGREGATE</td><td>[397, 399]</td><td>goto(300)</td></tr>
+<tr><td>300</td><td>HAVING_EXPR = LITERAL . like AGGREGATE</td><td>[]</td><td>shift(301)</td></tr>
+<tr><td>301</td><td>HAVING_EXPR = LITERAL like . AGGREGATE</td><td>[401, 406]</td><td>goto(302)</td></tr>
+<tr><td>302</td><td>HAVING_EXPR = LITERAL like AGGREGATE .</td><td>[]</td><td>reduce(HAVING_EXPR -> LITERAL like AGGREGATE)</td></tr>
+<tr><td>303</td><td>HAVING_EXPR = . LITERAL ~ AGGREGATE</td><td>[397, 399]</td><td>goto(304)</td></tr>
+<tr><td>304</td><td>HAVING_EXPR = LITERAL . ~ AGGREGATE</td><td>[]</td><td>shift(305)</td></tr>
+<tr><td>305</td><td>HAVING_EXPR = LITERAL ~ . AGGREGATE</td><td>[401, 406]</td><td>goto(306)</td></tr>
+<tr><td>306</td><td>HAVING_EXPR = LITERAL ~ AGGREGATE .</td><td>[]</td><td>reduce(HAVING_EXPR -> LITERAL ~ AGGREGATE)</td></tr>
+<tr><td>307</td><td>EXPR = . EQ_EXPR</td><td>[309, 313, 317, 321, 325, 329, 333, 337, 341, 345, 349, 353, 357, 361, 365, 369, 373, 377, 381, 385, 389, 393]</td><td>goto(308)</td></tr>
+<tr><td>308</td><td>EXPR = EQ_EXPR .</td><td>[]</td><td>reduce(EXPR -> EQ_EXPR)</td></tr>
+<tr><td>309</td><td>EQ_EXPR = . id = LITERAL</td><td>[]</td><td>shift(310)</td></tr>
+<tr><td>310</td><td>EQ_EXPR = id . = LITERAL</td><td>[]</td><td>shift(311)</td></tr>
+<tr><td>311</td><td>EQ_EXPR = id = . LITERAL</td><td>[397, 399]</td><td>goto(312)</td></tr>
+<tr><td>312</td><td>EQ_EXPR = id = LITERAL .</td><td>[]</td><td>reduce(EQ_EXPR -> id = LITERAL)</td></tr>
+<tr><td>313</td><td>EQ_EXPR = . id != LITERAL</td><td>[]</td><td>shift(314)</td></tr>
+<tr><td>314</td><td>EQ_EXPR = id . != LITERAL</td><td>[]</td><td>shift(315)</td></tr>
+<tr><td>315</td><td>EQ_EXPR = id != . LITERAL</td><td>[397, 399]</td><td>goto(316)</td></tr>
+<tr><td>316</td><td>EQ_EXPR = id != LITERAL .</td><td>[]</td><td>reduce(EQ_EXPR -> id != LITERAL)</td></tr>
+<tr><td>317</td><td>EQ_EXPR = . id <> LITERAL</td><td>[]</td><td>shift(318)</td></tr>
+<tr><td>318</td><td>EQ_EXPR = id . <> LITERAL</td><td>[]</td><td>shift(319)</td></tr>
+<tr><td>319</td><td>EQ_EXPR = id <> . LITERAL</td><td>[397, 399]</td><td>goto(320)</td></tr>
+<tr><td>320</td><td>EQ_EXPR = id <> LITERAL .</td><td>[]</td><td>reduce(EQ_EXPR -> id <> LITERAL)</td></tr>
+<tr><td>321</td><td>EQ_EXPR = . id > LITERAL</td><td>[]</td><td>shift(322)</td></tr>
+<tr><td>322</td><td>EQ_EXPR = id . > LITERAL</td><td>[]</td><td>shift(323)</td></tr>
+<tr><td>323</td><td>EQ_EXPR = id > . LITERAL</td><td>[397, 399]</td><td>goto(324)</td></tr>
+<tr><td>324</td><td>EQ_EXPR = id > LITERAL .</td><td>[]</td><td>reduce(EQ_EXPR -> id > LITERAL)</td></tr>
+<tr><td>325</td><td>EQ_EXPR = . id < LITERAL</td><td>[]</td><td>shift(326)</td></tr>
+<tr><td>326</td><td>EQ_EXPR = id . < LITERAL</td><td>[]</td><td>shift(327)</td></tr>
+<tr><td>327</td><td>EQ_EXPR = id < . LITERAL</td><td>[397, 399]</td><td>goto(328)</td></tr>
+<tr><td>328</td><td>EQ_EXPR = id < LITERAL .</td><td>[]</td><td>reduce(EQ_EXPR -> id < LITERAL)</td></tr>
+<tr><td>329</td><td>EQ_EXPR = . id !> LITERAL</td><td>[]</td><td>shift(330)</td></tr>
+<tr><td>330</td><td>EQ_EXPR = id . !> LITERAL</td><td>[]</td><td>shift(331)</td></tr>
+<tr><td>331</td><td>EQ_EXPR = id !> . LITERAL</td><td>[397, 399]</td><td>goto(332)</td></tr>
+<tr><td>332</td><td>EQ_EXPR = id !> LITERAL .</td><td>[]</td><td>reduce(EQ_EXPR -> id !> LITERAL)</td></tr>
+<tr><td>333</td><td>EQ_EXPR = . id !< LITERAL</td><td>[]</td><td>shift(334)</td></tr>
+<tr><td>334</td><td>EQ_EXPR = id . !< LITERAL</td><td>[]</td><td>shift(335)</td></tr>
+<tr><td>335</td><td>EQ_EXPR = id !< . LITERAL</td><td>[397, 399]</td><td>goto(336)</td></tr>
+<tr><td>336</td><td>EQ_EXPR = id !< LITERAL .</td><td>[]</td><td>reduce(EQ_EXPR -> id !< LITERAL)</td></tr>
+<tr><td>337</td><td>EQ_EXPR = . id >= LITERAL</td><td>[]</td><td>shift(338)</td></tr>
+<tr><td>338</td><td>EQ_EXPR = id . >= LITERAL</td><td>[]</td><td>shift(339)</td></tr>
+<tr><td>339</td><td>EQ_EXPR = id >= . LITERAL</td><td>[397, 399]</td><td>goto(340)</td></tr>
+<tr><td>340</td><td>EQ_EXPR = id >= LITERAL .</td><td>[]</td><td>reduce(EQ_EXPR -> id >= LITERAL)</td></tr>
+<tr><td>341</td><td>EQ_EXPR = . id <= LITERAL</td><td>[]</td><td>shift(342)</td></tr>
+<tr><td>342</td><td>EQ_EXPR = id . <= LITERAL</td><td>[]</td><td>shift(343)</td></tr>
+<tr><td>343</td><td>EQ_EXPR = id <= . LITERAL</td><td>[397, 399]</td><td>goto(344)</td></tr>
+<tr><td>344</td><td>EQ_EXPR = id <= LITERAL .</td><td>[]</td><td>reduce(EQ_EXPR -> id <= LITERAL)</td></tr>
+<tr><td>345</td><td>EQ_EXPR = . id like LITERAL</td><td>[]</td><td>shift(346)</td></tr>
+<tr><td>346</td><td>EQ_EXPR = id . like LITERAL</td><td>[]</td><td>shift(347)</td></tr>
+<tr><td>347</td><td>EQ_EXPR = id like . LITERAL</td><td>[397, 399]</td><td>goto(348)</td></tr>
+<tr><td>348</td><td>EQ_EXPR = id like LITERAL .</td><td>[]</td><td>reduce(EQ_EXPR -> id like LITERAL)</td></tr>
+<tr><td>349</td><td>EQ_EXPR = . id ~ LITERAL</td><td>[]</td><td>shift(350)</td></tr>
+<tr><td>350</td><td>EQ_EXPR = id . ~ LITERAL</td><td>[]</td><td>shift(351)</td></tr>
+<tr><td>351</td><td>EQ_EXPR = id ~ . LITERAL</td><td>[397, 399]</td><td>goto(352)</td></tr>
+<tr><td>352</td><td>EQ_EXPR = id ~ LITERAL .</td><td>[]</td><td>reduce(EQ_EXPR -> id ~ LITERAL)</td></tr>
+<tr><td>353</td><td>EQ_EXPR = . LITERAL = id</td><td>[397, 399]</td><td>goto(354)</td></tr>
+<tr><td>354</td><td>EQ_EXPR = LITERAL . = id</td><td>[]</td><td>shift(355)</td></tr>
+<tr><td>355</td><td>EQ_EXPR = LITERAL = . id</td><td>[]</td><td>shift(356)</td></tr>
+<tr><td>356</td><td>EQ_EXPR = LITERAL = id .</td><td>[]</td><td>reduce(EQ_EXPR -> LITERAL = id)</td></tr>
+<tr><td>357</td><td>EQ_EXPR = . LITERAL != id</td><td>[397, 399]</td><td>goto(358)</td></tr>
+<tr><td>358</td><td>EQ_EXPR = LITERAL . != id</td><td>[]</td><td>shift(359)</td></tr>
+<tr><td>359</td><td>EQ_EXPR = LITERAL != . id</td><td>[]</td><td>shift(360)</td></tr>
+<tr><td>360</td><td>EQ_EXPR = LITERAL != id .</td><td>[]</td><td>reduce(EQ_EXPR -> LITERAL != id)</td></tr>
+<tr><td>361</td><td>EQ_EXPR = . LITERAL <> id</td><td>[397, 399]</td><td>goto(362)</td></tr>
+<tr><td>362</td><td>EQ_EXPR = LITERAL . <> id</td><td>[]</td><td>shift(363)</td></tr>
+<tr><td>363</td><td>EQ_EXPR = LITERAL <> . id</td><td>[]</td><td>shift(364)</td></tr>
+<tr><td>364</td><td>EQ_EXPR = LITERAL <> id .</td><td>[]</td><td>reduce(EQ_EXPR -> LITERAL <> id)</td></tr>
+<tr><td>365</td><td>EQ_EXPR = . LITERAL > id</td><td>[397, 399]</td><td>goto(366)</td></tr>
+<tr><td>366</td><td>EQ_EXPR = LITERAL . > id</td><td>[]</td><td>shift(367)</td></tr>
+<tr><td>367</td><td>EQ_EXPR = LITERAL > . id</td><td>[]</td><td>shift(368)</td></tr>
+<tr><td>368</td><td>EQ_EXPR = LITERAL > id .</td><td>[]</td><td>reduce(EQ_EXPR -> LITERAL > id)</td></tr>
+<tr><td>369</td><td>EQ_EXPR = . LITERAL < id</td><td>[397, 399]</td><td>goto(370)</td></tr>
+<tr><td>370</td><td>EQ_EXPR = LITERAL . < id</td><td>[]</td><td>shift(371)</td></tr>
+<tr><td>371</td><td>EQ_EXPR = LITERAL < . id</td><td>[]</td><td>shift(372)</td></tr>
+<tr><td>372</td><td>EQ_EXPR = LITERAL < id .</td><td>[]</td><td>reduce(EQ_EXPR -> LITERAL < id)</td></tr>
+<tr><td>373</td><td>EQ_EXPR = . LITERAL !> id</td><td>[397, 399]</td><td>goto(374)</td></tr>
+<tr><td>374</td><td>EQ_EXPR = LITERAL . !> id</td><td>[]</td><td>shift(375)</td></tr>
+<tr><td>375</td><td>EQ_EXPR = LITERAL !> . id</td><td>[]</td><td>shift(376)</td></tr>
+<tr><td>376</td><td>EQ_EXPR = LITERAL !> id .</td><td>[]</td><td>reduce(EQ_EXPR -> LITERAL !> id)</td></tr>
+<tr><td>377</td><td>EQ_EXPR = . LITERAL !< id</td><td>[397, 399]</td><td>goto(378)</td></tr>
+<tr><td>378</td><td>EQ_EXPR = LITERAL . !< id</td><td>[]</td><td>shift(379)</td></tr>
+<tr><td>379</td><td>EQ_EXPR = LITERAL !< . id</td><td>[]</td><td>shift(380)</td></tr>
+<tr><td>380</td><td>EQ_EXPR = LITERAL !< id .</td><td>[]</td><td>reduce(EQ_EXPR -> LITERAL !< id)</td></tr>
+<tr><td>381</td><td>EQ_EXPR = . LITERAL >= id</td><td>[397, 399]</td><td>goto(382)</td></tr>
+<tr><td>382</td><td>EQ_EXPR = LITERAL . >= id</td><td>[]</td><td>shift(383)</td></tr>
+<tr><td>383</td><td>EQ_EXPR = LITERAL >= . id</td><td>[]</td><td>shift(384)</td></tr>
+<tr><td>384</td><td>EQ_EXPR = LITERAL >= id .</td><td>[]</td><td>reduce(EQ_EXPR -> LITERAL >= id)</td></tr>
+<tr><td>385</td><td>EQ_EXPR = . LITERAL <= id</td><td>[397, 399]</td><td>goto(386)</td></tr>
+<tr><td>386</td><td>EQ_EXPR = LITERAL . <= id</td><td>[]</td><td>shift(387)</td></tr>
+<tr><td>387</td><td>EQ_EXPR = LITERAL <= . id</td><td>[]</td><td>shift(388)</td></tr>
+<tr><td>388</td><td>EQ_EXPR = LITERAL <= id .</td><td>[]</td><td>reduce(EQ_EXPR -> LITERAL <= id)</td></tr>
+<tr><td>389</td><td>EQ_EXPR = . LITERAL like id</td><td>[397, 399]</td><td>goto(390)</td></tr>
+<tr><td>390</td><td>EQ_EXPR = LITERAL . like id</td><td>[]</td><td>shift(391)</td></tr>
+<tr><td>391</td><td>EQ_EXPR = LITERAL like . id</td><td>[]</td><td>shift(392)</td></tr>
+<tr><td>392</td><td>EQ_EXPR = LITERAL like id .</td><td>[]</td><td>reduce(EQ_EXPR -> LITERAL like id)</td></tr>
+<tr><td>393</td><td>EQ_EXPR = . LITERAL ~ id</td><td>[397, 399]</td><td>goto(394)</td></tr>
+<tr><td>394</td><td>EQ_EXPR = LITERAL . ~ id</td><td>[]</td><td>shift(395)</td></tr>
+<tr><td>395</td><td>EQ_EXPR = LITERAL ~ . id</td><td>[]</td><td>shift(396)</td></tr>
+<tr><td>396</td><td>EQ_EXPR = LITERAL ~ id .</td><td>[]</td><td>reduce(EQ_EXPR -> LITERAL ~ id)</td></tr>
+<tr><td>397</td><td>LITERAL = . number</td><td>[]</td><td>shift(398)</td></tr>
+<tr><td>398</td><td>LITERAL = number .</td><td>[]</td><td>reduce(LITERAL -> number)</td></tr>
+<tr><td>399</td><td>LITERAL = . string</td><td>[]</td><td>shift(400)</td></tr>
+<tr><td>400</td><td>LITERAL = string .</td><td>[]</td><td>reduce(LITERAL -> string)</td></tr>
+<tr><td>401</td><td>AGGREGATE = . id ( id )</td><td>[]</td><td>shift(402)</td></tr>
+<tr><td>402</td><td>AGGREGATE = id . ( id )</td><td>[]</td><td>shift(403)</td></tr>
+<tr><td>403</td><td>AGGREGATE = id ( . id )</td><td>[]</td><td>shift(404)</td></tr>
+<tr><td>404</td><td>AGGREGATE = id ( id . )</td><td>[]</td><td>shift(405)</td></tr>
+<tr><td>405</td><td>AGGREGATE = id ( id ) .</td><td>[]</td><td>reduce(AGGREGATE -> id ( id ))</td></tr>
+<tr><td>406</td><td>AGGREGATE = . id ( * )</td><td>[]</td><td>shift(407)</td></tr>
+<tr><td>407</td><td>AGGREGATE = id . ( * )</td><td>[]</td><td>shift(408)</td></tr>
+<tr><td>408</td><td>AGGREGATE = id ( . * )</td><td>[]</td><td>shift(409)</td></tr>
+<tr><td>409</td><td>AGGREGATE = id ( * . )</td><td>[]</td><td>shift(410)</td></tr>
+<tr><td>410</td><td>AGGREGATE = id ( * ) .</td><td>[]</td><td>reduce(AGGREGATE -> id ( * ))</td></tr>
 </tbody>
 </table>
 <h1>DFA Table</h1>
@@ -452,10 +613,10 @@ AGGREGATE ->
     <tr><th>Rule</th><th>SLR Lookaheads</th></tr>
   </thead>
 <tbody>
-<tr class="even-state"><td rowspan="27">0</td><td>0</td><td>QUERY' = . QUERY</td><td>QUERY -> goto(1)</td><td></td><td></td></tr>
+<tr class="even-state"><td rowspan="29">0</td><td>0</td><td>QUERY' = . QUERY</td><td>QUERY -> goto(1)</td><td></td><td></td></tr>
 <tr class="even-state"><td>2</td><td>QUERY = . SELECT FROM WHERE GROUP_BY ORDER_BY LIMIT</td><td>SELECT -> goto(2)</td><td></td><td></td></tr>
-<tr class="even-state"><td>134</td><td>SELECT = . select distinct FIELD_LIST</td><td>select -> shift(3)</td><td></td><td></td></tr>
-<tr class="even-state"><td>138</td><td>SELECT = . select FIELD_LIST</td><td></td><td></td><td></td></tr>
+<tr class="even-state"><td>141</td><td>SELECT = . select distinct FIELD_LIST</td><td>select -> shift(3)</td><td></td><td></td></tr>
+<tr class="even-state"><td>145</td><td>SELECT = . select FIELD_LIST</td><td>delete -> shift(4)</td><td></td><td></td></tr>
 <tr class="even-state"><td>9</td><td>QUERY = . SELECT FROM GROUP_BY ORDER_BY LIMIT</td><td></td><td></td><td></td></tr>
 <tr class="even-state"><td>15</td><td>QUERY = . SELECT FROM WHERE ORDER_BY LIMIT</td><td></td><td></td><td></td></tr>
 <tr class="even-state"><td>21</td><td>QUERY = . SELECT FROM ORDER_BY LIMIT</td><td></td><td></td><td></td></tr>
@@ -479,9 +640,11 @@ AGGREGATE ->
 <tr class="even-state"><td>117</td><td>QUERY = . SELECT FROM GROUP_BY HAVING ORDER_BY</td><td></td><td></td><td></td></tr>
 <tr class="even-state"><td>123</td><td>QUERY = . SELECT FROM WHERE GROUP_BY HAVING</td><td></td><td></td><td></td></tr>
 <tr class="even-state"><td>129</td><td>QUERY = . SELECT FROM GROUP_BY HAVING</td><td></td><td></td><td></td></tr>
+<tr class="even-state"><td>134</td><td>QUERY = . delete FROM WHERE</td><td></td><td></td><td></td></tr>
+<tr class="even-state"><td>138</td><td>QUERY = . delete FROM</td><td></td><td></td><td></td></tr>
 <tr class="odd-state"><td rowspan="1">1</td><td>1</td><td>QUERY' = QUERY .</td><td></td><td>QUERY' -> QUERY</td><td>$</td></tr>
-<tr class="even-state"><td rowspan="25">2</td><td>3</td><td>QUERY = SELECT . FROM WHERE GROUP_BY ORDER_BY LIMIT</td><td>FROM -> goto(4)</td><td></td><td></td></tr>
-<tr class="even-state"><td>10</td><td>QUERY = SELECT . FROM GROUP_BY ORDER_BY LIMIT</td><td>from -> shift(5)</td><td></td><td></td></tr>
+<tr class="even-state"><td rowspan="25">2</td><td>3</td><td>QUERY = SELECT . FROM WHERE GROUP_BY ORDER_BY LIMIT</td><td>FROM -> goto(5)</td><td></td><td></td></tr>
+<tr class="even-state"><td>10</td><td>QUERY = SELECT . FROM GROUP_BY ORDER_BY LIMIT</td><td>from -> shift(6)</td><td></td><td></td></tr>
 <tr class="even-state"><td>16</td><td>QUERY = SELECT . FROM WHERE ORDER_BY LIMIT</td><td></td><td></td><td></td></tr>
 <tr class="even-state"><td>22</td><td>QUERY = SELECT . FROM ORDER_BY LIMIT</td><td></td><td></td><td></td></tr>
 <tr class="even-state"><td>27</td><td>QUERY = SELECT . FROM WHERE GROUP_BY LIMIT</td><td></td><td></td><td></td></tr>
@@ -504,323 +667,594 @@ AGGREGATE ->
 <tr class="even-state"><td>118</td><td>QUERY = SELECT . FROM GROUP_BY HAVING ORDER_BY</td><td></td><td></td><td></td></tr>
 <tr class="even-state"><td>124</td><td>QUERY = SELECT . FROM WHERE GROUP_BY HAVING</td><td></td><td></td><td></td></tr>
 <tr class="even-state"><td>130</td><td>QUERY = SELECT . FROM GROUP_BY HAVING</td><td></td><td></td><td></td></tr>
-<tr class="even-state"><td>161</td><td>FROM = . from id</td><td></td><td></td><td></td></tr>
-<tr class="odd-state"><td rowspan="11">3</td><td>135</td><td>SELECT = select . distinct FIELD_LIST</td><td>distinct -> shift(6)</td><td></td><td></td></tr>
-<tr class="odd-state"><td>139</td><td>SELECT = select . FIELD_LIST</td><td>FIELD_LIST -> goto(7)</td><td></td><td></td></tr>
-<tr class="odd-state"><td>141</td><td>FIELD_LIST = . FIELD_LIST , FIELD</td><td>FIELD -> goto(8)</td><td></td><td></td></tr>
-<tr class="odd-state"><td>145</td><td>FIELD_LIST = . FIELD</td><td>id -> shift(9)</td><td></td><td></td></tr>
-<tr class="odd-state"><td>147</td><td>FIELD = . id</td><td>* -> shift(10)</td><td></td><td></td></tr>
-<tr class="odd-state"><td>149</td><td>FIELD = . *</td><td>AGGREGATE -> goto(11)</td><td></td><td></td></tr>
-<tr class="odd-state"><td>151</td><td>FIELD = . id as id</td><td></td><td></td><td></td></tr>
-<tr class="odd-state"><td>155</td><td>FIELD = . AGGREGATE</td><td></td><td></td><td></td></tr>
-<tr class="odd-state"><td>275</td><td>AGGREGATE = . id ( id )</td><td></td><td></td><td></td></tr>
-<tr class="odd-state"><td>280</td><td>AGGREGATE = . id ( * )</td><td></td><td></td><td></td></tr>
-<tr class="odd-state"><td>157</td><td>FIELD = . AGGREGATE as id</td><td></td><td></td><td></td></tr>
-<tr class="even-state"><td rowspan="30">4</td><td>4</td><td>QUERY = SELECT FROM . WHERE GROUP_BY ORDER_BY LIMIT</td><td>WHERE -> goto(12)</td><td>QUERY -> SELECT FROM</td><td>$</td></tr>
-<tr class="even-state"><td>11</td><td>QUERY = SELECT FROM . GROUP_BY ORDER_BY LIMIT</td><td>GROUP_BY -> goto(13)</td><td></td><td></td></tr>
-<tr class="even-state"><td>17</td><td>QUERY = SELECT FROM . WHERE ORDER_BY LIMIT</td><td>ORDER_BY -> goto(14)</td><td></td><td></td></tr>
-<tr class="even-state"><td>23</td><td>QUERY = SELECT FROM . ORDER_BY LIMIT</td><td>LIMIT -> goto(15)</td><td></td><td></td></tr>
-<tr class="even-state"><td>28</td><td>QUERY = SELECT FROM . WHERE GROUP_BY LIMIT</td><td>where -> shift(16)</td><td></td><td></td></tr>
-<tr class="even-state"><td>34</td><td>QUERY = SELECT FROM . GROUP_BY LIMIT</td><td>group -> shift(17)</td><td></td><td></td></tr>
-<tr class="even-state"><td>39</td><td>QUERY = SELECT FROM . WHERE LIMIT</td><td>order -> shift(18)</td><td></td><td></td></tr>
-<tr class="even-state"><td>44</td><td>QUERY = SELECT FROM . LIMIT</td><td>limit -> shift(19)</td><td></td><td></td></tr>
-<tr class="even-state"><td>48</td><td>QUERY = SELECT FROM . WHERE GROUP_BY ORDER_BY</td><td></td><td></td><td></td></tr>
-<tr class="even-state"><td>54</td><td>QUERY = SELECT FROM . GROUP_BY ORDER_BY</td><td></td><td></td><td></td></tr>
-<tr class="even-state"><td>59</td><td>QUERY = SELECT FROM . WHERE ORDER_BY</td><td></td><td></td><td></td></tr>
-<tr class="even-state"><td>64</td><td>QUERY = SELECT FROM . ORDER_BY</td><td></td><td></td><td></td></tr>
-<tr class="even-state"><td>68</td><td>QUERY = SELECT FROM . WHERE GROUP_BY</td><td></td><td></td><td></td></tr>
-<tr class="even-state"><td>73</td><td>QUERY = SELECT FROM . GROUP_BY</td><td></td><td></td><td></td></tr>
-<tr class="even-state"><td>77</td><td>QUERY = SELECT FROM . WHERE</td><td></td><td></td><td></td></tr>
-<tr class="even-state"><td>81</td><td>QUERY = SELECT FROM .</td><td></td><td></td><td></td></tr>
-<tr class="even-state"><td>84</td><td>QUERY = SELECT FROM . WHERE GROUP_BY HAVING ORDER_BY LIMIT</td><td></td><td></td><td></td></tr>
-<tr class="even-state"><td>92</td><td>QUERY = SELECT FROM . GROUP_BY HAVING ORDER_BY LIMIT</td><td></td><td></td><td></td></tr>
-<tr class="even-state"><td>99</td><td>QUERY = SELECT FROM . WHERE GROUP_BY HAVING LIMIT</td><td></td><td></td><td></td></tr>
-<tr class="even-state"><td>106</td><td>QUERY = SELECT FROM . GROUP_BY HAVING LIMIT</td><td></td><td></td><td></td></tr>
-<tr class="even-state"><td>112</td><td>QUERY = SELECT FROM . WHERE GROUP_BY HAVING ORDER_BY</td><td></td><td></td><td></td></tr>
-<tr class="even-state"><td>119</td><td>QUERY = SELECT FROM . GROUP_BY HAVING ORDER_BY</td><td></td><td></td><td></td></tr>
-<tr class="even-state"><td>125</td><td>QUERY = SELECT FROM . WHERE GROUP_BY HAVING</td><td></td><td></td><td></td></tr>
-<tr class="even-state"><td>131</td><td>QUERY = SELECT FROM . GROUP_BY HAVING</td><td></td><td></td><td></td></tr>
-<tr class="even-state"><td>164</td><td>WHERE = . where EXPR</td><td></td><td></td><td></td></tr>
-<tr class="even-state"><td>170</td><td>GROUP_BY = . group by ID_LIST</td><td></td><td></td><td></td></tr>
-<tr class="even-state"><td>183</td><td>ORDER_BY = . order by id asc</td><td></td><td></td><td></td></tr>
-<tr class="even-state"><td>188</td><td>ORDER_BY = . order by id desc</td><td></td><td></td><td></td></tr>
-<tr class="even-state"><td>193</td><td>ORDER_BY = . order by id</td><td></td><td></td><td></td></tr>
-<tr class="even-state"><td>167</td><td>LIMIT = . limit number</td><td></td><td></td><td></td></tr>
-<tr class="odd-state"><td rowspan="1">5</td><td>162</td><td>FROM = from . id</td><td>id -> shift(20)</td><td></td><td></td></tr>
-<tr class="even-state"><td rowspan="10">6</td><td>136</td><td>SELECT = select distinct . FIELD_LIST</td><td>FIELD_LIST -> goto(21)</td><td></td><td></td></tr>
-<tr class="even-state"><td>141</td><td>FIELD_LIST = . FIELD_LIST , FIELD</td><td>FIELD -> goto(8)</td><td></td><td></td></tr>
-<tr class="even-state"><td>145</td><td>FIELD_LIST = . FIELD</td><td>id -> shift(9)</td><td></td><td></td></tr>
-<tr class="even-state"><td>147</td><td>FIELD = . id</td><td>* -> shift(10)</td><td></td><td></td></tr>
-<tr class="even-state"><td>149</td><td>FIELD = . *</td><td>AGGREGATE -> goto(11)</td><td></td><td></td></tr>
-<tr class="even-state"><td>151</td><td>FIELD = . id as id</td><td></td><td></td><td></td></tr>
-<tr class="even-state"><td>155</td><td>FIELD = . AGGREGATE</td><td></td><td></td><td></td></tr>
-<tr class="even-state"><td>275</td><td>AGGREGATE = . id ( id )</td><td></td><td></td><td></td></tr>
-<tr class="even-state"><td>280</td><td>AGGREGATE = . id ( * )</td><td></td><td></td><td></td></tr>
-<tr class="even-state"><td>157</td><td>FIELD = . AGGREGATE as id</td><td></td><td></td><td></td></tr>
-<tr class="odd-state"><td rowspan="2">7</td><td>140</td><td>SELECT = select FIELD_LIST .</td><td>, -> shift(22)</td><td>SELECT -> select FIELD_LIST</td><td>having limit order group where from</td></tr>
-<tr class="odd-state"><td>142</td><td>FIELD_LIST = FIELD_LIST . , FIELD</td><td></td><td></td><td></td></tr>
-<tr class="even-state"><td rowspan="1">8</td><td>146</td><td>FIELD_LIST = FIELD .</td><td></td><td>FIELD_LIST -> FIELD</td><td>, having limit order group where from</td></tr>
-<tr class="odd-state"><td rowspan="4">9</td><td>148</td><td>FIELD = id .</td><td>as -> shift(23)</td><td>FIELD -> id</td><td>, having limit order group where from</td></tr>
-<tr class="odd-state"><td>152</td><td>FIELD = id . as id</td><td>( -> shift(24)</td><td></td><td></td></tr>
-<tr class="odd-state"><td>276</td><td>AGGREGATE = id . ( id )</td><td></td><td></td><td></td></tr>
-<tr class="odd-state"><td>281</td><td>AGGREGATE = id . ( * )</td><td></td><td></td><td></td></tr>
-<tr class="even-state"><td rowspan="1">10</td><td>150</td><td>FIELD = * .</td><td></td><td>FIELD -> *</td><td>, having limit order group where from</td></tr>
-<tr class="odd-state"><td rowspan="2">11</td><td>156</td><td>FIELD = AGGREGATE .</td><td>as -> shift(25)</td><td>FIELD -> AGGREGATE</td><td>, having limit order group where from</td></tr>
-<tr class="odd-state"><td>158</td><td>FIELD = AGGREGATE . as id</td><td></td><td></td><td></td></tr>
-<tr class="even-state"><td rowspan="17">12</td><td>5</td><td>QUERY = SELECT FROM WHERE . GROUP_BY ORDER_BY LIMIT</td><td>GROUP_BY -> goto(26)</td><td>QUERY -> SELECT FROM WHERE</td><td>$</td></tr>
-<tr class="even-state"><td>18</td><td>QUERY = SELECT FROM WHERE . ORDER_BY LIMIT</td><td>ORDER_BY -> goto(27)</td><td></td><td></td></tr>
-<tr class="even-state"><td>29</td><td>QUERY = SELECT FROM WHERE . GROUP_BY LIMIT</td><td>LIMIT -> goto(28)</td><td></td><td></td></tr>
-<tr class="even-state"><td>40</td><td>QUERY = SELECT FROM WHERE . LIMIT</td><td>group -> shift(17)</td><td></td><td></td></tr>
-<tr class="even-state"><td>49</td><td>QUERY = SELECT FROM WHERE . GROUP_BY ORDER_BY</td><td>order -> shift(18)</td><td></td><td></td></tr>
-<tr class="even-state"><td>60</td><td>QUERY = SELECT FROM WHERE . ORDER_BY</td><td>limit -> shift(19)</td><td></td><td></td></tr>
-<tr class="even-state"><td>69</td><td>QUERY = SELECT FROM WHERE . GROUP_BY</td><td></td><td></td><td></td></tr>
+<tr class="even-state"><td>168</td><td>FROM = . from id</td><td></td><td></td><td></td></tr>
+<tr class="odd-state"><td rowspan="11">3</td><td>142</td><td>SELECT = select . distinct FIELD_LIST</td><td>distinct -> shift(7)</td><td></td><td></td></tr>
+<tr class="odd-state"><td>146</td><td>SELECT = select . FIELD_LIST</td><td>FIELD_LIST -> goto(8)</td><td></td><td></td></tr>
+<tr class="odd-state"><td>148</td><td>FIELD_LIST = . FIELD_LIST , FIELD</td><td>FIELD -> goto(9)</td><td></td><td></td></tr>
+<tr class="odd-state"><td>152</td><td>FIELD_LIST = . FIELD</td><td>id -> shift(10)</td><td></td><td></td></tr>
+<tr class="odd-state"><td>154</td><td>FIELD = . id</td><td>* -> shift(11)</td><td></td><td></td></tr>
+<tr class="odd-state"><td>156</td><td>FIELD = . *</td><td>AGGREGATE -> goto(12)</td><td></td><td></td></tr>
+<tr class="odd-state"><td>158</td><td>FIELD = . id as id</td><td></td><td></td><td></td></tr>
+<tr class="odd-state"><td>162</td><td>FIELD = . AGGREGATE</td><td></td><td></td><td></td></tr>
+<tr class="odd-state"><td>401</td><td>AGGREGATE = . id ( id )</td><td></td><td></td><td></td></tr>
+<tr class="odd-state"><td>406</td><td>AGGREGATE = . id ( * )</td><td></td><td></td><td></td></tr>
+<tr class="odd-state"><td>164</td><td>FIELD = . AGGREGATE as id</td><td></td><td></td><td></td></tr>
+<tr class="even-state"><td rowspan="3">4</td><td>135</td><td>QUERY = delete . FROM WHERE</td><td>FROM -> goto(13)</td><td></td><td></td></tr>
+<tr class="even-state"><td>139</td><td>QUERY = delete . FROM</td><td>from -> shift(6)</td><td></td><td></td></tr>
+<tr class="even-state"><td>168</td><td>FROM = . from id</td><td></td><td></td><td></td></tr>
+<tr class="odd-state"><td rowspan="32">5</td><td>4</td><td>QUERY = SELECT FROM . WHERE GROUP_BY ORDER_BY LIMIT</td><td>WHERE -> goto(14)</td><td>QUERY -> SELECT FROM</td><td>$</td></tr>
+<tr class="odd-state"><td>11</td><td>QUERY = SELECT FROM . GROUP_BY ORDER_BY LIMIT</td><td>GROUP_BY -> goto(15)</td><td></td><td></td></tr>
+<tr class="odd-state"><td>17</td><td>QUERY = SELECT FROM . WHERE ORDER_BY LIMIT</td><td>ORDER_BY -> goto(16)</td><td></td><td></td></tr>
+<tr class="odd-state"><td>23</td><td>QUERY = SELECT FROM . ORDER_BY LIMIT</td><td>LIMIT -> goto(17)</td><td></td><td></td></tr>
+<tr class="odd-state"><td>28</td><td>QUERY = SELECT FROM . WHERE GROUP_BY LIMIT</td><td>where -> shift(18)</td><td></td><td></td></tr>
+<tr class="odd-state"><td>34</td><td>QUERY = SELECT FROM . GROUP_BY LIMIT</td><td>group -> shift(19)</td><td></td><td></td></tr>
+<tr class="odd-state"><td>39</td><td>QUERY = SELECT FROM . WHERE LIMIT</td><td>order -> shift(20)</td><td></td><td></td></tr>
+<tr class="odd-state"><td>44</td><td>QUERY = SELECT FROM . LIMIT</td><td>limit -> shift(21)</td><td></td><td></td></tr>
+<tr class="odd-state"><td>48</td><td>QUERY = SELECT FROM . WHERE GROUP_BY ORDER_BY</td><td>fetch -> shift(22)</td><td></td><td></td></tr>
+<tr class="odd-state"><td>54</td><td>QUERY = SELECT FROM . GROUP_BY ORDER_BY</td><td></td><td></td><td></td></tr>
+<tr class="odd-state"><td>59</td><td>QUERY = SELECT FROM . WHERE ORDER_BY</td><td></td><td></td><td></td></tr>
+<tr class="odd-state"><td>64</td><td>QUERY = SELECT FROM . ORDER_BY</td><td></td><td></td><td></td></tr>
+<tr class="odd-state"><td>68</td><td>QUERY = SELECT FROM . WHERE GROUP_BY</td><td></td><td></td><td></td></tr>
+<tr class="odd-state"><td>73</td><td>QUERY = SELECT FROM . GROUP_BY</td><td></td><td></td><td></td></tr>
+<tr class="odd-state"><td>77</td><td>QUERY = SELECT FROM . WHERE</td><td></td><td></td><td></td></tr>
+<tr class="odd-state"><td>81</td><td>QUERY = SELECT FROM .</td><td></td><td></td><td></td></tr>
+<tr class="odd-state"><td>84</td><td>QUERY = SELECT FROM . WHERE GROUP_BY HAVING ORDER_BY LIMIT</td><td></td><td></td><td></td></tr>
+<tr class="odd-state"><td>92</td><td>QUERY = SELECT FROM . GROUP_BY HAVING ORDER_BY LIMIT</td><td></td><td></td><td></td></tr>
+<tr class="odd-state"><td>99</td><td>QUERY = SELECT FROM . WHERE GROUP_BY HAVING LIMIT</td><td></td><td></td><td></td></tr>
+<tr class="odd-state"><td>106</td><td>QUERY = SELECT FROM . GROUP_BY HAVING LIMIT</td><td></td><td></td><td></td></tr>
+<tr class="odd-state"><td>112</td><td>QUERY = SELECT FROM . WHERE GROUP_BY HAVING ORDER_BY</td><td></td><td></td><td></td></tr>
+<tr class="odd-state"><td>119</td><td>QUERY = SELECT FROM . GROUP_BY HAVING ORDER_BY</td><td></td><td></td><td></td></tr>
+<tr class="odd-state"><td>125</td><td>QUERY = SELECT FROM . WHERE GROUP_BY HAVING</td><td></td><td></td><td></td></tr>
+<tr class="odd-state"><td>131</td><td>QUERY = SELECT FROM . GROUP_BY HAVING</td><td></td><td></td><td></td></tr>
+<tr class="odd-state"><td>171</td><td>WHERE = . where EXPR</td><td></td><td></td><td></td></tr>
+<tr class="odd-state"><td>189</td><td>GROUP_BY = . group by ID_LIST</td><td></td><td></td><td></td></tr>
+<tr class="odd-state"><td>205</td><td>ORDER_BY = . order by id asc</td><td></td><td></td><td></td></tr>
+<tr class="odd-state"><td>210</td><td>ORDER_BY = . order by id desc</td><td></td><td></td><td></td></tr>
+<tr class="odd-state"><td>215</td><td>ORDER_BY = . order by id</td><td></td><td></td><td></td></tr>
+<tr class="odd-state"><td>174</td><td>LIMIT = . limit number</td><td></td><td></td><td></td></tr>
+<tr class="odd-state"><td>177</td><td>LIMIT = . fetch first number rows only</td><td></td><td></td><td></td></tr>
+<tr class="odd-state"><td>183</td><td>LIMIT = . fetch first number row only</td><td></td><td></td><td></td></tr>
+<tr class="even-state"><td rowspan="1">6</td><td>169</td><td>FROM = from . id</td><td>id -> shift(23)</td><td></td><td></td></tr>
+<tr class="odd-state"><td rowspan="10">7</td><td>143</td><td>SELECT = select distinct . FIELD_LIST</td><td>FIELD_LIST -> goto(24)</td><td></td><td></td></tr>
+<tr class="odd-state"><td>148</td><td>FIELD_LIST = . FIELD_LIST , FIELD</td><td>FIELD -> goto(9)</td><td></td><td></td></tr>
+<tr class="odd-state"><td>152</td><td>FIELD_LIST = . FIELD</td><td>id -> shift(10)</td><td></td><td></td></tr>
+<tr class="odd-state"><td>154</td><td>FIELD = . id</td><td>* -> shift(11)</td><td></td><td></td></tr>
+<tr class="odd-state"><td>156</td><td>FIELD = . *</td><td>AGGREGATE -> goto(12)</td><td></td><td></td></tr>
+<tr class="odd-state"><td>158</td><td>FIELD = . id as id</td><td></td><td></td><td></td></tr>
+<tr class="odd-state"><td>162</td><td>FIELD = . AGGREGATE</td><td></td><td></td><td></td></tr>
+<tr class="odd-state"><td>401</td><td>AGGREGATE = . id ( id )</td><td></td><td></td><td></td></tr>
+<tr class="odd-state"><td>406</td><td>AGGREGATE = . id ( * )</td><td></td><td></td><td></td></tr>
+<tr class="odd-state"><td>164</td><td>FIELD = . AGGREGATE as id</td><td></td><td></td><td></td></tr>
+<tr class="even-state"><td rowspan="2">8</td><td>147</td><td>SELECT = select FIELD_LIST .</td><td>, -> shift(25)</td><td>SELECT -> select FIELD_LIST</td><td>having fetch limit order group where from</td></tr>
+<tr class="even-state"><td>149</td><td>FIELD_LIST = FIELD_LIST . , FIELD</td><td></td><td></td><td></td></tr>
+<tr class="odd-state"><td rowspan="1">9</td><td>153</td><td>FIELD_LIST = FIELD .</td><td></td><td>FIELD_LIST -> FIELD</td><td>, having fetch limit order group where from</td></tr>
+<tr class="even-state"><td rowspan="4">10</td><td>155</td><td>FIELD = id .</td><td>as -> shift(26)</td><td>FIELD -> id</td><td>, having fetch limit order group where from</td></tr>
+<tr class="even-state"><td>159</td><td>FIELD = id . as id</td><td>( -> shift(27)</td><td></td><td></td></tr>
+<tr class="even-state"><td>402</td><td>AGGREGATE = id . ( id )</td><td></td><td></td><td></td></tr>
+<tr class="even-state"><td>407</td><td>AGGREGATE = id . ( * )</td><td></td><td></td><td></td></tr>
+<tr class="odd-state"><td rowspan="1">11</td><td>157</td><td>FIELD = * .</td><td></td><td>FIELD -> *</td><td>, having fetch limit order group where from</td></tr>
+<tr class="even-state"><td rowspan="2">12</td><td>163</td><td>FIELD = AGGREGATE .</td><td>as -> shift(28)</td><td>FIELD -> AGGREGATE</td><td>, having fetch limit order group where from</td></tr>
+<tr class="even-state"><td>165</td><td>FIELD = AGGREGATE . as id</td><td></td><td></td><td></td></tr>
+<tr class="odd-state"><td rowspan="3">13</td><td>136</td><td>QUERY = delete FROM . WHERE</td><td>WHERE -> goto(29)</td><td>QUERY -> delete FROM</td><td>$</td></tr>
+<tr class="odd-state"><td>140</td><td>QUERY = delete FROM .</td><td>where -> shift(18)</td><td></td><td></td></tr>
+<tr class="odd-state"><td>171</td><td>WHERE = . where EXPR</td><td></td><td></td><td></td></tr>
+<tr class="even-state"><td rowspan="19">14</td><td>5</td><td>QUERY = SELECT FROM WHERE . GROUP_BY ORDER_BY LIMIT</td><td>GROUP_BY -> goto(30)</td><td>QUERY -> SELECT FROM WHERE</td><td>$</td></tr>
+<tr class="even-state"><td>18</td><td>QUERY = SELECT FROM WHERE . ORDER_BY LIMIT</td><td>ORDER_BY -> goto(31)</td><td></td><td></td></tr>
+<tr class="even-state"><td>29</td><td>QUERY = SELECT FROM WHERE . GROUP_BY LIMIT</td><td>LIMIT -> goto(32)</td><td></td><td></td></tr>
+<tr class="even-state"><td>40</td><td>QUERY = SELECT FROM WHERE . LIMIT</td><td>group -> shift(19)</td><td></td><td></td></tr>
+<tr class="even-state"><td>49</td><td>QUERY = SELECT FROM WHERE . GROUP_BY ORDER_BY</td><td>order -> shift(20)</td><td></td><td></td></tr>
+<tr class="even-state"><td>60</td><td>QUERY = SELECT FROM WHERE . ORDER_BY</td><td>limit -> shift(21)</td><td></td><td></td></tr>
+<tr class="even-state"><td>69</td><td>QUERY = SELECT FROM WHERE . GROUP_BY</td><td>fetch -> shift(22)</td><td></td><td></td></tr>
 <tr class="even-state"><td>78</td><td>QUERY = SELECT FROM WHERE .</td><td></td><td></td><td></td></tr>
 <tr class="even-state"><td>85</td><td>QUERY = SELECT FROM WHERE . GROUP_BY HAVING ORDER_BY LIMIT</td><td></td><td></td><td></td></tr>
 <tr class="even-state"><td>100</td><td>QUERY = SELECT FROM WHERE . GROUP_BY HAVING LIMIT</td><td></td><td></td><td></td></tr>
 <tr class="even-state"><td>113</td><td>QUERY = SELECT FROM WHERE . GROUP_BY HAVING ORDER_BY</td><td></td><td></td><td></td></tr>
 <tr class="even-state"><td>126</td><td>QUERY = SELECT FROM WHERE . GROUP_BY HAVING</td><td></td><td></td><td></td></tr>
-<tr class="even-state"><td>170</td><td>GROUP_BY = . group by ID_LIST</td><td></td><td></td><td></td></tr>
-<tr class="even-state"><td>183</td><td>ORDER_BY = . order by id asc</td><td></td><td></td><td></td></tr>
-<tr class="even-state"><td>188</td><td>ORDER_BY = . order by id desc</td><td></td><td></td><td></td></tr>
-<tr class="even-state"><td>193</td><td>ORDER_BY = . order by id</td><td></td><td></td><td></td></tr>
-<tr class="even-state"><td>167</td><td>LIMIT = . limit number</td><td></td><td></td><td></td></tr>
-<tr class="odd-state"><td rowspan="13">13</td><td>12</td><td>QUERY = SELECT FROM GROUP_BY . ORDER_BY LIMIT</td><td>ORDER_BY -> goto(29)</td><td>QUERY -> SELECT FROM GROUP_BY</td><td>$</td></tr>
-<tr class="odd-state"><td>35</td><td>QUERY = SELECT FROM GROUP_BY . LIMIT</td><td>LIMIT -> goto(30)</td><td></td><td></td></tr>
-<tr class="odd-state"><td>55</td><td>QUERY = SELECT FROM GROUP_BY . ORDER_BY</td><td>HAVING -> goto(31)</td><td></td><td></td></tr>
-<tr class="odd-state"><td>74</td><td>QUERY = SELECT FROM GROUP_BY .</td><td>order -> shift(18)</td><td></td><td></td></tr>
-<tr class="odd-state"><td>93</td><td>QUERY = SELECT FROM GROUP_BY . HAVING ORDER_BY LIMIT</td><td>limit -> shift(19)</td><td></td><td></td></tr>
-<tr class="odd-state"><td>107</td><td>QUERY = SELECT FROM GROUP_BY . HAVING LIMIT</td><td>having -> shift(32)</td><td></td><td></td></tr>
-<tr class="odd-state"><td>120</td><td>QUERY = SELECT FROM GROUP_BY . HAVING ORDER_BY</td><td></td><td></td><td></td></tr>
+<tr class="even-state"><td>189</td><td>GROUP_BY = . group by ID_LIST</td><td></td><td></td><td></td></tr>
+<tr class="even-state"><td>205</td><td>ORDER_BY = . order by id asc</td><td></td><td></td><td></td></tr>
+<tr class="even-state"><td>210</td><td>ORDER_BY = . order by id desc</td><td></td><td></td><td></td></tr>
+<tr class="even-state"><td>215</td><td>ORDER_BY = . order by id</td><td></td><td></td><td></td></tr>
+<tr class="even-state"><td>174</td><td>LIMIT = . limit number</td><td></td><td></td><td></td></tr>
+<tr class="even-state"><td>177</td><td>LIMIT = . fetch first number rows only</td><td></td><td></td><td></td></tr>
+<tr class="even-state"><td>183</td><td>LIMIT = . fetch first number row only</td><td></td><td></td><td></td></tr>
+<tr class="odd-state"><td rowspan="16">15</td><td>12</td><td>QUERY = SELECT FROM GROUP_BY . ORDER_BY LIMIT</td><td>ORDER_BY -> goto(33)</td><td>QUERY -> SELECT FROM GROUP_BY</td><td>$</td></tr>
+<tr class="odd-state"><td>35</td><td>QUERY = SELECT FROM GROUP_BY . LIMIT</td><td>LIMIT -> goto(34)</td><td></td><td></td></tr>
+<tr class="odd-state"><td>55</td><td>QUERY = SELECT FROM GROUP_BY . ORDER_BY</td><td>HAVING -> goto(35)</td><td></td><td></td></tr>
+<tr class="odd-state"><td>74</td><td>QUERY = SELECT FROM GROUP_BY .</td><td>order -> shift(20)</td><td></td><td></td></tr>
+<tr class="odd-state"><td>93</td><td>QUERY = SELECT FROM GROUP_BY . HAVING ORDER_BY LIMIT</td><td>limit -> shift(21)</td><td></td><td></td></tr>
+<tr class="odd-state"><td>107</td><td>QUERY = SELECT FROM GROUP_BY . HAVING LIMIT</td><td>fetch -> shift(22)</td><td></td><td></td></tr>
+<tr class="odd-state"><td>120</td><td>QUERY = SELECT FROM GROUP_BY . HAVING ORDER_BY</td><td>having -> shift(36)</td><td></td><td></td></tr>
 <tr class="odd-state"><td>132</td><td>QUERY = SELECT FROM GROUP_BY . HAVING</td><td></td><td></td><td></td></tr>
-<tr class="odd-state"><td>183</td><td>ORDER_BY = . order by id asc</td><td></td><td></td><td></td></tr>
-<tr class="odd-state"><td>188</td><td>ORDER_BY = . order by id desc</td><td></td><td></td><td></td></tr>
-<tr class="odd-state"><td>193</td><td>ORDER_BY = . order by id</td><td></td><td></td><td></td></tr>
-<tr class="odd-state"><td>167</td><td>LIMIT = . limit number</td><td></td><td></td><td></td></tr>
-<tr class="odd-state"><td>180</td><td>HAVING = . having EXPR</td><td></td><td></td><td></td></tr>
-<tr class="even-state"><td rowspan="3">14</td><td>24</td><td>QUERY = SELECT FROM ORDER_BY . LIMIT</td><td>LIMIT -> goto(33)</td><td>QUERY -> SELECT FROM ORDER_BY</td><td>$</td></tr>
-<tr class="even-state"><td>65</td><td>QUERY = SELECT FROM ORDER_BY .</td><td>limit -> shift(19)</td><td></td><td></td></tr>
-<tr class="even-state"><td>167</td><td>LIMIT = . limit number</td><td></td><td></td><td></td></tr>
-<tr class="odd-state"><td rowspan="1">15</td><td>45</td><td>QUERY = SELECT FROM LIMIT .</td><td></td><td>QUERY -> SELECT FROM LIMIT</td><td>$</td></tr>
-<tr class="even-state"><td rowspan="22">16</td><td>165</td><td>WHERE = where . EXPR</td><td>EXPR -> goto(34)</td><td></td><td></td></tr>
-<tr class="even-state"><td>197</td><td>EXPR = . EQ_EXPR</td><td>EQ_EXPR -> goto(35)</td><td></td><td></td></tr>
-<tr class="even-state"><td>199</td><td>EQ_EXPR = . id = LITERAL</td><td>id -> shift(36)</td><td></td><td></td></tr>
-<tr class="even-state"><td>203</td><td>EQ_EXPR = . id <> LITERAL</td><td>LITERAL -> goto(37)</td><td></td><td></td></tr>
-<tr class="even-state"><td>207</td><td>EQ_EXPR = . id > LITERAL</td><td>number -> shift(38)</td><td></td><td></td></tr>
-<tr class="even-state"><td>211</td><td>EQ_EXPR = . id < LITERAL</td><td>string -> shift(39)</td><td></td><td></td></tr>
-<tr class="even-state"><td>215</td><td>EQ_EXPR = . id !> LITERAL</td><td></td><td></td><td></td></tr>
-<tr class="even-state"><td>219</td><td>EQ_EXPR = . id !< LITERAL</td><td></td><td></td><td></td></tr>
-<tr class="even-state"><td>223</td><td>EQ_EXPR = . id >= LITERAL</td><td></td><td></td><td></td></tr>
-<tr class="even-state"><td>227</td><td>EQ_EXPR = . id <= LITERAL</td><td></td><td></td><td></td></tr>
-<tr class="even-state"><td>231</td><td>EQ_EXPR = . id like LITERAL</td><td></td><td></td><td></td></tr>
-<tr class="even-state"><td>235</td><td>EQ_EXPR = . LITERAL = id</td><td></td><td></td><td></td></tr>
-<tr class="even-state"><td>271</td><td>LITERAL = . number</td><td></td><td></td><td></td></tr>
-<tr class="even-state"><td>273</td><td>LITERAL = . string</td><td></td><td></td><td></td></tr>
-<tr class="even-state"><td>239</td><td>EQ_EXPR = . LITERAL <> id</td><td></td><td></td><td></td></tr>
-<tr class="even-state"><td>243</td><td>EQ_EXPR = . LITERAL > id</td><td></td><td></td><td></td></tr>
-<tr class="even-state"><td>247</td><td>EQ_EXPR = . LITERAL < id</td><td></td><td></td><td></td></tr>
-<tr class="even-state"><td>251</td><td>EQ_EXPR = . LITERAL !> id</td><td></td><td></td><td></td></tr>
-<tr class="even-state"><td>255</td><td>EQ_EXPR = . LITERAL !< id</td><td></td><td></td><td></td></tr>
-<tr class="even-state"><td>259</td><td>EQ_EXPR = . LITERAL >= id</td><td></td><td></td><td></td></tr>
-<tr class="even-state"><td>263</td><td>EQ_EXPR = . LITERAL <= id</td><td></td><td></td><td></td></tr>
-<tr class="even-state"><td>267</td><td>EQ_EXPR = . LITERAL like id</td><td></td><td></td><td></td></tr>
-<tr class="odd-state"><td rowspan="1">17</td><td>171</td><td>GROUP_BY = group . by ID_LIST</td><td>by -> shift(40)</td><td></td><td></td></tr>
-<tr class="even-state"><td rowspan="3">18</td><td>184</td><td>ORDER_BY = order . by id asc</td><td>by -> shift(41)</td><td></td><td></td></tr>
-<tr class="even-state"><td>189</td><td>ORDER_BY = order . by id desc</td><td></td><td></td><td></td></tr>
-<tr class="even-state"><td>194</td><td>ORDER_BY = order . by id</td><td></td><td></td><td></td></tr>
-<tr class="odd-state"><td rowspan="1">19</td><td>168</td><td>LIMIT = limit . number</td><td>number -> shift(42)</td><td></td><td></td></tr>
-<tr class="even-state"><td rowspan="1">20</td><td>163</td><td>FROM = from id .</td><td></td><td>FROM -> from id</td><td>having $ limit order group where</td></tr>
-<tr class="odd-state"><td rowspan="2">21</td><td>137</td><td>SELECT = select distinct FIELD_LIST .</td><td>, -> shift(22)</td><td>SELECT -> select distinct FIELD_LIST</td><td>having limit order group where from</td></tr>
-<tr class="odd-state"><td>142</td><td>FIELD_LIST = FIELD_LIST . , FIELD</td><td></td><td></td><td></td></tr>
-<tr class="even-state"><td rowspan="8">22</td><td>143</td><td>FIELD_LIST = FIELD_LIST , . FIELD</td><td>FIELD -> goto(43)</td><td></td><td></td></tr>
-<tr class="even-state"><td>147</td><td>FIELD = . id</td><td>id -> shift(9)</td><td></td><td></td></tr>
-<tr class="even-state"><td>149</td><td>FIELD = . *</td><td>* -> shift(10)</td><td></td><td></td></tr>
-<tr class="even-state"><td>151</td><td>FIELD = . id as id</td><td>AGGREGATE -> goto(11)</td><td></td><td></td></tr>
-<tr class="even-state"><td>155</td><td>FIELD = . AGGREGATE</td><td></td><td></td><td></td></tr>
-<tr class="even-state"><td>275</td><td>AGGREGATE = . id ( id )</td><td></td><td></td><td></td></tr>
-<tr class="even-state"><td>280</td><td>AGGREGATE = . id ( * )</td><td></td><td></td><td></td></tr>
-<tr class="even-state"><td>157</td><td>FIELD = . AGGREGATE as id</td><td></td><td></td><td></td></tr>
-<tr class="odd-state"><td rowspan="1">23</td><td>153</td><td>FIELD = id as . id</td><td>id -> shift(44)</td><td></td><td></td></tr>
-<tr class="even-state"><td rowspan="2">24</td><td>277</td><td>AGGREGATE = id ( . id )</td><td>id -> shift(45)</td><td></td><td></td></tr>
-<tr class="even-state"><td>282</td><td>AGGREGATE = id ( . * )</td><td>* -> shift(46)</td><td></td><td></td></tr>
-<tr class="odd-state"><td rowspan="1">25</td><td>159</td><td>FIELD = AGGREGATE as . id</td><td>id -> shift(47)</td><td></td><td></td></tr>
-<tr class="even-state"><td rowspan="13">26</td><td>6</td><td>QUERY = SELECT FROM WHERE GROUP_BY . ORDER_BY LIMIT</td><td>ORDER_BY -> goto(48)</td><td>QUERY -> SELECT FROM WHERE GROUP_BY</td><td>$</td></tr>
-<tr class="even-state"><td>30</td><td>QUERY = SELECT FROM WHERE GROUP_BY . LIMIT</td><td>LIMIT -> goto(49)</td><td></td><td></td></tr>
-<tr class="even-state"><td>50</td><td>QUERY = SELECT FROM WHERE GROUP_BY . ORDER_BY</td><td>HAVING -> goto(50)</td><td></td><td></td></tr>
-<tr class="even-state"><td>70</td><td>QUERY = SELECT FROM WHERE GROUP_BY .</td><td>order -> shift(18)</td><td></td><td></td></tr>
-<tr class="even-state"><td>86</td><td>QUERY = SELECT FROM WHERE GROUP_BY . HAVING ORDER_BY LIMIT</td><td>limit -> shift(19)</td><td></td><td></td></tr>
-<tr class="even-state"><td>101</td><td>QUERY = SELECT FROM WHERE GROUP_BY . HAVING LIMIT</td><td>having -> shift(32)</td><td></td><td></td></tr>
-<tr class="even-state"><td>114</td><td>QUERY = SELECT FROM WHERE GROUP_BY . HAVING ORDER_BY</td><td></td><td></td><td></td></tr>
+<tr class="odd-state"><td>205</td><td>ORDER_BY = . order by id asc</td><td></td><td></td><td></td></tr>
+<tr class="odd-state"><td>210</td><td>ORDER_BY = . order by id desc</td><td></td><td></td><td></td></tr>
+<tr class="odd-state"><td>215</td><td>ORDER_BY = . order by id</td><td></td><td></td><td></td></tr>
+<tr class="odd-state"><td>174</td><td>LIMIT = . limit number</td><td></td><td></td><td></td></tr>
+<tr class="odd-state"><td>177</td><td>LIMIT = . fetch first number rows only</td><td></td><td></td><td></td></tr>
+<tr class="odd-state"><td>183</td><td>LIMIT = . fetch first number row only</td><td></td><td></td><td></td></tr>
+<tr class="odd-state"><td>199</td><td>HAVING = . having EXPR</td><td></td><td></td><td></td></tr>
+<tr class="odd-state"><td>202</td><td>HAVING = . having HAVING_EXPR</td><td></td><td></td><td></td></tr>
+<tr class="even-state"><td rowspan="5">16</td><td>24</td><td>QUERY = SELECT FROM ORDER_BY . LIMIT</td><td>LIMIT -> goto(37)</td><td>QUERY -> SELECT FROM ORDER_BY</td><td>$</td></tr>
+<tr class="even-state"><td>65</td><td>QUERY = SELECT FROM ORDER_BY .</td><td>limit -> shift(21)</td><td></td><td></td></tr>
+<tr class="even-state"><td>174</td><td>LIMIT = . limit number</td><td>fetch -> shift(22)</td><td></td><td></td></tr>
+<tr class="even-state"><td>177</td><td>LIMIT = . fetch first number rows only</td><td></td><td></td><td></td></tr>
+<tr class="even-state"><td>183</td><td>LIMIT = . fetch first number row only</td><td></td><td></td><td></td></tr>
+<tr class="odd-state"><td rowspan="1">17</td><td>45</td><td>QUERY = SELECT FROM LIMIT .</td><td></td><td>QUERY -> SELECT FROM LIMIT</td><td>$</td></tr>
+<tr class="even-state"><td rowspan="26">18</td><td>172</td><td>WHERE = where . EXPR</td><td>EXPR -> goto(38)</td><td></td><td></td></tr>
+<tr class="even-state"><td>307</td><td>EXPR = . EQ_EXPR</td><td>EQ_EXPR -> goto(39)</td><td></td><td></td></tr>
+<tr class="even-state"><td>309</td><td>EQ_EXPR = . id = LITERAL</td><td>id -> shift(40)</td><td></td><td></td></tr>
+<tr class="even-state"><td>313</td><td>EQ_EXPR = . id != LITERAL</td><td>LITERAL -> goto(41)</td><td></td><td></td></tr>
+<tr class="even-state"><td>317</td><td>EQ_EXPR = . id <> LITERAL</td><td>number -> shift(42)</td><td></td><td></td></tr>
+<tr class="even-state"><td>321</td><td>EQ_EXPR = . id > LITERAL</td><td>string -> shift(43)</td><td></td><td></td></tr>
+<tr class="even-state"><td>325</td><td>EQ_EXPR = . id < LITERAL</td><td></td><td></td><td></td></tr>
+<tr class="even-state"><td>329</td><td>EQ_EXPR = . id !> LITERAL</td><td></td><td></td><td></td></tr>
+<tr class="even-state"><td>333</td><td>EQ_EXPR = . id !< LITERAL</td><td></td><td></td><td></td></tr>
+<tr class="even-state"><td>337</td><td>EQ_EXPR = . id >= LITERAL</td><td></td><td></td><td></td></tr>
+<tr class="even-state"><td>341</td><td>EQ_EXPR = . id <= LITERAL</td><td></td><td></td><td></td></tr>
+<tr class="even-state"><td>345</td><td>EQ_EXPR = . id like LITERAL</td><td></td><td></td><td></td></tr>
+<tr class="even-state"><td>349</td><td>EQ_EXPR = . id ~ LITERAL</td><td></td><td></td><td></td></tr>
+<tr class="even-state"><td>353</td><td>EQ_EXPR = . LITERAL = id</td><td></td><td></td><td></td></tr>
+<tr class="even-state"><td>397</td><td>LITERAL = . number</td><td></td><td></td><td></td></tr>
+<tr class="even-state"><td>399</td><td>LITERAL = . string</td><td></td><td></td><td></td></tr>
+<tr class="even-state"><td>357</td><td>EQ_EXPR = . LITERAL != id</td><td></td><td></td><td></td></tr>
+<tr class="even-state"><td>361</td><td>EQ_EXPR = . LITERAL <> id</td><td></td><td></td><td></td></tr>
+<tr class="even-state"><td>365</td><td>EQ_EXPR = . LITERAL > id</td><td></td><td></td><td></td></tr>
+<tr class="even-state"><td>369</td><td>EQ_EXPR = . LITERAL < id</td><td></td><td></td><td></td></tr>
+<tr class="even-state"><td>373</td><td>EQ_EXPR = . LITERAL !> id</td><td></td><td></td><td></td></tr>
+<tr class="even-state"><td>377</td><td>EQ_EXPR = . LITERAL !< id</td><td></td><td></td><td></td></tr>
+<tr class="even-state"><td>381</td><td>EQ_EXPR = . LITERAL >= id</td><td></td><td></td><td></td></tr>
+<tr class="even-state"><td>385</td><td>EQ_EXPR = . LITERAL <= id</td><td></td><td></td><td></td></tr>
+<tr class="even-state"><td>389</td><td>EQ_EXPR = . LITERAL like id</td><td></td><td></td><td></td></tr>
+<tr class="even-state"><td>393</td><td>EQ_EXPR = . LITERAL ~ id</td><td></td><td></td><td></td></tr>
+<tr class="odd-state"><td rowspan="1">19</td><td>190</td><td>GROUP_BY = group . by ID_LIST</td><td>by -> shift(44)</td><td></td><td></td></tr>
+<tr class="even-state"><td rowspan="3">20</td><td>206</td><td>ORDER_BY = order . by id asc</td><td>by -> shift(45)</td><td></td><td></td></tr>
+<tr class="even-state"><td>211</td><td>ORDER_BY = order . by id desc</td><td></td><td></td><td></td></tr>
+<tr class="even-state"><td>216</td><td>ORDER_BY = order . by id</td><td></td><td></td><td></td></tr>
+<tr class="odd-state"><td rowspan="1">21</td><td>175</td><td>LIMIT = limit . number</td><td>number -> shift(46)</td><td></td><td></td></tr>
+<tr class="even-state"><td rowspan="2">22</td><td>178</td><td>LIMIT = fetch . first number rows only</td><td>first -> shift(47)</td><td></td><td></td></tr>
+<tr class="even-state"><td>184</td><td>LIMIT = fetch . first number row only</td><td></td><td></td><td></td></tr>
+<tr class="odd-state"><td rowspan="1">23</td><td>170</td><td>FROM = from id .</td><td></td><td>FROM -> from id</td><td>having $ fetch limit order group where</td></tr>
+<tr class="even-state"><td rowspan="2">24</td><td>144</td><td>SELECT = select distinct FIELD_LIST .</td><td>, -> shift(25)</td><td>SELECT -> select distinct FIELD_LIST</td><td>having fetch limit order group where from</td></tr>
+<tr class="even-state"><td>149</td><td>FIELD_LIST = FIELD_LIST . , FIELD</td><td></td><td></td><td></td></tr>
+<tr class="odd-state"><td rowspan="8">25</td><td>150</td><td>FIELD_LIST = FIELD_LIST , . FIELD</td><td>FIELD -> goto(48)</td><td></td><td></td></tr>
+<tr class="odd-state"><td>154</td><td>FIELD = . id</td><td>id -> shift(10)</td><td></td><td></td></tr>
+<tr class="odd-state"><td>156</td><td>FIELD = . *</td><td>* -> shift(11)</td><td></td><td></td></tr>
+<tr class="odd-state"><td>158</td><td>FIELD = . id as id</td><td>AGGREGATE -> goto(12)</td><td></td><td></td></tr>
+<tr class="odd-state"><td>162</td><td>FIELD = . AGGREGATE</td><td></td><td></td><td></td></tr>
+<tr class="odd-state"><td>401</td><td>AGGREGATE = . id ( id )</td><td></td><td></td><td></td></tr>
+<tr class="odd-state"><td>406</td><td>AGGREGATE = . id ( * )</td><td></td><td></td><td></td></tr>
+<tr class="odd-state"><td>164</td><td>FIELD = . AGGREGATE as id</td><td></td><td></td><td></td></tr>
+<tr class="even-state"><td rowspan="1">26</td><td>160</td><td>FIELD = id as . id</td><td>id -> shift(49)</td><td></td><td></td></tr>
+<tr class="odd-state"><td rowspan="2">27</td><td>403</td><td>AGGREGATE = id ( . id )</td><td>id -> shift(50)</td><td></td><td></td></tr>
+<tr class="odd-state"><td>408</td><td>AGGREGATE = id ( . * )</td><td>* -> shift(51)</td><td></td><td></td></tr>
+<tr class="even-state"><td rowspan="1">28</td><td>166</td><td>FIELD = AGGREGATE as . id</td><td>id -> shift(52)</td><td></td><td></td></tr>
+<tr class="odd-state"><td rowspan="1">29</td><td>137</td><td>QUERY = delete FROM WHERE .</td><td></td><td>QUERY -> delete FROM WHERE</td><td>$</td></tr>
+<tr class="even-state"><td rowspan="16">30</td><td>6</td><td>QUERY = SELECT FROM WHERE GROUP_BY . ORDER_BY LIMIT</td><td>ORDER_BY -> goto(53)</td><td>QUERY -> SELECT FROM WHERE GROUP_BY</td><td>$</td></tr>
+<tr class="even-state"><td>30</td><td>QUERY = SELECT FROM WHERE GROUP_BY . LIMIT</td><td>LIMIT -> goto(54)</td><td></td><td></td></tr>
+<tr class="even-state"><td>50</td><td>QUERY = SELECT FROM WHERE GROUP_BY . ORDER_BY</td><td>HAVING -> goto(55)</td><td></td><td></td></tr>
+<tr class="even-state"><td>70</td><td>QUERY = SELECT FROM WHERE GROUP_BY .</td><td>order -> shift(20)</td><td></td><td></td></tr>
+<tr class="even-state"><td>86</td><td>QUERY = SELECT FROM WHERE GROUP_BY . HAVING ORDER_BY LIMIT</td><td>limit -> shift(21)</td><td></td><td></td></tr>
+<tr class="even-state"><td>101</td><td>QUERY = SELECT FROM WHERE GROUP_BY . HAVING LIMIT</td><td>fetch -> shift(22)</td><td></td><td></td></tr>
+<tr class="even-state"><td>114</td><td>QUERY = SELECT FROM WHERE GROUP_BY . HAVING ORDER_BY</td><td>having -> shift(36)</td><td></td><td></td></tr>
 <tr class="even-state"><td>127</td><td>QUERY = SELECT FROM WHERE GROUP_BY . HAVING</td><td></td><td></td><td></td></tr>
-<tr class="even-state"><td>183</td><td>ORDER_BY = . order by id asc</td><td></td><td></td><td></td></tr>
-<tr class="even-state"><td>188</td><td>ORDER_BY = . order by id desc</td><td></td><td></td><td></td></tr>
-<tr class="even-state"><td>193</td><td>ORDER_BY = . order by id</td><td></td><td></td><td></td></tr>
-<tr class="even-state"><td>167</td><td>LIMIT = . limit number</td><td></td><td></td><td></td></tr>
-<tr class="even-state"><td>180</td><td>HAVING = . having EXPR</td><td></td><td></td><td></td></tr>
-<tr class="odd-state"><td rowspan="3">27</td><td>19</td><td>QUERY = SELECT FROM WHERE ORDER_BY . LIMIT</td><td>LIMIT -> goto(51)</td><td>QUERY -> SELECT FROM WHERE ORDER_BY</td><td>$</td></tr>
-<tr class="odd-state"><td>61</td><td>QUERY = SELECT FROM WHERE ORDER_BY .</td><td>limit -> shift(19)</td><td></td><td></td></tr>
-<tr class="odd-state"><td>167</td><td>LIMIT = . limit number</td><td></td><td></td><td></td></tr>
-<tr class="even-state"><td rowspan="1">28</td><td>41</td><td>QUERY = SELECT FROM WHERE LIMIT .</td><td></td><td>QUERY -> SELECT FROM WHERE LIMIT</td><td>$</td></tr>
-<tr class="odd-state"><td rowspan="3">29</td><td>13</td><td>QUERY = SELECT FROM GROUP_BY ORDER_BY . LIMIT</td><td>LIMIT -> goto(52)</td><td>QUERY -> SELECT FROM GROUP_BY ORDER_BY</td><td>$</td></tr>
-<tr class="odd-state"><td>56</td><td>QUERY = SELECT FROM GROUP_BY ORDER_BY .</td><td>limit -> shift(19)</td><td></td><td></td></tr>
-<tr class="odd-state"><td>167</td><td>LIMIT = . limit number</td><td></td><td></td><td></td></tr>
-<tr class="even-state"><td rowspan="1">30</td><td>36</td><td>QUERY = SELECT FROM GROUP_BY LIMIT .</td><td></td><td>QUERY -> SELECT FROM GROUP_BY LIMIT</td><td>$</td></tr>
-<tr class="odd-state"><td rowspan="8">31</td><td>94</td><td>QUERY = SELECT FROM GROUP_BY HAVING . ORDER_BY LIMIT</td><td>ORDER_BY -> goto(53)</td><td>QUERY -> SELECT FROM GROUP_BY HAVING</td><td>$</td></tr>
-<tr class="odd-state"><td>108</td><td>QUERY = SELECT FROM GROUP_BY HAVING . LIMIT</td><td>LIMIT -> goto(54)</td><td></td><td></td></tr>
-<tr class="odd-state"><td>121</td><td>QUERY = SELECT FROM GROUP_BY HAVING . ORDER_BY</td><td>order -> shift(18)</td><td></td><td></td></tr>
-<tr class="odd-state"><td>133</td><td>QUERY = SELECT FROM GROUP_BY HAVING .</td><td>limit -> shift(19)</td><td></td><td></td></tr>
-<tr class="odd-state"><td>183</td><td>ORDER_BY = . order by id asc</td><td></td><td></td><td></td></tr>
-<tr class="odd-state"><td>188</td><td>ORDER_BY = . order by id desc</td><td></td><td></td><td></td></tr>
-<tr class="odd-state"><td>193</td><td>ORDER_BY = . order by id</td><td></td><td></td><td></td></tr>
-<tr class="odd-state"><td>167</td><td>LIMIT = . limit number</td><td></td><td></td><td></td></tr>
-<tr class="even-state"><td rowspan="22">32</td><td>181</td><td>HAVING = having . EXPR</td><td>EXPR -> goto(55)</td><td></td><td></td></tr>
-<tr class="even-state"><td>197</td><td>EXPR = . EQ_EXPR</td><td>EQ_EXPR -> goto(35)</td><td></td><td></td></tr>
-<tr class="even-state"><td>199</td><td>EQ_EXPR = . id = LITERAL</td><td>id -> shift(36)</td><td></td><td></td></tr>
-<tr class="even-state"><td>203</td><td>EQ_EXPR = . id <> LITERAL</td><td>LITERAL -> goto(37)</td><td></td><td></td></tr>
-<tr class="even-state"><td>207</td><td>EQ_EXPR = . id > LITERAL</td><td>number -> shift(38)</td><td></td><td></td></tr>
-<tr class="even-state"><td>211</td><td>EQ_EXPR = . id < LITERAL</td><td>string -> shift(39)</td><td></td><td></td></tr>
-<tr class="even-state"><td>215</td><td>EQ_EXPR = . id !> LITERAL</td><td></td><td></td><td></td></tr>
-<tr class="even-state"><td>219</td><td>EQ_EXPR = . id !< LITERAL</td><td></td><td></td><td></td></tr>
-<tr class="even-state"><td>223</td><td>EQ_EXPR = . id >= LITERAL</td><td></td><td></td><td></td></tr>
-<tr class="even-state"><td>227</td><td>EQ_EXPR = . id <= LITERAL</td><td></td><td></td><td></td></tr>
-<tr class="even-state"><td>231</td><td>EQ_EXPR = . id like LITERAL</td><td></td><td></td><td></td></tr>
-<tr class="even-state"><td>235</td><td>EQ_EXPR = . LITERAL = id</td><td></td><td></td><td></td></tr>
-<tr class="even-state"><td>271</td><td>LITERAL = . number</td><td></td><td></td><td></td></tr>
-<tr class="even-state"><td>273</td><td>LITERAL = . string</td><td></td><td></td><td></td></tr>
-<tr class="even-state"><td>239</td><td>EQ_EXPR = . LITERAL <> id</td><td></td><td></td><td></td></tr>
-<tr class="even-state"><td>243</td><td>EQ_EXPR = . LITERAL > id</td><td></td><td></td><td></td></tr>
-<tr class="even-state"><td>247</td><td>EQ_EXPR = . LITERAL < id</td><td></td><td></td><td></td></tr>
-<tr class="even-state"><td>251</td><td>EQ_EXPR = . LITERAL !> id</td><td></td><td></td><td></td></tr>
-<tr class="even-state"><td>255</td><td>EQ_EXPR = . LITERAL !< id</td><td></td><td></td><td></td></tr>
-<tr class="even-state"><td>259</td><td>EQ_EXPR = . LITERAL >= id</td><td></td><td></td><td></td></tr>
-<tr class="even-state"><td>263</td><td>EQ_EXPR = . LITERAL <= id</td><td></td><td></td><td></td></tr>
-<tr class="even-state"><td>267</td><td>EQ_EXPR = . LITERAL like id</td><td></td><td></td><td></td></tr>
-<tr class="odd-state"><td rowspan="1">33</td><td>25</td><td>QUERY = SELECT FROM ORDER_BY LIMIT .</td><td></td><td>QUERY -> SELECT FROM ORDER_BY LIMIT</td><td>$</td></tr>
-<tr class="even-state"><td rowspan="1">34</td><td>166</td><td>WHERE = where EXPR .</td><td></td><td>WHERE -> where EXPR</td><td>having $ limit order group</td></tr>
-<tr class="odd-state"><td rowspan="1">35</td><td>198</td><td>EXPR = EQ_EXPR .</td><td></td><td>EXPR -> EQ_EXPR</td><td>having $ limit order group</td></tr>
-<tr class="even-state"><td rowspan="9">36</td><td>200</td><td>EQ_EXPR = id . = LITERAL</td><td>= -> shift(56)</td><td></td><td></td></tr>
-<tr class="even-state"><td>204</td><td>EQ_EXPR = id . <> LITERAL</td><td><> -> shift(57)</td><td></td><td></td></tr>
-<tr class="even-state"><td>208</td><td>EQ_EXPR = id . > LITERAL</td><td>> -> shift(58)</td><td></td><td></td></tr>
-<tr class="even-state"><td>212</td><td>EQ_EXPR = id . < LITERAL</td><td>< -> shift(59)</td><td></td><td></td></tr>
-<tr class="even-state"><td>216</td><td>EQ_EXPR = id . !> LITERAL</td><td>!> -> shift(60)</td><td></td><td></td></tr>
-<tr class="even-state"><td>220</td><td>EQ_EXPR = id . !< LITERAL</td><td>!< -> shift(61)</td><td></td><td></td></tr>
-<tr class="even-state"><td>224</td><td>EQ_EXPR = id . >= LITERAL</td><td>>= -> shift(62)</td><td></td><td></td></tr>
-<tr class="even-state"><td>228</td><td>EQ_EXPR = id . <= LITERAL</td><td><= -> shift(63)</td><td></td><td></td></tr>
-<tr class="even-state"><td>232</td><td>EQ_EXPR = id . like LITERAL</td><td>like -> shift(64)</td><td></td><td></td></tr>
-<tr class="odd-state"><td rowspan="9">37</td><td>236</td><td>EQ_EXPR = LITERAL . = id</td><td>= -> shift(65)</td><td></td><td></td></tr>
-<tr class="odd-state"><td>240</td><td>EQ_EXPR = LITERAL . <> id</td><td><> -> shift(66)</td><td></td><td></td></tr>
-<tr class="odd-state"><td>244</td><td>EQ_EXPR = LITERAL . > id</td><td>> -> shift(67)</td><td></td><td></td></tr>
-<tr class="odd-state"><td>248</td><td>EQ_EXPR = LITERAL . < id</td><td>< -> shift(68)</td><td></td><td></td></tr>
-<tr class="odd-state"><td>252</td><td>EQ_EXPR = LITERAL . !> id</td><td>!> -> shift(69)</td><td></td><td></td></tr>
-<tr class="odd-state"><td>256</td><td>EQ_EXPR = LITERAL . !< id</td><td>!< -> shift(70)</td><td></td><td></td></tr>
-<tr class="odd-state"><td>260</td><td>EQ_EXPR = LITERAL . >= id</td><td>>= -> shift(71)</td><td></td><td></td></tr>
-<tr class="odd-state"><td>264</td><td>EQ_EXPR = LITERAL . <= id</td><td><= -> shift(72)</td><td></td><td></td></tr>
-<tr class="odd-state"><td>268</td><td>EQ_EXPR = LITERAL . like id</td><td>like -> shift(73)</td><td></td><td></td></tr>
-<tr class="even-state"><td rowspan="1">38</td><td>272</td><td>LITERAL = number .</td><td></td><td>LITERAL -> number</td><td>like <= >= !< !> < > <> = having $ limit order group</td></tr>
-<tr class="odd-state"><td rowspan="1">39</td><td>274</td><td>LITERAL = string .</td><td></td><td>LITERAL -> string</td><td>like <= >= !< !> < > <> = having $ limit order group</td></tr>
-<tr class="even-state"><td rowspan="3">40</td><td>172</td><td>GROUP_BY = group by . ID_LIST</td><td>ID_LIST -> goto(74)</td><td></td><td></td></tr>
-<tr class="even-state"><td>174</td><td>ID_LIST = . id</td><td>id -> shift(75)</td><td></td><td></td></tr>
-<tr class="even-state"><td>176</td><td>ID_LIST = . ID_LIST , id</td><td></td><td></td><td></td></tr>
-<tr class="odd-state"><td rowspan="3">41</td><td>185</td><td>ORDER_BY = order by . id asc</td><td>id -> shift(76)</td><td></td><td></td></tr>
-<tr class="odd-state"><td>190</td><td>ORDER_BY = order by . id desc</td><td></td><td></td><td></td></tr>
-<tr class="odd-state"><td>195</td><td>ORDER_BY = order by . id</td><td></td><td></td><td></td></tr>
-<tr class="even-state"><td rowspan="1">42</td><td>169</td><td>LIMIT = limit number .</td><td></td><td>LIMIT -> limit number</td><td>$</td></tr>
-<tr class="odd-state"><td rowspan="1">43</td><td>144</td><td>FIELD_LIST = FIELD_LIST , FIELD .</td><td></td><td>FIELD_LIST -> FIELD_LIST , FIELD</td><td>, having limit order group where from</td></tr>
-<tr class="even-state"><td rowspan="1">44</td><td>154</td><td>FIELD = id as id .</td><td></td><td>FIELD -> id as id</td><td>, having limit order group where from</td></tr>
-<tr class="odd-state"><td rowspan="1">45</td><td>278</td><td>AGGREGATE = id ( id . )</td><td>) -> shift(77)</td><td></td><td></td></tr>
-<tr class="even-state"><td rowspan="1">46</td><td>283</td><td>AGGREGATE = id ( * . )</td><td>) -> shift(78)</td><td></td><td></td></tr>
-<tr class="odd-state"><td rowspan="1">47</td><td>160</td><td>FIELD = AGGREGATE as id .</td><td></td><td>FIELD -> AGGREGATE as id</td><td>, having limit order group where from</td></tr>
-<tr class="even-state"><td rowspan="3">48</td><td>7</td><td>QUERY = SELECT FROM WHERE GROUP_BY ORDER_BY . LIMIT</td><td>LIMIT -> goto(79)</td><td>QUERY -> SELECT FROM WHERE GROUP_BY ORDER_BY</td><td>$</td></tr>
-<tr class="even-state"><td>51</td><td>QUERY = SELECT FROM WHERE GROUP_BY ORDER_BY .</td><td>limit -> shift(19)</td><td></td><td></td></tr>
-<tr class="even-state"><td>167</td><td>LIMIT = . limit number</td><td></td><td></td><td></td></tr>
-<tr class="odd-state"><td rowspan="1">49</td><td>31</td><td>QUERY = SELECT FROM WHERE GROUP_BY LIMIT .</td><td></td><td>QUERY -> SELECT FROM WHERE GROUP_BY LIMIT</td><td>$</td></tr>
-<tr class="even-state"><td rowspan="8">50</td><td>87</td><td>QUERY = SELECT FROM WHERE GROUP_BY HAVING . ORDER_BY LIMIT</td><td>ORDER_BY -> goto(80)</td><td>QUERY -> SELECT FROM WHERE GROUP_BY HAVING</td><td>$</td></tr>
-<tr class="even-state"><td>102</td><td>QUERY = SELECT FROM WHERE GROUP_BY HAVING . LIMIT</td><td>LIMIT -> goto(81)</td><td></td><td></td></tr>
-<tr class="even-state"><td>115</td><td>QUERY = SELECT FROM WHERE GROUP_BY HAVING . ORDER_BY</td><td>order -> shift(18)</td><td></td><td></td></tr>
-<tr class="even-state"><td>128</td><td>QUERY = SELECT FROM WHERE GROUP_BY HAVING .</td><td>limit -> shift(19)</td><td></td><td></td></tr>
-<tr class="even-state"><td>183</td><td>ORDER_BY = . order by id asc</td><td></td><td></td><td></td></tr>
-<tr class="even-state"><td>188</td><td>ORDER_BY = . order by id desc</td><td></td><td></td><td></td></tr>
-<tr class="even-state"><td>193</td><td>ORDER_BY = . order by id</td><td></td><td></td><td></td></tr>
-<tr class="even-state"><td>167</td><td>LIMIT = . limit number</td><td></td><td></td><td></td></tr>
-<tr class="odd-state"><td rowspan="1">51</td><td>20</td><td>QUERY = SELECT FROM WHERE ORDER_BY LIMIT .</td><td></td><td>QUERY -> SELECT FROM WHERE ORDER_BY LIMIT</td><td>$</td></tr>
-<tr class="even-state"><td rowspan="1">52</td><td>14</td><td>QUERY = SELECT FROM GROUP_BY ORDER_BY LIMIT .</td><td></td><td>QUERY -> SELECT FROM GROUP_BY ORDER_BY LIMIT</td><td>$</td></tr>
-<tr class="odd-state"><td rowspan="3">53</td><td>95</td><td>QUERY = SELECT FROM GROUP_BY HAVING ORDER_BY . LIMIT</td><td>LIMIT -> goto(82)</td><td>QUERY -> SELECT FROM GROUP_BY HAVING ORDER_BY</td><td>$</td></tr>
-<tr class="odd-state"><td>122</td><td>QUERY = SELECT FROM GROUP_BY HAVING ORDER_BY .</td><td>limit -> shift(19)</td><td></td><td></td></tr>
-<tr class="odd-state"><td>167</td><td>LIMIT = . limit number</td><td></td><td></td><td></td></tr>
-<tr class="even-state"><td rowspan="1">54</td><td>109</td><td>QUERY = SELECT FROM GROUP_BY HAVING LIMIT .</td><td></td><td>QUERY -> SELECT FROM GROUP_BY HAVING LIMIT</td><td>$</td></tr>
-<tr class="odd-state"><td rowspan="1">55</td><td>182</td><td>HAVING = having EXPR .</td><td></td><td>HAVING -> having EXPR</td><td>$ limit order</td></tr>
-<tr class="even-state"><td rowspan="3">56</td><td>201</td><td>EQ_EXPR = id = . LITERAL</td><td>LITERAL -> goto(83)</td><td></td><td></td></tr>
-<tr class="even-state"><td>271</td><td>LITERAL = . number</td><td>number -> shift(38)</td><td></td><td></td></tr>
-<tr class="even-state"><td>273</td><td>LITERAL = . string</td><td>string -> shift(39)</td><td></td><td></td></tr>
-<tr class="odd-state"><td rowspan="3">57</td><td>205</td><td>EQ_EXPR = id <> . LITERAL</td><td>LITERAL -> goto(84)</td><td></td><td></td></tr>
-<tr class="odd-state"><td>271</td><td>LITERAL = . number</td><td>number -> shift(38)</td><td></td><td></td></tr>
-<tr class="odd-state"><td>273</td><td>LITERAL = . string</td><td>string -> shift(39)</td><td></td><td></td></tr>
-<tr class="even-state"><td rowspan="3">58</td><td>209</td><td>EQ_EXPR = id > . LITERAL</td><td>LITERAL -> goto(85)</td><td></td><td></td></tr>
-<tr class="even-state"><td>271</td><td>LITERAL = . number</td><td>number -> shift(38)</td><td></td><td></td></tr>
-<tr class="even-state"><td>273</td><td>LITERAL = . string</td><td>string -> shift(39)</td><td></td><td></td></tr>
-<tr class="odd-state"><td rowspan="3">59</td><td>213</td><td>EQ_EXPR = id < . LITERAL</td><td>LITERAL -> goto(86)</td><td></td><td></td></tr>
-<tr class="odd-state"><td>271</td><td>LITERAL = . number</td><td>number -> shift(38)</td><td></td><td></td></tr>
-<tr class="odd-state"><td>273</td><td>LITERAL = . string</td><td>string -> shift(39)</td><td></td><td></td></tr>
-<tr class="even-state"><td rowspan="3">60</td><td>217</td><td>EQ_EXPR = id !> . LITERAL</td><td>LITERAL -> goto(87)</td><td></td><td></td></tr>
-<tr class="even-state"><td>271</td><td>LITERAL = . number</td><td>number -> shift(38)</td><td></td><td></td></tr>
-<tr class="even-state"><td>273</td><td>LITERAL = . string</td><td>string -> shift(39)</td><td></td><td></td></tr>
-<tr class="odd-state"><td rowspan="3">61</td><td>221</td><td>EQ_EXPR = id !< . LITERAL</td><td>LITERAL -> goto(88)</td><td></td><td></td></tr>
-<tr class="odd-state"><td>271</td><td>LITERAL = . number</td><td>number -> shift(38)</td><td></td><td></td></tr>
-<tr class="odd-state"><td>273</td><td>LITERAL = . string</td><td>string -> shift(39)</td><td></td><td></td></tr>
-<tr class="even-state"><td rowspan="3">62</td><td>225</td><td>EQ_EXPR = id >= . LITERAL</td><td>LITERAL -> goto(89)</td><td></td><td></td></tr>
-<tr class="even-state"><td>271</td><td>LITERAL = . number</td><td>number -> shift(38)</td><td></td><td></td></tr>
-<tr class="even-state"><td>273</td><td>LITERAL = . string</td><td>string -> shift(39)</td><td></td><td></td></tr>
-<tr class="odd-state"><td rowspan="3">63</td><td>229</td><td>EQ_EXPR = id <= . LITERAL</td><td>LITERAL -> goto(90)</td><td></td><td></td></tr>
-<tr class="odd-state"><td>271</td><td>LITERAL = . number</td><td>number -> shift(38)</td><td></td><td></td></tr>
-<tr class="odd-state"><td>273</td><td>LITERAL = . string</td><td>string -> shift(39)</td><td></td><td></td></tr>
-<tr class="even-state"><td rowspan="3">64</td><td>233</td><td>EQ_EXPR = id like . LITERAL</td><td>LITERAL -> goto(91)</td><td></td><td></td></tr>
-<tr class="even-state"><td>271</td><td>LITERAL = . number</td><td>number -> shift(38)</td><td></td><td></td></tr>
-<tr class="even-state"><td>273</td><td>LITERAL = . string</td><td>string -> shift(39)</td><td></td><td></td></tr>
-<tr class="odd-state"><td rowspan="1">65</td><td>237</td><td>EQ_EXPR = LITERAL = . id</td><td>id -> shift(92)</td><td></td><td></td></tr>
-<tr class="even-state"><td rowspan="1">66</td><td>241</td><td>EQ_EXPR = LITERAL <> . id</td><td>id -> shift(93)</td><td></td><td></td></tr>
-<tr class="odd-state"><td rowspan="1">67</td><td>245</td><td>EQ_EXPR = LITERAL > . id</td><td>id -> shift(94)</td><td></td><td></td></tr>
-<tr class="even-state"><td rowspan="1">68</td><td>249</td><td>EQ_EXPR = LITERAL < . id</td><td>id -> shift(95)</td><td></td><td></td></tr>
-<tr class="odd-state"><td rowspan="1">69</td><td>253</td><td>EQ_EXPR = LITERAL !> . id</td><td>id -> shift(96)</td><td></td><td></td></tr>
-<tr class="even-state"><td rowspan="1">70</td><td>257</td><td>EQ_EXPR = LITERAL !< . id</td><td>id -> shift(97)</td><td></td><td></td></tr>
-<tr class="odd-state"><td rowspan="1">71</td><td>261</td><td>EQ_EXPR = LITERAL >= . id</td><td>id -> shift(98)</td><td></td><td></td></tr>
-<tr class="even-state"><td rowspan="1">72</td><td>265</td><td>EQ_EXPR = LITERAL <= . id</td><td>id -> shift(99)</td><td></td><td></td></tr>
-<tr class="odd-state"><td rowspan="1">73</td><td>269</td><td>EQ_EXPR = LITERAL like . id</td><td>id -> shift(100)</td><td></td><td></td></tr>
-<tr class="even-state"><td rowspan="2">74</td><td>173</td><td>GROUP_BY = group by ID_LIST .</td><td>, -> shift(101)</td><td>GROUP_BY -> group by ID_LIST</td><td>having $ limit order</td></tr>
-<tr class="even-state"><td>177</td><td>ID_LIST = ID_LIST . , id</td><td></td><td></td><td></td></tr>
-<tr class="odd-state"><td rowspan="1">75</td><td>175</td><td>ID_LIST = id .</td><td></td><td>ID_LIST -> id</td><td>, having $ limit order</td></tr>
-<tr class="even-state"><td rowspan="3">76</td><td>186</td><td>ORDER_BY = order by id . asc</td><td>asc -> shift(102)</td><td>ORDER_BY -> order by id</td><td>$ limit</td></tr>
-<tr class="even-state"><td>191</td><td>ORDER_BY = order by id . desc</td><td>desc -> shift(103)</td><td></td><td></td></tr>
-<tr class="even-state"><td>196</td><td>ORDER_BY = order by id .</td><td></td><td></td><td></td></tr>
-<tr class="odd-state"><td rowspan="1">77</td><td>279</td><td>AGGREGATE = id ( id ) .</td><td></td><td>AGGREGATE -> id ( id )</td><td>as , having limit order group where from</td></tr>
-<tr class="even-state"><td rowspan="1">78</td><td>284</td><td>AGGREGATE = id ( * ) .</td><td></td><td>AGGREGATE -> id ( * )</td><td>as , having limit order group where from</td></tr>
-<tr class="odd-state"><td rowspan="1">79</td><td>8</td><td>QUERY = SELECT FROM WHERE GROUP_BY ORDER_BY LIMIT .</td><td></td><td>QUERY -> SELECT FROM WHERE GROUP_BY ORDER_BY LIMIT</td><td>$</td></tr>
-<tr class="even-state"><td rowspan="3">80</td><td>88</td><td>QUERY = SELECT FROM WHERE GROUP_BY HAVING ORDER_BY . LIMIT</td><td>LIMIT -> goto(104)</td><td>QUERY -> SELECT FROM WHERE GROUP_BY HAVING ORDER_BY</td><td>$</td></tr>
-<tr class="even-state"><td>116</td><td>QUERY = SELECT FROM WHERE GROUP_BY HAVING ORDER_BY .</td><td>limit -> shift(19)</td><td></td><td></td></tr>
-<tr class="even-state"><td>167</td><td>LIMIT = . limit number</td><td></td><td></td><td></td></tr>
-<tr class="odd-state"><td rowspan="1">81</td><td>103</td><td>QUERY = SELECT FROM WHERE GROUP_BY HAVING LIMIT .</td><td></td><td>QUERY -> SELECT FROM WHERE GROUP_BY HAVING LIMIT</td><td>$</td></tr>
-<tr class="even-state"><td rowspan="1">82</td><td>96</td><td>QUERY = SELECT FROM GROUP_BY HAVING ORDER_BY LIMIT .</td><td></td><td>QUERY -> SELECT FROM GROUP_BY HAVING ORDER_BY LIMIT</td><td>$</td></tr>
-<tr class="odd-state"><td rowspan="1">83</td><td>202</td><td>EQ_EXPR = id = LITERAL .</td><td></td><td>EQ_EXPR -> id = LITERAL</td><td>having $ limit order group</td></tr>
-<tr class="even-state"><td rowspan="1">84</td><td>206</td><td>EQ_EXPR = id <> LITERAL .</td><td></td><td>EQ_EXPR -> id <> LITERAL</td><td>having $ limit order group</td></tr>
-<tr class="odd-state"><td rowspan="1">85</td><td>210</td><td>EQ_EXPR = id > LITERAL .</td><td></td><td>EQ_EXPR -> id > LITERAL</td><td>having $ limit order group</td></tr>
-<tr class="even-state"><td rowspan="1">86</td><td>214</td><td>EQ_EXPR = id < LITERAL .</td><td></td><td>EQ_EXPR -> id < LITERAL</td><td>having $ limit order group</td></tr>
-<tr class="odd-state"><td rowspan="1">87</td><td>218</td><td>EQ_EXPR = id !> LITERAL .</td><td></td><td>EQ_EXPR -> id !> LITERAL</td><td>having $ limit order group</td></tr>
-<tr class="even-state"><td rowspan="1">88</td><td>222</td><td>EQ_EXPR = id !< LITERAL .</td><td></td><td>EQ_EXPR -> id !< LITERAL</td><td>having $ limit order group</td></tr>
-<tr class="odd-state"><td rowspan="1">89</td><td>226</td><td>EQ_EXPR = id >= LITERAL .</td><td></td><td>EQ_EXPR -> id >= LITERAL</td><td>having $ limit order group</td></tr>
-<tr class="even-state"><td rowspan="1">90</td><td>230</td><td>EQ_EXPR = id <= LITERAL .</td><td></td><td>EQ_EXPR -> id <= LITERAL</td><td>having $ limit order group</td></tr>
-<tr class="odd-state"><td rowspan="1">91</td><td>234</td><td>EQ_EXPR = id like LITERAL .</td><td></td><td>EQ_EXPR -> id like LITERAL</td><td>having $ limit order group</td></tr>
-<tr class="even-state"><td rowspan="1">92</td><td>238</td><td>EQ_EXPR = LITERAL = id .</td><td></td><td>EQ_EXPR -> LITERAL = id</td><td>having $ limit order group</td></tr>
-<tr class="odd-state"><td rowspan="1">93</td><td>242</td><td>EQ_EXPR = LITERAL <> id .</td><td></td><td>EQ_EXPR -> LITERAL <> id</td><td>having $ limit order group</td></tr>
-<tr class="even-state"><td rowspan="1">94</td><td>246</td><td>EQ_EXPR = LITERAL > id .</td><td></td><td>EQ_EXPR -> LITERAL > id</td><td>having $ limit order group</td></tr>
-<tr class="odd-state"><td rowspan="1">95</td><td>250</td><td>EQ_EXPR = LITERAL < id .</td><td></td><td>EQ_EXPR -> LITERAL < id</td><td>having $ limit order group</td></tr>
-<tr class="even-state"><td rowspan="1">96</td><td>254</td><td>EQ_EXPR = LITERAL !> id .</td><td></td><td>EQ_EXPR -> LITERAL !> id</td><td>having $ limit order group</td></tr>
-<tr class="odd-state"><td rowspan="1">97</td><td>258</td><td>EQ_EXPR = LITERAL !< id .</td><td></td><td>EQ_EXPR -> LITERAL !< id</td><td>having $ limit order group</td></tr>
-<tr class="even-state"><td rowspan="1">98</td><td>262</td><td>EQ_EXPR = LITERAL >= id .</td><td></td><td>EQ_EXPR -> LITERAL >= id</td><td>having $ limit order group</td></tr>
-<tr class="odd-state"><td rowspan="1">99</td><td>266</td><td>EQ_EXPR = LITERAL <= id .</td><td></td><td>EQ_EXPR -> LITERAL <= id</td><td>having $ limit order group</td></tr>
-<tr class="even-state"><td rowspan="1">100</td><td>270</td><td>EQ_EXPR = LITERAL like id .</td><td></td><td>EQ_EXPR -> LITERAL like id</td><td>having $ limit order group</td></tr>
-<tr class="odd-state"><td rowspan="1">101</td><td>178</td><td>ID_LIST = ID_LIST , . id</td><td>id -> shift(105)</td><td></td><td></td></tr>
-<tr class="even-state"><td rowspan="1">102</td><td>187</td><td>ORDER_BY = order by id asc .</td><td></td><td>ORDER_BY -> order by id asc</td><td>$ limit</td></tr>
-<tr class="odd-state"><td rowspan="1">103</td><td>192</td><td>ORDER_BY = order by id desc .</td><td></td><td>ORDER_BY -> order by id desc</td><td>$ limit</td></tr>
-<tr class="even-state"><td rowspan="1">104</td><td>89</td><td>QUERY = SELECT FROM WHERE GROUP_BY HAVING ORDER_BY LIMIT .</td><td></td><td>QUERY -> SELECT FROM WHERE GROUP_BY HAVING ORDER_BY LIMIT</td><td>$</td></tr>
-<tr class="odd-state"><td rowspan="1">105</td><td>179</td><td>ID_LIST = ID_LIST , id .</td><td></td><td>ID_LIST -> ID_LIST , id</td><td>, having $ limit order</td></tr>
+<tr class="even-state"><td>205</td><td>ORDER_BY = . order by id asc</td><td></td><td></td><td></td></tr>
+<tr class="even-state"><td>210</td><td>ORDER_BY = . order by id desc</td><td></td><td></td><td></td></tr>
+<tr class="even-state"><td>215</td><td>ORDER_BY = . order by id</td><td></td><td></td><td></td></tr>
+<tr class="even-state"><td>174</td><td>LIMIT = . limit number</td><td></td><td></td><td></td></tr>
+<tr class="even-state"><td>177</td><td>LIMIT = . fetch first number rows only</td><td></td><td></td><td></td></tr>
+<tr class="even-state"><td>183</td><td>LIMIT = . fetch first number row only</td><td></td><td></td><td></td></tr>
+<tr class="even-state"><td>199</td><td>HAVING = . having EXPR</td><td></td><td></td><td></td></tr>
+<tr class="even-state"><td>202</td><td>HAVING = . having HAVING_EXPR</td><td></td><td></td><td></td></tr>
+<tr class="odd-state"><td rowspan="5">31</td><td>19</td><td>QUERY = SELECT FROM WHERE ORDER_BY . LIMIT</td><td>LIMIT -> goto(56)</td><td>QUERY -> SELECT FROM WHERE ORDER_BY</td><td>$</td></tr>
+<tr class="odd-state"><td>61</td><td>QUERY = SELECT FROM WHERE ORDER_BY .</td><td>limit -> shift(21)</td><td></td><td></td></tr>
+<tr class="odd-state"><td>174</td><td>LIMIT = . limit number</td><td>fetch -> shift(22)</td><td></td><td></td></tr>
+<tr class="odd-state"><td>177</td><td>LIMIT = . fetch first number rows only</td><td></td><td></td><td></td></tr>
+<tr class="odd-state"><td>183</td><td>LIMIT = . fetch first number row only</td><td></td><td></td><td></td></tr>
+<tr class="even-state"><td rowspan="1">32</td><td>41</td><td>QUERY = SELECT FROM WHERE LIMIT .</td><td></td><td>QUERY -> SELECT FROM WHERE LIMIT</td><td>$</td></tr>
+<tr class="odd-state"><td rowspan="5">33</td><td>13</td><td>QUERY = SELECT FROM GROUP_BY ORDER_BY . LIMIT</td><td>LIMIT -> goto(57)</td><td>QUERY -> SELECT FROM GROUP_BY ORDER_BY</td><td>$</td></tr>
+<tr class="odd-state"><td>56</td><td>QUERY = SELECT FROM GROUP_BY ORDER_BY .</td><td>limit -> shift(21)</td><td></td><td></td></tr>
+<tr class="odd-state"><td>174</td><td>LIMIT = . limit number</td><td>fetch -> shift(22)</td><td></td><td></td></tr>
+<tr class="odd-state"><td>177</td><td>LIMIT = . fetch first number rows only</td><td></td><td></td><td></td></tr>
+<tr class="odd-state"><td>183</td><td>LIMIT = . fetch first number row only</td><td></td><td></td><td></td></tr>
+<tr class="even-state"><td rowspan="1">34</td><td>36</td><td>QUERY = SELECT FROM GROUP_BY LIMIT .</td><td></td><td>QUERY -> SELECT FROM GROUP_BY LIMIT</td><td>$</td></tr>
+<tr class="odd-state"><td rowspan="10">35</td><td>94</td><td>QUERY = SELECT FROM GROUP_BY HAVING . ORDER_BY LIMIT</td><td>ORDER_BY -> goto(58)</td><td>QUERY -> SELECT FROM GROUP_BY HAVING</td><td>$</td></tr>
+<tr class="odd-state"><td>108</td><td>QUERY = SELECT FROM GROUP_BY HAVING . LIMIT</td><td>LIMIT -> goto(59)</td><td></td><td></td></tr>
+<tr class="odd-state"><td>121</td><td>QUERY = SELECT FROM GROUP_BY HAVING . ORDER_BY</td><td>order -> shift(20)</td><td></td><td></td></tr>
+<tr class="odd-state"><td>133</td><td>QUERY = SELECT FROM GROUP_BY HAVING .</td><td>limit -> shift(21)</td><td></td><td></td></tr>
+<tr class="odd-state"><td>205</td><td>ORDER_BY = . order by id asc</td><td>fetch -> shift(22)</td><td></td><td></td></tr>
+<tr class="odd-state"><td>210</td><td>ORDER_BY = . order by id desc</td><td></td><td></td><td></td></tr>
+<tr class="odd-state"><td>215</td><td>ORDER_BY = . order by id</td><td></td><td></td><td></td></tr>
+<tr class="odd-state"><td>174</td><td>LIMIT = . limit number</td><td></td><td></td><td></td></tr>
+<tr class="odd-state"><td>177</td><td>LIMIT = . fetch first number rows only</td><td></td><td></td><td></td></tr>
+<tr class="odd-state"><td>183</td><td>LIMIT = . fetch first number row only</td><td></td><td></td><td></td></tr>
+<tr class="even-state"><td rowspan="51">36</td><td>200</td><td>HAVING = having . EXPR</td><td>EXPR -> goto(60)</td><td></td><td></td></tr>
+<tr class="even-state"><td>203</td><td>HAVING = having . HAVING_EXPR</td><td>HAVING_EXPR -> goto(61)</td><td></td><td></td></tr>
+<tr class="even-state"><td>307</td><td>EXPR = . EQ_EXPR</td><td>EQ_EXPR -> goto(39)</td><td></td><td></td></tr>
+<tr class="even-state"><td>309</td><td>EQ_EXPR = . id = LITERAL</td><td>id -> shift(62)</td><td></td><td></td></tr>
+<tr class="even-state"><td>313</td><td>EQ_EXPR = . id != LITERAL</td><td>LITERAL -> goto(63)</td><td></td><td></td></tr>
+<tr class="even-state"><td>317</td><td>EQ_EXPR = . id <> LITERAL</td><td>number -> shift(42)</td><td></td><td></td></tr>
+<tr class="even-state"><td>321</td><td>EQ_EXPR = . id > LITERAL</td><td>string -> shift(43)</td><td></td><td></td></tr>
+<tr class="even-state"><td>325</td><td>EQ_EXPR = . id < LITERAL</td><td>AGGREGATE -> goto(64)</td><td></td><td></td></tr>
+<tr class="even-state"><td>329</td><td>EQ_EXPR = . id !> LITERAL</td><td></td><td></td><td></td></tr>
+<tr class="even-state"><td>333</td><td>EQ_EXPR = . id !< LITERAL</td><td></td><td></td><td></td></tr>
+<tr class="even-state"><td>337</td><td>EQ_EXPR = . id >= LITERAL</td><td></td><td></td><td></td></tr>
+<tr class="even-state"><td>341</td><td>EQ_EXPR = . id <= LITERAL</td><td></td><td></td><td></td></tr>
+<tr class="even-state"><td>345</td><td>EQ_EXPR = . id like LITERAL</td><td></td><td></td><td></td></tr>
+<tr class="even-state"><td>349</td><td>EQ_EXPR = . id ~ LITERAL</td><td></td><td></td><td></td></tr>
+<tr class="even-state"><td>353</td><td>EQ_EXPR = . LITERAL = id</td><td></td><td></td><td></td></tr>
+<tr class="even-state"><td>397</td><td>LITERAL = . number</td><td></td><td></td><td></td></tr>
+<tr class="even-state"><td>399</td><td>LITERAL = . string</td><td></td><td></td><td></td></tr>
+<tr class="even-state"><td>357</td><td>EQ_EXPR = . LITERAL != id</td><td></td><td></td><td></td></tr>
+<tr class="even-state"><td>361</td><td>EQ_EXPR = . LITERAL <> id</td><td></td><td></td><td></td></tr>
+<tr class="even-state"><td>365</td><td>EQ_EXPR = . LITERAL > id</td><td></td><td></td><td></td></tr>
+<tr class="even-state"><td>369</td><td>EQ_EXPR = . LITERAL < id</td><td></td><td></td><td></td></tr>
+<tr class="even-state"><td>373</td><td>EQ_EXPR = . LITERAL !> id</td><td></td><td></td><td></td></tr>
+<tr class="even-state"><td>377</td><td>EQ_EXPR = . LITERAL !< id</td><td></td><td></td><td></td></tr>
+<tr class="even-state"><td>381</td><td>EQ_EXPR = . LITERAL >= id</td><td></td><td></td><td></td></tr>
+<tr class="even-state"><td>385</td><td>EQ_EXPR = . LITERAL <= id</td><td></td><td></td><td></td></tr>
+<tr class="even-state"><td>389</td><td>EQ_EXPR = . LITERAL like id</td><td></td><td></td><td></td></tr>
+<tr class="even-state"><td>393</td><td>EQ_EXPR = . LITERAL ~ id</td><td></td><td></td><td></td></tr>
+<tr class="even-state"><td>219</td><td>HAVING_EXPR = . AGGREGATE = LITERAL</td><td></td><td></td><td></td></tr>
+<tr class="even-state"><td>401</td><td>AGGREGATE = . id ( id )</td><td></td><td></td><td></td></tr>
+<tr class="even-state"><td>406</td><td>AGGREGATE = . id ( * )</td><td></td><td></td><td></td></tr>
+<tr class="even-state"><td>223</td><td>HAVING_EXPR = . AGGREGATE != LITERAL</td><td></td><td></td><td></td></tr>
+<tr class="even-state"><td>227</td><td>HAVING_EXPR = . AGGREGATE <> LITERAL</td><td></td><td></td><td></td></tr>
+<tr class="even-state"><td>231</td><td>HAVING_EXPR = . AGGREGATE > LITERAL</td><td></td><td></td><td></td></tr>
+<tr class="even-state"><td>235</td><td>HAVING_EXPR = . AGGREGATE < LITERAL</td><td></td><td></td><td></td></tr>
+<tr class="even-state"><td>239</td><td>HAVING_EXPR = . AGGREGATE !> LITERAL</td><td></td><td></td><td></td></tr>
+<tr class="even-state"><td>243</td><td>HAVING_EXPR = . AGGREGATE !< LITERAL</td><td></td><td></td><td></td></tr>
+<tr class="even-state"><td>247</td><td>HAVING_EXPR = . AGGREGATE >= LITERAL</td><td></td><td></td><td></td></tr>
+<tr class="even-state"><td>251</td><td>HAVING_EXPR = . AGGREGATE <= LITERAL</td><td></td><td></td><td></td></tr>
+<tr class="even-state"><td>255</td><td>HAVING_EXPR = . AGGREGATE like LITERAL</td><td></td><td></td><td></td></tr>
+<tr class="even-state"><td>259</td><td>HAVING_EXPR = . AGGREGATE ~ LITERAL</td><td></td><td></td><td></td></tr>
+<tr class="even-state"><td>263</td><td>HAVING_EXPR = . LITERAL = AGGREGATE</td><td></td><td></td><td></td></tr>
+<tr class="even-state"><td>267</td><td>HAVING_EXPR = . LITERAL != AGGREGATE</td><td></td><td></td><td></td></tr>
+<tr class="even-state"><td>271</td><td>HAVING_EXPR = . LITERAL <> AGGREGATE</td><td></td><td></td><td></td></tr>
+<tr class="even-state"><td>275</td><td>HAVING_EXPR = . LITERAL > AGGREGATE</td><td></td><td></td><td></td></tr>
+<tr class="even-state"><td>279</td><td>HAVING_EXPR = . LITERAL < AGGREGATE</td><td></td><td></td><td></td></tr>
+<tr class="even-state"><td>283</td><td>HAVING_EXPR = . LITERAL !> AGGREGATE</td><td></td><td></td><td></td></tr>
+<tr class="even-state"><td>287</td><td>HAVING_EXPR = . LITERAL !< AGGREGATE</td><td></td><td></td><td></td></tr>
+<tr class="even-state"><td>291</td><td>HAVING_EXPR = . LITERAL >= AGGREGATE</td><td></td><td></td><td></td></tr>
+<tr class="even-state"><td>295</td><td>HAVING_EXPR = . LITERAL <= AGGREGATE</td><td></td><td></td><td></td></tr>
+<tr class="even-state"><td>299</td><td>HAVING_EXPR = . LITERAL like AGGREGATE</td><td></td><td></td><td></td></tr>
+<tr class="even-state"><td>303</td><td>HAVING_EXPR = . LITERAL ~ AGGREGATE</td><td></td><td></td><td></td></tr>
+<tr class="odd-state"><td rowspan="1">37</td><td>25</td><td>QUERY = SELECT FROM ORDER_BY LIMIT .</td><td></td><td>QUERY -> SELECT FROM ORDER_BY LIMIT</td><td>$</td></tr>
+<tr class="even-state"><td rowspan="1">38</td><td>173</td><td>WHERE = where EXPR .</td><td></td><td>WHERE -> where EXPR</td><td>having $ fetch limit order group</td></tr>
+<tr class="odd-state"><td rowspan="1">39</td><td>308</td><td>EXPR = EQ_EXPR .</td><td></td><td>EXPR -> EQ_EXPR</td><td>having $ fetch limit order group</td></tr>
+<tr class="even-state"><td rowspan="11">40</td><td>310</td><td>EQ_EXPR = id . = LITERAL</td><td>= -> shift(65)</td><td></td><td></td></tr>
+<tr class="even-state"><td>314</td><td>EQ_EXPR = id . != LITERAL</td><td>!= -> shift(66)</td><td></td><td></td></tr>
+<tr class="even-state"><td>318</td><td>EQ_EXPR = id . <> LITERAL</td><td><> -> shift(67)</td><td></td><td></td></tr>
+<tr class="even-state"><td>322</td><td>EQ_EXPR = id . > LITERAL</td><td>> -> shift(68)</td><td></td><td></td></tr>
+<tr class="even-state"><td>326</td><td>EQ_EXPR = id . < LITERAL</td><td>< -> shift(69)</td><td></td><td></td></tr>
+<tr class="even-state"><td>330</td><td>EQ_EXPR = id . !> LITERAL</td><td>!> -> shift(70)</td><td></td><td></td></tr>
+<tr class="even-state"><td>334</td><td>EQ_EXPR = id . !< LITERAL</td><td>!< -> shift(71)</td><td></td><td></td></tr>
+<tr class="even-state"><td>338</td><td>EQ_EXPR = id . >= LITERAL</td><td>>= -> shift(72)</td><td></td><td></td></tr>
+<tr class="even-state"><td>342</td><td>EQ_EXPR = id . <= LITERAL</td><td><= -> shift(73)</td><td></td><td></td></tr>
+<tr class="even-state"><td>346</td><td>EQ_EXPR = id . like LITERAL</td><td>like -> shift(74)</td><td></td><td></td></tr>
+<tr class="even-state"><td>350</td><td>EQ_EXPR = id . ~ LITERAL</td><td>~ -> shift(75)</td><td></td><td></td></tr>
+<tr class="odd-state"><td rowspan="11">41</td><td>354</td><td>EQ_EXPR = LITERAL . = id</td><td>= -> shift(76)</td><td></td><td></td></tr>
+<tr class="odd-state"><td>358</td><td>EQ_EXPR = LITERAL . != id</td><td>!= -> shift(77)</td><td></td><td></td></tr>
+<tr class="odd-state"><td>362</td><td>EQ_EXPR = LITERAL . <> id</td><td><> -> shift(78)</td><td></td><td></td></tr>
+<tr class="odd-state"><td>366</td><td>EQ_EXPR = LITERAL . > id</td><td>> -> shift(79)</td><td></td><td></td></tr>
+<tr class="odd-state"><td>370</td><td>EQ_EXPR = LITERAL . < id</td><td>< -> shift(80)</td><td></td><td></td></tr>
+<tr class="odd-state"><td>374</td><td>EQ_EXPR = LITERAL . !> id</td><td>!> -> shift(81)</td><td></td><td></td></tr>
+<tr class="odd-state"><td>378</td><td>EQ_EXPR = LITERAL . !< id</td><td>!< -> shift(82)</td><td></td><td></td></tr>
+<tr class="odd-state"><td>382</td><td>EQ_EXPR = LITERAL . >= id</td><td>>= -> shift(83)</td><td></td><td></td></tr>
+<tr class="odd-state"><td>386</td><td>EQ_EXPR = LITERAL . <= id</td><td><= -> shift(84)</td><td></td><td></td></tr>
+<tr class="odd-state"><td>390</td><td>EQ_EXPR = LITERAL . like id</td><td>like -> shift(85)</td><td></td><td></td></tr>
+<tr class="odd-state"><td>394</td><td>EQ_EXPR = LITERAL . ~ id</td><td>~ -> shift(86)</td><td></td><td></td></tr>
+<tr class="even-state"><td rowspan="1">42</td><td>398</td><td>LITERAL = number .</td><td></td><td>LITERAL -> number</td><td>having group ~ like <= >= !< !> < > <> != = $ fetch limit order</td></tr>
+<tr class="odd-state"><td rowspan="1">43</td><td>400</td><td>LITERAL = string .</td><td></td><td>LITERAL -> string</td><td>having group ~ like <= >= !< !> < > <> != = $ fetch limit order</td></tr>
+<tr class="even-state"><td rowspan="3">44</td><td>191</td><td>GROUP_BY = group by . ID_LIST</td><td>ID_LIST -> goto(87)</td><td></td><td></td></tr>
+<tr class="even-state"><td>193</td><td>ID_LIST = . id</td><td>id -> shift(88)</td><td></td><td></td></tr>
+<tr class="even-state"><td>195</td><td>ID_LIST = . ID_LIST , id</td><td></td><td></td><td></td></tr>
+<tr class="odd-state"><td rowspan="3">45</td><td>207</td><td>ORDER_BY = order by . id asc</td><td>id -> shift(89)</td><td></td><td></td></tr>
+<tr class="odd-state"><td>212</td><td>ORDER_BY = order by . id desc</td><td></td><td></td><td></td></tr>
+<tr class="odd-state"><td>217</td><td>ORDER_BY = order by . id</td><td></td><td></td><td></td></tr>
+<tr class="even-state"><td rowspan="1">46</td><td>176</td><td>LIMIT = limit number .</td><td></td><td>LIMIT -> limit number</td><td>$</td></tr>
+<tr class="odd-state"><td rowspan="2">47</td><td>179</td><td>LIMIT = fetch first . number rows only</td><td>number -> shift(90)</td><td></td><td></td></tr>
+<tr class="odd-state"><td>185</td><td>LIMIT = fetch first . number row only</td><td></td><td></td><td></td></tr>
+<tr class="even-state"><td rowspan="1">48</td><td>151</td><td>FIELD_LIST = FIELD_LIST , FIELD .</td><td></td><td>FIELD_LIST -> FIELD_LIST , FIELD</td><td>, having fetch limit order group where from</td></tr>
+<tr class="odd-state"><td rowspan="1">49</td><td>161</td><td>FIELD = id as id .</td><td></td><td>FIELD -> id as id</td><td>, having fetch limit order group where from</td></tr>
+<tr class="even-state"><td rowspan="1">50</td><td>404</td><td>AGGREGATE = id ( id . )</td><td>) -> shift(91)</td><td></td><td></td></tr>
+<tr class="odd-state"><td rowspan="1">51</td><td>409</td><td>AGGREGATE = id ( * . )</td><td>) -> shift(92)</td><td></td><td></td></tr>
+<tr class="even-state"><td rowspan="1">52</td><td>167</td><td>FIELD = AGGREGATE as id .</td><td></td><td>FIELD -> AGGREGATE as id</td><td>, having fetch limit order group where from</td></tr>
+<tr class="odd-state"><td rowspan="5">53</td><td>7</td><td>QUERY = SELECT FROM WHERE GROUP_BY ORDER_BY . LIMIT</td><td>LIMIT -> goto(93)</td><td>QUERY -> SELECT FROM WHERE GROUP_BY ORDER_BY</td><td>$</td></tr>
+<tr class="odd-state"><td>51</td><td>QUERY = SELECT FROM WHERE GROUP_BY ORDER_BY .</td><td>limit -> shift(21)</td><td></td><td></td></tr>
+<tr class="odd-state"><td>174</td><td>LIMIT = . limit number</td><td>fetch -> shift(22)</td><td></td><td></td></tr>
+<tr class="odd-state"><td>177</td><td>LIMIT = . fetch first number rows only</td><td></td><td></td><td></td></tr>
+<tr class="odd-state"><td>183</td><td>LIMIT = . fetch first number row only</td><td></td><td></td><td></td></tr>
+<tr class="even-state"><td rowspan="1">54</td><td>31</td><td>QUERY = SELECT FROM WHERE GROUP_BY LIMIT .</td><td></td><td>QUERY -> SELECT FROM WHERE GROUP_BY LIMIT</td><td>$</td></tr>
+<tr class="odd-state"><td rowspan="10">55</td><td>87</td><td>QUERY = SELECT FROM WHERE GROUP_BY HAVING . ORDER_BY LIMIT</td><td>ORDER_BY -> goto(94)</td><td>QUERY -> SELECT FROM WHERE GROUP_BY HAVING</td><td>$</td></tr>
+<tr class="odd-state"><td>102</td><td>QUERY = SELECT FROM WHERE GROUP_BY HAVING . LIMIT</td><td>LIMIT -> goto(95)</td><td></td><td></td></tr>
+<tr class="odd-state"><td>115</td><td>QUERY = SELECT FROM WHERE GROUP_BY HAVING . ORDER_BY</td><td>order -> shift(20)</td><td></td><td></td></tr>
+<tr class="odd-state"><td>128</td><td>QUERY = SELECT FROM WHERE GROUP_BY HAVING .</td><td>limit -> shift(21)</td><td></td><td></td></tr>
+<tr class="odd-state"><td>205</td><td>ORDER_BY = . order by id asc</td><td>fetch -> shift(22)</td><td></td><td></td></tr>
+<tr class="odd-state"><td>210</td><td>ORDER_BY = . order by id desc</td><td></td><td></td><td></td></tr>
+<tr class="odd-state"><td>215</td><td>ORDER_BY = . order by id</td><td></td><td></td><td></td></tr>
+<tr class="odd-state"><td>174</td><td>LIMIT = . limit number</td><td></td><td></td><td></td></tr>
+<tr class="odd-state"><td>177</td><td>LIMIT = . fetch first number rows only</td><td></td><td></td><td></td></tr>
+<tr class="odd-state"><td>183</td><td>LIMIT = . fetch first number row only</td><td></td><td></td><td></td></tr>
+<tr class="even-state"><td rowspan="1">56</td><td>20</td><td>QUERY = SELECT FROM WHERE ORDER_BY LIMIT .</td><td></td><td>QUERY -> SELECT FROM WHERE ORDER_BY LIMIT</td><td>$</td></tr>
+<tr class="odd-state"><td rowspan="1">57</td><td>14</td><td>QUERY = SELECT FROM GROUP_BY ORDER_BY LIMIT .</td><td></td><td>QUERY -> SELECT FROM GROUP_BY ORDER_BY LIMIT</td><td>$</td></tr>
+<tr class="even-state"><td rowspan="5">58</td><td>95</td><td>QUERY = SELECT FROM GROUP_BY HAVING ORDER_BY . LIMIT</td><td>LIMIT -> goto(96)</td><td>QUERY -> SELECT FROM GROUP_BY HAVING ORDER_BY</td><td>$</td></tr>
+<tr class="even-state"><td>122</td><td>QUERY = SELECT FROM GROUP_BY HAVING ORDER_BY .</td><td>limit -> shift(21)</td><td></td><td></td></tr>
+<tr class="even-state"><td>174</td><td>LIMIT = . limit number</td><td>fetch -> shift(22)</td><td></td><td></td></tr>
+<tr class="even-state"><td>177</td><td>LIMIT = . fetch first number rows only</td><td></td><td></td><td></td></tr>
+<tr class="even-state"><td>183</td><td>LIMIT = . fetch first number row only</td><td></td><td></td><td></td></tr>
+<tr class="odd-state"><td rowspan="1">59</td><td>109</td><td>QUERY = SELECT FROM GROUP_BY HAVING LIMIT .</td><td></td><td>QUERY -> SELECT FROM GROUP_BY HAVING LIMIT</td><td>$</td></tr>
+<tr class="even-state"><td rowspan="1">60</td><td>201</td><td>HAVING = having EXPR .</td><td></td><td>HAVING -> having EXPR</td><td>$ fetch limit order</td></tr>
+<tr class="odd-state"><td rowspan="1">61</td><td>204</td><td>HAVING = having HAVING_EXPR .</td><td></td><td>HAVING -> having HAVING_EXPR</td><td>$ fetch limit order</td></tr>
+<tr class="even-state"><td rowspan="13">62</td><td>310</td><td>EQ_EXPR = id . = LITERAL</td><td>= -> shift(65)</td><td></td><td></td></tr>
+<tr class="even-state"><td>314</td><td>EQ_EXPR = id . != LITERAL</td><td>!= -> shift(66)</td><td></td><td></td></tr>
+<tr class="even-state"><td>318</td><td>EQ_EXPR = id . <> LITERAL</td><td><> -> shift(67)</td><td></td><td></td></tr>
+<tr class="even-state"><td>322</td><td>EQ_EXPR = id . > LITERAL</td><td>> -> shift(68)</td><td></td><td></td></tr>
+<tr class="even-state"><td>326</td><td>EQ_EXPR = id . < LITERAL</td><td>< -> shift(69)</td><td></td><td></td></tr>
+<tr class="even-state"><td>330</td><td>EQ_EXPR = id . !> LITERAL</td><td>!> -> shift(70)</td><td></td><td></td></tr>
+<tr class="even-state"><td>334</td><td>EQ_EXPR = id . !< LITERAL</td><td>!< -> shift(71)</td><td></td><td></td></tr>
+<tr class="even-state"><td>338</td><td>EQ_EXPR = id . >= LITERAL</td><td>>= -> shift(72)</td><td></td><td></td></tr>
+<tr class="even-state"><td>342</td><td>EQ_EXPR = id . <= LITERAL</td><td><= -> shift(73)</td><td></td><td></td></tr>
+<tr class="even-state"><td>346</td><td>EQ_EXPR = id . like LITERAL</td><td>like -> shift(74)</td><td></td><td></td></tr>
+<tr class="even-state"><td>350</td><td>EQ_EXPR = id . ~ LITERAL</td><td>~ -> shift(75)</td><td></td><td></td></tr>
+<tr class="even-state"><td>402</td><td>AGGREGATE = id . ( id )</td><td>( -> shift(27)</td><td></td><td></td></tr>
+<tr class="even-state"><td>407</td><td>AGGREGATE = id . ( * )</td><td></td><td></td><td></td></tr>
+<tr class="odd-state"><td rowspan="22">63</td><td>354</td><td>EQ_EXPR = LITERAL . = id</td><td>= -> shift(97)</td><td></td><td></td></tr>
+<tr class="odd-state"><td>358</td><td>EQ_EXPR = LITERAL . != id</td><td>!= -> shift(98)</td><td></td><td></td></tr>
+<tr class="odd-state"><td>362</td><td>EQ_EXPR = LITERAL . <> id</td><td><> -> shift(99)</td><td></td><td></td></tr>
+<tr class="odd-state"><td>366</td><td>EQ_EXPR = LITERAL . > id</td><td>> -> shift(100)</td><td></td><td></td></tr>
+<tr class="odd-state"><td>370</td><td>EQ_EXPR = LITERAL . < id</td><td>< -> shift(101)</td><td></td><td></td></tr>
+<tr class="odd-state"><td>374</td><td>EQ_EXPR = LITERAL . !> id</td><td>!> -> shift(102)</td><td></td><td></td></tr>
+<tr class="odd-state"><td>378</td><td>EQ_EXPR = LITERAL . !< id</td><td>!< -> shift(103)</td><td></td><td></td></tr>
+<tr class="odd-state"><td>382</td><td>EQ_EXPR = LITERAL . >= id</td><td>>= -> shift(104)</td><td></td><td></td></tr>
+<tr class="odd-state"><td>386</td><td>EQ_EXPR = LITERAL . <= id</td><td><= -> shift(105)</td><td></td><td></td></tr>
+<tr class="odd-state"><td>390</td><td>EQ_EXPR = LITERAL . like id</td><td>like -> shift(106)</td><td></td><td></td></tr>
+<tr class="odd-state"><td>394</td><td>EQ_EXPR = LITERAL . ~ id</td><td>~ -> shift(107)</td><td></td><td></td></tr>
+<tr class="odd-state"><td>264</td><td>HAVING_EXPR = LITERAL . = AGGREGATE</td><td></td><td></td><td></td></tr>
+<tr class="odd-state"><td>268</td><td>HAVING_EXPR = LITERAL . != AGGREGATE</td><td></td><td></td><td></td></tr>
+<tr class="odd-state"><td>272</td><td>HAVING_EXPR = LITERAL . <> AGGREGATE</td><td></td><td></td><td></td></tr>
+<tr class="odd-state"><td>276</td><td>HAVING_EXPR = LITERAL . > AGGREGATE</td><td></td><td></td><td></td></tr>
+<tr class="odd-state"><td>280</td><td>HAVING_EXPR = LITERAL . < AGGREGATE</td><td></td><td></td><td></td></tr>
+<tr class="odd-state"><td>284</td><td>HAVING_EXPR = LITERAL . !> AGGREGATE</td><td></td><td></td><td></td></tr>
+<tr class="odd-state"><td>288</td><td>HAVING_EXPR = LITERAL . !< AGGREGATE</td><td></td><td></td><td></td></tr>
+<tr class="odd-state"><td>292</td><td>HAVING_EXPR = LITERAL . >= AGGREGATE</td><td></td><td></td><td></td></tr>
+<tr class="odd-state"><td>296</td><td>HAVING_EXPR = LITERAL . <= AGGREGATE</td><td></td><td></td><td></td></tr>
+<tr class="odd-state"><td>300</td><td>HAVING_EXPR = LITERAL . like AGGREGATE</td><td></td><td></td><td></td></tr>
+<tr class="odd-state"><td>304</td><td>HAVING_EXPR = LITERAL . ~ AGGREGATE</td><td></td><td></td><td></td></tr>
+<tr class="even-state"><td rowspan="11">64</td><td>220</td><td>HAVING_EXPR = AGGREGATE . = LITERAL</td><td>= -> shift(108)</td><td></td><td></td></tr>
+<tr class="even-state"><td>224</td><td>HAVING_EXPR = AGGREGATE . != LITERAL</td><td>!= -> shift(109)</td><td></td><td></td></tr>
+<tr class="even-state"><td>228</td><td>HAVING_EXPR = AGGREGATE . <> LITERAL</td><td><> -> shift(110)</td><td></td><td></td></tr>
+<tr class="even-state"><td>232</td><td>HAVING_EXPR = AGGREGATE . > LITERAL</td><td>> -> shift(111)</td><td></td><td></td></tr>
+<tr class="even-state"><td>236</td><td>HAVING_EXPR = AGGREGATE . < LITERAL</td><td>< -> shift(112)</td><td></td><td></td></tr>
+<tr class="even-state"><td>240</td><td>HAVING_EXPR = AGGREGATE . !> LITERAL</td><td>!> -> shift(113)</td><td></td><td></td></tr>
+<tr class="even-state"><td>244</td><td>HAVING_EXPR = AGGREGATE . !< LITERAL</td><td>!< -> shift(114)</td><td></td><td></td></tr>
+<tr class="even-state"><td>248</td><td>HAVING_EXPR = AGGREGATE . >= LITERAL</td><td>>= -> shift(115)</td><td></td><td></td></tr>
+<tr class="even-state"><td>252</td><td>HAVING_EXPR = AGGREGATE . <= LITERAL</td><td><= -> shift(116)</td><td></td><td></td></tr>
+<tr class="even-state"><td>256</td><td>HAVING_EXPR = AGGREGATE . like LITERAL</td><td>like -> shift(117)</td><td></td><td></td></tr>
+<tr class="even-state"><td>260</td><td>HAVING_EXPR = AGGREGATE . ~ LITERAL</td><td>~ -> shift(118)</td><td></td><td></td></tr>
+<tr class="odd-state"><td rowspan="3">65</td><td>311</td><td>EQ_EXPR = id = . LITERAL</td><td>LITERAL -> goto(119)</td><td></td><td></td></tr>
+<tr class="odd-state"><td>397</td><td>LITERAL = . number</td><td>number -> shift(42)</td><td></td><td></td></tr>
+<tr class="odd-state"><td>399</td><td>LITERAL = . string</td><td>string -> shift(43)</td><td></td><td></td></tr>
+<tr class="even-state"><td rowspan="3">66</td><td>315</td><td>EQ_EXPR = id != . LITERAL</td><td>LITERAL -> goto(120)</td><td></td><td></td></tr>
+<tr class="even-state"><td>397</td><td>LITERAL = . number</td><td>number -> shift(42)</td><td></td><td></td></tr>
+<tr class="even-state"><td>399</td><td>LITERAL = . string</td><td>string -> shift(43)</td><td></td><td></td></tr>
+<tr class="odd-state"><td rowspan="3">67</td><td>319</td><td>EQ_EXPR = id <> . LITERAL</td><td>LITERAL -> goto(121)</td><td></td><td></td></tr>
+<tr class="odd-state"><td>397</td><td>LITERAL = . number</td><td>number -> shift(42)</td><td></td><td></td></tr>
+<tr class="odd-state"><td>399</td><td>LITERAL = . string</td><td>string -> shift(43)</td><td></td><td></td></tr>
+<tr class="even-state"><td rowspan="3">68</td><td>323</td><td>EQ_EXPR = id > . LITERAL</td><td>LITERAL -> goto(122)</td><td></td><td></td></tr>
+<tr class="even-state"><td>397</td><td>LITERAL = . number</td><td>number -> shift(42)</td><td></td><td></td></tr>
+<tr class="even-state"><td>399</td><td>LITERAL = . string</td><td>string -> shift(43)</td><td></td><td></td></tr>
+<tr class="odd-state"><td rowspan="3">69</td><td>327</td><td>EQ_EXPR = id < . LITERAL</td><td>LITERAL -> goto(123)</td><td></td><td></td></tr>
+<tr class="odd-state"><td>397</td><td>LITERAL = . number</td><td>number -> shift(42)</td><td></td><td></td></tr>
+<tr class="odd-state"><td>399</td><td>LITERAL = . string</td><td>string -> shift(43)</td><td></td><td></td></tr>
+<tr class="even-state"><td rowspan="3">70</td><td>331</td><td>EQ_EXPR = id !> . LITERAL</td><td>LITERAL -> goto(124)</td><td></td><td></td></tr>
+<tr class="even-state"><td>397</td><td>LITERAL = . number</td><td>number -> shift(42)</td><td></td><td></td></tr>
+<tr class="even-state"><td>399</td><td>LITERAL = . string</td><td>string -> shift(43)</td><td></td><td></td></tr>
+<tr class="odd-state"><td rowspan="3">71</td><td>335</td><td>EQ_EXPR = id !< . LITERAL</td><td>LITERAL -> goto(125)</td><td></td><td></td></tr>
+<tr class="odd-state"><td>397</td><td>LITERAL = . number</td><td>number -> shift(42)</td><td></td><td></td></tr>
+<tr class="odd-state"><td>399</td><td>LITERAL = . string</td><td>string -> shift(43)</td><td></td><td></td></tr>
+<tr class="even-state"><td rowspan="3">72</td><td>339</td><td>EQ_EXPR = id >= . LITERAL</td><td>LITERAL -> goto(126)</td><td></td><td></td></tr>
+<tr class="even-state"><td>397</td><td>LITERAL = . number</td><td>number -> shift(42)</td><td></td><td></td></tr>
+<tr class="even-state"><td>399</td><td>LITERAL = . string</td><td>string -> shift(43)</td><td></td><td></td></tr>
+<tr class="odd-state"><td rowspan="3">73</td><td>343</td><td>EQ_EXPR = id <= . LITERAL</td><td>LITERAL -> goto(127)</td><td></td><td></td></tr>
+<tr class="odd-state"><td>397</td><td>LITERAL = . number</td><td>number -> shift(42)</td><td></td><td></td></tr>
+<tr class="odd-state"><td>399</td><td>LITERAL = . string</td><td>string -> shift(43)</td><td></td><td></td></tr>
+<tr class="even-state"><td rowspan="3">74</td><td>347</td><td>EQ_EXPR = id like . LITERAL</td><td>LITERAL -> goto(128)</td><td></td><td></td></tr>
+<tr class="even-state"><td>397</td><td>LITERAL = . number</td><td>number -> shift(42)</td><td></td><td></td></tr>
+<tr class="even-state"><td>399</td><td>LITERAL = . string</td><td>string -> shift(43)</td><td></td><td></td></tr>
+<tr class="odd-state"><td rowspan="3">75</td><td>351</td><td>EQ_EXPR = id ~ . LITERAL</td><td>LITERAL -> goto(129)</td><td></td><td></td></tr>
+<tr class="odd-state"><td>397</td><td>LITERAL = . number</td><td>number -> shift(42)</td><td></td><td></td></tr>
+<tr class="odd-state"><td>399</td><td>LITERAL = . string</td><td>string -> shift(43)</td><td></td><td></td></tr>
+<tr class="even-state"><td rowspan="1">76</td><td>355</td><td>EQ_EXPR = LITERAL = . id</td><td>id -> shift(130)</td><td></td><td></td></tr>
+<tr class="odd-state"><td rowspan="1">77</td><td>359</td><td>EQ_EXPR = LITERAL != . id</td><td>id -> shift(131)</td><td></td><td></td></tr>
+<tr class="even-state"><td rowspan="1">78</td><td>363</td><td>EQ_EXPR = LITERAL <> . id</td><td>id -> shift(132)</td><td></td><td></td></tr>
+<tr class="odd-state"><td rowspan="1">79</td><td>367</td><td>EQ_EXPR = LITERAL > . id</td><td>id -> shift(133)</td><td></td><td></td></tr>
+<tr class="even-state"><td rowspan="1">80</td><td>371</td><td>EQ_EXPR = LITERAL < . id</td><td>id -> shift(134)</td><td></td><td></td></tr>
+<tr class="odd-state"><td rowspan="1">81</td><td>375</td><td>EQ_EXPR = LITERAL !> . id</td><td>id -> shift(135)</td><td></td><td></td></tr>
+<tr class="even-state"><td rowspan="1">82</td><td>379</td><td>EQ_EXPR = LITERAL !< . id</td><td>id -> shift(136)</td><td></td><td></td></tr>
+<tr class="odd-state"><td rowspan="1">83</td><td>383</td><td>EQ_EXPR = LITERAL >= . id</td><td>id -> shift(137)</td><td></td><td></td></tr>
+<tr class="even-state"><td rowspan="1">84</td><td>387</td><td>EQ_EXPR = LITERAL <= . id</td><td>id -> shift(138)</td><td></td><td></td></tr>
+<tr class="odd-state"><td rowspan="1">85</td><td>391</td><td>EQ_EXPR = LITERAL like . id</td><td>id -> shift(139)</td><td></td><td></td></tr>
+<tr class="even-state"><td rowspan="1">86</td><td>395</td><td>EQ_EXPR = LITERAL ~ . id</td><td>id -> shift(140)</td><td></td><td></td></tr>
+<tr class="odd-state"><td rowspan="2">87</td><td>192</td><td>GROUP_BY = group by ID_LIST .</td><td>, -> shift(141)</td><td>GROUP_BY -> group by ID_LIST</td><td>having $ fetch limit order</td></tr>
+<tr class="odd-state"><td>196</td><td>ID_LIST = ID_LIST . , id</td><td></td><td></td><td></td></tr>
+<tr class="even-state"><td rowspan="1">88</td><td>194</td><td>ID_LIST = id .</td><td></td><td>ID_LIST -> id</td><td>, having $ fetch limit order</td></tr>
+<tr class="odd-state"><td rowspan="3">89</td><td>208</td><td>ORDER_BY = order by id . asc</td><td>asc -> shift(142)</td><td>ORDER_BY -> order by id</td><td>$ fetch limit</td></tr>
+<tr class="odd-state"><td>213</td><td>ORDER_BY = order by id . desc</td><td>desc -> shift(143)</td><td></td><td></td></tr>
+<tr class="odd-state"><td>218</td><td>ORDER_BY = order by id .</td><td></td><td></td><td></td></tr>
+<tr class="even-state"><td rowspan="2">90</td><td>180</td><td>LIMIT = fetch first number . rows only</td><td>rows -> shift(144)</td><td></td><td></td></tr>
+<tr class="even-state"><td>186</td><td>LIMIT = fetch first number . row only</td><td>row -> shift(145)</td><td></td><td></td></tr>
+<tr class="odd-state"><td rowspan="1">91</td><td>405</td><td>AGGREGATE = id ( id ) .</td><td></td><td>AGGREGATE -> id ( id )</td><td>$ ~ like <= >= !< !> < > <> != = as , having fetch limit order group where from</td></tr>
+<tr class="even-state"><td rowspan="1">92</td><td>410</td><td>AGGREGATE = id ( * ) .</td><td></td><td>AGGREGATE -> id ( * )</td><td>$ ~ like <= >= !< !> < > <> != = as , having fetch limit order group where from</td></tr>
+<tr class="odd-state"><td rowspan="1">93</td><td>8</td><td>QUERY = SELECT FROM WHERE GROUP_BY ORDER_BY LIMIT .</td><td></td><td>QUERY -> SELECT FROM WHERE GROUP_BY ORDER_BY LIMIT</td><td>$</td></tr>
+<tr class="even-state"><td rowspan="5">94</td><td>88</td><td>QUERY = SELECT FROM WHERE GROUP_BY HAVING ORDER_BY . LIMIT</td><td>LIMIT -> goto(146)</td><td>QUERY -> SELECT FROM WHERE GROUP_BY HAVING ORDER_BY</td><td>$</td></tr>
+<tr class="even-state"><td>116</td><td>QUERY = SELECT FROM WHERE GROUP_BY HAVING ORDER_BY .</td><td>limit -> shift(21)</td><td></td><td></td></tr>
+<tr class="even-state"><td>174</td><td>LIMIT = . limit number</td><td>fetch -> shift(22)</td><td></td><td></td></tr>
+<tr class="even-state"><td>177</td><td>LIMIT = . fetch first number rows only</td><td></td><td></td><td></td></tr>
+<tr class="even-state"><td>183</td><td>LIMIT = . fetch first number row only</td><td></td><td></td><td></td></tr>
+<tr class="odd-state"><td rowspan="1">95</td><td>103</td><td>QUERY = SELECT FROM WHERE GROUP_BY HAVING LIMIT .</td><td></td><td>QUERY -> SELECT FROM WHERE GROUP_BY HAVING LIMIT</td><td>$</td></tr>
+<tr class="even-state"><td rowspan="1">96</td><td>96</td><td>QUERY = SELECT FROM GROUP_BY HAVING ORDER_BY LIMIT .</td><td></td><td>QUERY -> SELECT FROM GROUP_BY HAVING ORDER_BY LIMIT</td><td>$</td></tr>
+<tr class="odd-state"><td rowspan="4">97</td><td>355</td><td>EQ_EXPR = LITERAL = . id</td><td>id -> shift(147)</td><td></td><td></td></tr>
+<tr class="odd-state"><td>265</td><td>HAVING_EXPR = LITERAL = . AGGREGATE</td><td>AGGREGATE -> goto(148)</td><td></td><td></td></tr>
+<tr class="odd-state"><td>401</td><td>AGGREGATE = . id ( id )</td><td></td><td></td><td></td></tr>
+<tr class="odd-state"><td>406</td><td>AGGREGATE = . id ( * )</td><td></td><td></td><td></td></tr>
+<tr class="even-state"><td rowspan="4">98</td><td>359</td><td>EQ_EXPR = LITERAL != . id</td><td>id -> shift(149)</td><td></td><td></td></tr>
+<tr class="even-state"><td>269</td><td>HAVING_EXPR = LITERAL != . AGGREGATE</td><td>AGGREGATE -> goto(150)</td><td></td><td></td></tr>
+<tr class="even-state"><td>401</td><td>AGGREGATE = . id ( id )</td><td></td><td></td><td></td></tr>
+<tr class="even-state"><td>406</td><td>AGGREGATE = . id ( * )</td><td></td><td></td><td></td></tr>
+<tr class="odd-state"><td rowspan="4">99</td><td>363</td><td>EQ_EXPR = LITERAL <> . id</td><td>id -> shift(151)</td><td></td><td></td></tr>
+<tr class="odd-state"><td>273</td><td>HAVING_EXPR = LITERAL <> . AGGREGATE</td><td>AGGREGATE -> goto(152)</td><td></td><td></td></tr>
+<tr class="odd-state"><td>401</td><td>AGGREGATE = . id ( id )</td><td></td><td></td><td></td></tr>
+<tr class="odd-state"><td>406</td><td>AGGREGATE = . id ( * )</td><td></td><td></td><td></td></tr>
+<tr class="even-state"><td rowspan="4">100</td><td>367</td><td>EQ_EXPR = LITERAL > . id</td><td>id -> shift(153)</td><td></td><td></td></tr>
+<tr class="even-state"><td>277</td><td>HAVING_EXPR = LITERAL > . AGGREGATE</td><td>AGGREGATE -> goto(154)</td><td></td><td></td></tr>
+<tr class="even-state"><td>401</td><td>AGGREGATE = . id ( id )</td><td></td><td></td><td></td></tr>
+<tr class="even-state"><td>406</td><td>AGGREGATE = . id ( * )</td><td></td><td></td><td></td></tr>
+<tr class="odd-state"><td rowspan="4">101</td><td>371</td><td>EQ_EXPR = LITERAL < . id</td><td>id -> shift(155)</td><td></td><td></td></tr>
+<tr class="odd-state"><td>281</td><td>HAVING_EXPR = LITERAL < . AGGREGATE</td><td>AGGREGATE -> goto(156)</td><td></td><td></td></tr>
+<tr class="odd-state"><td>401</td><td>AGGREGATE = . id ( id )</td><td></td><td></td><td></td></tr>
+<tr class="odd-state"><td>406</td><td>AGGREGATE = . id ( * )</td><td></td><td></td><td></td></tr>
+<tr class="even-state"><td rowspan="4">102</td><td>375</td><td>EQ_EXPR = LITERAL !> . id</td><td>id -> shift(157)</td><td></td><td></td></tr>
+<tr class="even-state"><td>285</td><td>HAVING_EXPR = LITERAL !> . AGGREGATE</td><td>AGGREGATE -> goto(158)</td><td></td><td></td></tr>
+<tr class="even-state"><td>401</td><td>AGGREGATE = . id ( id )</td><td></td><td></td><td></td></tr>
+<tr class="even-state"><td>406</td><td>AGGREGATE = . id ( * )</td><td></td><td></td><td></td></tr>
+<tr class="odd-state"><td rowspan="4">103</td><td>379</td><td>EQ_EXPR = LITERAL !< . id</td><td>id -> shift(159)</td><td></td><td></td></tr>
+<tr class="odd-state"><td>289</td><td>HAVING_EXPR = LITERAL !< . AGGREGATE</td><td>AGGREGATE -> goto(160)</td><td></td><td></td></tr>
+<tr class="odd-state"><td>401</td><td>AGGREGATE = . id ( id )</td><td></td><td></td><td></td></tr>
+<tr class="odd-state"><td>406</td><td>AGGREGATE = . id ( * )</td><td></td><td></td><td></td></tr>
+<tr class="even-state"><td rowspan="4">104</td><td>383</td><td>EQ_EXPR = LITERAL >= . id</td><td>id -> shift(161)</td><td></td><td></td></tr>
+<tr class="even-state"><td>293</td><td>HAVING_EXPR = LITERAL >= . AGGREGATE</td><td>AGGREGATE -> goto(162)</td><td></td><td></td></tr>
+<tr class="even-state"><td>401</td><td>AGGREGATE = . id ( id )</td><td></td><td></td><td></td></tr>
+<tr class="even-state"><td>406</td><td>AGGREGATE = . id ( * )</td><td></td><td></td><td></td></tr>
+<tr class="odd-state"><td rowspan="4">105</td><td>387</td><td>EQ_EXPR = LITERAL <= . id</td><td>id -> shift(163)</td><td></td><td></td></tr>
+<tr class="odd-state"><td>297</td><td>HAVING_EXPR = LITERAL <= . AGGREGATE</td><td>AGGREGATE -> goto(164)</td><td></td><td></td></tr>
+<tr class="odd-state"><td>401</td><td>AGGREGATE = . id ( id )</td><td></td><td></td><td></td></tr>
+<tr class="odd-state"><td>406</td><td>AGGREGATE = . id ( * )</td><td></td><td></td><td></td></tr>
+<tr class="even-state"><td rowspan="4">106</td><td>391</td><td>EQ_EXPR = LITERAL like . id</td><td>id -> shift(165)</td><td></td><td></td></tr>
+<tr class="even-state"><td>301</td><td>HAVING_EXPR = LITERAL like . AGGREGATE</td><td>AGGREGATE -> goto(166)</td><td></td><td></td></tr>
+<tr class="even-state"><td>401</td><td>AGGREGATE = . id ( id )</td><td></td><td></td><td></td></tr>
+<tr class="even-state"><td>406</td><td>AGGREGATE = . id ( * )</td><td></td><td></td><td></td></tr>
+<tr class="odd-state"><td rowspan="4">107</td><td>395</td><td>EQ_EXPR = LITERAL ~ . id</td><td>id -> shift(167)</td><td></td><td></td></tr>
+<tr class="odd-state"><td>305</td><td>HAVING_EXPR = LITERAL ~ . AGGREGATE</td><td>AGGREGATE -> goto(168)</td><td></td><td></td></tr>
+<tr class="odd-state"><td>401</td><td>AGGREGATE = . id ( id )</td><td></td><td></td><td></td></tr>
+<tr class="odd-state"><td>406</td><td>AGGREGATE = . id ( * )</td><td></td><td></td><td></td></tr>
+<tr class="even-state"><td rowspan="3">108</td><td>221</td><td>HAVING_EXPR = AGGREGATE = . LITERAL</td><td>LITERAL -> goto(169)</td><td></td><td></td></tr>
+<tr class="even-state"><td>397</td><td>LITERAL = . number</td><td>number -> shift(42)</td><td></td><td></td></tr>
+<tr class="even-state"><td>399</td><td>LITERAL = . string</td><td>string -> shift(43)</td><td></td><td></td></tr>
+<tr class="odd-state"><td rowspan="3">109</td><td>225</td><td>HAVING_EXPR = AGGREGATE != . LITERAL</td><td>LITERAL -> goto(170)</td><td></td><td></td></tr>
+<tr class="odd-state"><td>397</td><td>LITERAL = . number</td><td>number -> shift(42)</td><td></td><td></td></tr>
+<tr class="odd-state"><td>399</td><td>LITERAL = . string</td><td>string -> shift(43)</td><td></td><td></td></tr>
+<tr class="even-state"><td rowspan="3">110</td><td>229</td><td>HAVING_EXPR = AGGREGATE <> . LITERAL</td><td>LITERAL -> goto(171)</td><td></td><td></td></tr>
+<tr class="even-state"><td>397</td><td>LITERAL = . number</td><td>number -> shift(42)</td><td></td><td></td></tr>
+<tr class="even-state"><td>399</td><td>LITERAL = . string</td><td>string -> shift(43)</td><td></td><td></td></tr>
+<tr class="odd-state"><td rowspan="3">111</td><td>233</td><td>HAVING_EXPR = AGGREGATE > . LITERAL</td><td>LITERAL -> goto(172)</td><td></td><td></td></tr>
+<tr class="odd-state"><td>397</td><td>LITERAL = . number</td><td>number -> shift(42)</td><td></td><td></td></tr>
+<tr class="odd-state"><td>399</td><td>LITERAL = . string</td><td>string -> shift(43)</td><td></td><td></td></tr>
+<tr class="even-state"><td rowspan="3">112</td><td>237</td><td>HAVING_EXPR = AGGREGATE < . LITERAL</td><td>LITERAL -> goto(173)</td><td></td><td></td></tr>
+<tr class="even-state"><td>397</td><td>LITERAL = . number</td><td>number -> shift(42)</td><td></td><td></td></tr>
+<tr class="even-state"><td>399</td><td>LITERAL = . string</td><td>string -> shift(43)</td><td></td><td></td></tr>
+<tr class="odd-state"><td rowspan="3">113</td><td>241</td><td>HAVING_EXPR = AGGREGATE !> . LITERAL</td><td>LITERAL -> goto(174)</td><td></td><td></td></tr>
+<tr class="odd-state"><td>397</td><td>LITERAL = . number</td><td>number -> shift(42)</td><td></td><td></td></tr>
+<tr class="odd-state"><td>399</td><td>LITERAL = . string</td><td>string -> shift(43)</td><td></td><td></td></tr>
+<tr class="even-state"><td rowspan="3">114</td><td>245</td><td>HAVING_EXPR = AGGREGATE !< . LITERAL</td><td>LITERAL -> goto(175)</td><td></td><td></td></tr>
+<tr class="even-state"><td>397</td><td>LITERAL = . number</td><td>number -> shift(42)</td><td></td><td></td></tr>
+<tr class="even-state"><td>399</td><td>LITERAL = . string</td><td>string -> shift(43)</td><td></td><td></td></tr>
+<tr class="odd-state"><td rowspan="3">115</td><td>249</td><td>HAVING_EXPR = AGGREGATE >= . LITERAL</td><td>LITERAL -> goto(176)</td><td></td><td></td></tr>
+<tr class="odd-state"><td>397</td><td>LITERAL = . number</td><td>number -> shift(42)</td><td></td><td></td></tr>
+<tr class="odd-state"><td>399</td><td>LITERAL = . string</td><td>string -> shift(43)</td><td></td><td></td></tr>
+<tr class="even-state"><td rowspan="3">116</td><td>253</td><td>HAVING_EXPR = AGGREGATE <= . LITERAL</td><td>LITERAL -> goto(177)</td><td></td><td></td></tr>
+<tr class="even-state"><td>397</td><td>LITERAL = . number</td><td>number -> shift(42)</td><td></td><td></td></tr>
+<tr class="even-state"><td>399</td><td>LITERAL = . string</td><td>string -> shift(43)</td><td></td><td></td></tr>
+<tr class="odd-state"><td rowspan="3">117</td><td>257</td><td>HAVING_EXPR = AGGREGATE like . LITERAL</td><td>LITERAL -> goto(178)</td><td></td><td></td></tr>
+<tr class="odd-state"><td>397</td><td>LITERAL = . number</td><td>number -> shift(42)</td><td></td><td></td></tr>
+<tr class="odd-state"><td>399</td><td>LITERAL = . string</td><td>string -> shift(43)</td><td></td><td></td></tr>
+<tr class="even-state"><td rowspan="3">118</td><td>261</td><td>HAVING_EXPR = AGGREGATE ~ . LITERAL</td><td>LITERAL -> goto(179)</td><td></td><td></td></tr>
+<tr class="even-state"><td>397</td><td>LITERAL = . number</td><td>number -> shift(42)</td><td></td><td></td></tr>
+<tr class="even-state"><td>399</td><td>LITERAL = . string</td><td>string -> shift(43)</td><td></td><td></td></tr>
+<tr class="odd-state"><td rowspan="1">119</td><td>312</td><td>EQ_EXPR = id = LITERAL .</td><td></td><td>EQ_EXPR -> id = LITERAL</td><td>having $ fetch limit order group</td></tr>
+<tr class="even-state"><td rowspan="1">120</td><td>316</td><td>EQ_EXPR = id != LITERAL .</td><td></td><td>EQ_EXPR -> id != LITERAL</td><td>having $ fetch limit order group</td></tr>
+<tr class="odd-state"><td rowspan="1">121</td><td>320</td><td>EQ_EXPR = id <> LITERAL .</td><td></td><td>EQ_EXPR -> id <> LITERAL</td><td>having $ fetch limit order group</td></tr>
+<tr class="even-state"><td rowspan="1">122</td><td>324</td><td>EQ_EXPR = id > LITERAL .</td><td></td><td>EQ_EXPR -> id > LITERAL</td><td>having $ fetch limit order group</td></tr>
+<tr class="odd-state"><td rowspan="1">123</td><td>328</td><td>EQ_EXPR = id < LITERAL .</td><td></td><td>EQ_EXPR -> id < LITERAL</td><td>having $ fetch limit order group</td></tr>
+<tr class="even-state"><td rowspan="1">124</td><td>332</td><td>EQ_EXPR = id !> LITERAL .</td><td></td><td>EQ_EXPR -> id !> LITERAL</td><td>having $ fetch limit order group</td></tr>
+<tr class="odd-state"><td rowspan="1">125</td><td>336</td><td>EQ_EXPR = id !< LITERAL .</td><td></td><td>EQ_EXPR -> id !< LITERAL</td><td>having $ fetch limit order group</td></tr>
+<tr class="even-state"><td rowspan="1">126</td><td>340</td><td>EQ_EXPR = id >= LITERAL .</td><td></td><td>EQ_EXPR -> id >= LITERAL</td><td>having $ fetch limit order group</td></tr>
+<tr class="odd-state"><td rowspan="1">127</td><td>344</td><td>EQ_EXPR = id <= LITERAL .</td><td></td><td>EQ_EXPR -> id <= LITERAL</td><td>having $ fetch limit order group</td></tr>
+<tr class="even-state"><td rowspan="1">128</td><td>348</td><td>EQ_EXPR = id like LITERAL .</td><td></td><td>EQ_EXPR -> id like LITERAL</td><td>having $ fetch limit order group</td></tr>
+<tr class="odd-state"><td rowspan="1">129</td><td>352</td><td>EQ_EXPR = id ~ LITERAL .</td><td></td><td>EQ_EXPR -> id ~ LITERAL</td><td>having $ fetch limit order group</td></tr>
+<tr class="even-state"><td rowspan="1">130</td><td>356</td><td>EQ_EXPR = LITERAL = id .</td><td></td><td>EQ_EXPR -> LITERAL = id</td><td>having $ fetch limit order group</td></tr>
+<tr class="odd-state"><td rowspan="1">131</td><td>360</td><td>EQ_EXPR = LITERAL != id .</td><td></td><td>EQ_EXPR -> LITERAL != id</td><td>having $ fetch limit order group</td></tr>
+<tr class="even-state"><td rowspan="1">132</td><td>364</td><td>EQ_EXPR = LITERAL <> id .</td><td></td><td>EQ_EXPR -> LITERAL <> id</td><td>having $ fetch limit order group</td></tr>
+<tr class="odd-state"><td rowspan="1">133</td><td>368</td><td>EQ_EXPR = LITERAL > id .</td><td></td><td>EQ_EXPR -> LITERAL > id</td><td>having $ fetch limit order group</td></tr>
+<tr class="even-state"><td rowspan="1">134</td><td>372</td><td>EQ_EXPR = LITERAL < id .</td><td></td><td>EQ_EXPR -> LITERAL < id</td><td>having $ fetch limit order group</td></tr>
+<tr class="odd-state"><td rowspan="1">135</td><td>376</td><td>EQ_EXPR = LITERAL !> id .</td><td></td><td>EQ_EXPR -> LITERAL !> id</td><td>having $ fetch limit order group</td></tr>
+<tr class="even-state"><td rowspan="1">136</td><td>380</td><td>EQ_EXPR = LITERAL !< id .</td><td></td><td>EQ_EXPR -> LITERAL !< id</td><td>having $ fetch limit order group</td></tr>
+<tr class="odd-state"><td rowspan="1">137</td><td>384</td><td>EQ_EXPR = LITERAL >= id .</td><td></td><td>EQ_EXPR -> LITERAL >= id</td><td>having $ fetch limit order group</td></tr>
+<tr class="even-state"><td rowspan="1">138</td><td>388</td><td>EQ_EXPR = LITERAL <= id .</td><td></td><td>EQ_EXPR -> LITERAL <= id</td><td>having $ fetch limit order group</td></tr>
+<tr class="odd-state"><td rowspan="1">139</td><td>392</td><td>EQ_EXPR = LITERAL like id .</td><td></td><td>EQ_EXPR -> LITERAL like id</td><td>having $ fetch limit order group</td></tr>
+<tr class="even-state"><td rowspan="1">140</td><td>396</td><td>EQ_EXPR = LITERAL ~ id .</td><td></td><td>EQ_EXPR -> LITERAL ~ id</td><td>having $ fetch limit order group</td></tr>
+<tr class="odd-state"><td rowspan="1">141</td><td>197</td><td>ID_LIST = ID_LIST , . id</td><td>id -> shift(180)</td><td></td><td></td></tr>
+<tr class="even-state"><td rowspan="1">142</td><td>209</td><td>ORDER_BY = order by id asc .</td><td></td><td>ORDER_BY -> order by id asc</td><td>$ fetch limit</td></tr>
+<tr class="odd-state"><td rowspan="1">143</td><td>214</td><td>ORDER_BY = order by id desc .</td><td></td><td>ORDER_BY -> order by id desc</td><td>$ fetch limit</td></tr>
+<tr class="even-state"><td rowspan="1">144</td><td>181</td><td>LIMIT = fetch first number rows . only</td><td>only -> shift(181)</td><td></td><td></td></tr>
+<tr class="odd-state"><td rowspan="1">145</td><td>187</td><td>LIMIT = fetch first number row . only</td><td>only -> shift(182)</td><td></td><td></td></tr>
+<tr class="even-state"><td rowspan="1">146</td><td>89</td><td>QUERY = SELECT FROM WHERE GROUP_BY HAVING ORDER_BY LIMIT .</td><td></td><td>QUERY -> SELECT FROM WHERE GROUP_BY HAVING ORDER_BY LIMIT</td><td>$</td></tr>
+<tr class="odd-state"><td rowspan="3">147</td><td>356</td><td>EQ_EXPR = LITERAL = id .</td><td>( -> shift(27)</td><td>EQ_EXPR -> LITERAL = id</td><td>having $ fetch limit order group</td></tr>
+<tr class="odd-state"><td>402</td><td>AGGREGATE = id . ( id )</td><td></td><td></td><td></td></tr>
+<tr class="odd-state"><td>407</td><td>AGGREGATE = id . ( * )</td><td></td><td></td><td></td></tr>
+<tr class="even-state"><td rowspan="1">148</td><td>266</td><td>HAVING_EXPR = LITERAL = AGGREGATE .</td><td></td><td>HAVING_EXPR -> LITERAL = AGGREGATE</td><td>$ fetch limit order</td></tr>
+<tr class="odd-state"><td rowspan="3">149</td><td>360</td><td>EQ_EXPR = LITERAL != id .</td><td>( -> shift(27)</td><td>EQ_EXPR -> LITERAL != id</td><td>having $ fetch limit order group</td></tr>
+<tr class="odd-state"><td>402</td><td>AGGREGATE = id . ( id )</td><td></td><td></td><td></td></tr>
+<tr class="odd-state"><td>407</td><td>AGGREGATE = id . ( * )</td><td></td><td></td><td></td></tr>
+<tr class="even-state"><td rowspan="1">150</td><td>270</td><td>HAVING_EXPR = LITERAL != AGGREGATE .</td><td></td><td>HAVING_EXPR -> LITERAL != AGGREGATE</td><td>$ fetch limit order</td></tr>
+<tr class="odd-state"><td rowspan="3">151</td><td>364</td><td>EQ_EXPR = LITERAL <> id .</td><td>( -> shift(27)</td><td>EQ_EXPR -> LITERAL <> id</td><td>having $ fetch limit order group</td></tr>
+<tr class="odd-state"><td>402</td><td>AGGREGATE = id . ( id )</td><td></td><td></td><td></td></tr>
+<tr class="odd-state"><td>407</td><td>AGGREGATE = id . ( * )</td><td></td><td></td><td></td></tr>
+<tr class="even-state"><td rowspan="1">152</td><td>274</td><td>HAVING_EXPR = LITERAL <> AGGREGATE .</td><td></td><td>HAVING_EXPR -> LITERAL <> AGGREGATE</td><td>$ fetch limit order</td></tr>
+<tr class="odd-state"><td rowspan="3">153</td><td>368</td><td>EQ_EXPR = LITERAL > id .</td><td>( -> shift(27)</td><td>EQ_EXPR -> LITERAL > id</td><td>having $ fetch limit order group</td></tr>
+<tr class="odd-state"><td>402</td><td>AGGREGATE = id . ( id )</td><td></td><td></td><td></td></tr>
+<tr class="odd-state"><td>407</td><td>AGGREGATE = id . ( * )</td><td></td><td></td><td></td></tr>
+<tr class="even-state"><td rowspan="1">154</td><td>278</td><td>HAVING_EXPR = LITERAL > AGGREGATE .</td><td></td><td>HAVING_EXPR -> LITERAL > AGGREGATE</td><td>$ fetch limit order</td></tr>
+<tr class="odd-state"><td rowspan="3">155</td><td>372</td><td>EQ_EXPR = LITERAL < id .</td><td>( -> shift(27)</td><td>EQ_EXPR -> LITERAL < id</td><td>having $ fetch limit order group</td></tr>
+<tr class="odd-state"><td>402</td><td>AGGREGATE = id . ( id )</td><td></td><td></td><td></td></tr>
+<tr class="odd-state"><td>407</td><td>AGGREGATE = id . ( * )</td><td></td><td></td><td></td></tr>
+<tr class="even-state"><td rowspan="1">156</td><td>282</td><td>HAVING_EXPR = LITERAL < AGGREGATE .</td><td></td><td>HAVING_EXPR -> LITERAL < AGGREGATE</td><td>$ fetch limit order</td></tr>
+<tr class="odd-state"><td rowspan="3">157</td><td>376</td><td>EQ_EXPR = LITERAL !> id .</td><td>( -> shift(27)</td><td>EQ_EXPR -> LITERAL !> id</td><td>having $ fetch limit order group</td></tr>
+<tr class="odd-state"><td>402</td><td>AGGREGATE = id . ( id )</td><td></td><td></td><td></td></tr>
+<tr class="odd-state"><td>407</td><td>AGGREGATE = id . ( * )</td><td></td><td></td><td></td></tr>
+<tr class="even-state"><td rowspan="1">158</td><td>286</td><td>HAVING_EXPR = LITERAL !> AGGREGATE .</td><td></td><td>HAVING_EXPR -> LITERAL !> AGGREGATE</td><td>$ fetch limit order</td></tr>
+<tr class="odd-state"><td rowspan="3">159</td><td>380</td><td>EQ_EXPR = LITERAL !< id .</td><td>( -> shift(27)</td><td>EQ_EXPR -> LITERAL !< id</td><td>having $ fetch limit order group</td></tr>
+<tr class="odd-state"><td>402</td><td>AGGREGATE = id . ( id )</td><td></td><td></td><td></td></tr>
+<tr class="odd-state"><td>407</td><td>AGGREGATE = id . ( * )</td><td></td><td></td><td></td></tr>
+<tr class="even-state"><td rowspan="1">160</td><td>290</td><td>HAVING_EXPR = LITERAL !< AGGREGATE .</td><td></td><td>HAVING_EXPR -> LITERAL !< AGGREGATE</td><td>$ fetch limit order</td></tr>
+<tr class="odd-state"><td rowspan="3">161</td><td>384</td><td>EQ_EXPR = LITERAL >= id .</td><td>( -> shift(27)</td><td>EQ_EXPR -> LITERAL >= id</td><td>having $ fetch limit order group</td></tr>
+<tr class="odd-state"><td>402</td><td>AGGREGATE = id . ( id )</td><td></td><td></td><td></td></tr>
+<tr class="odd-state"><td>407</td><td>AGGREGATE = id . ( * )</td><td></td><td></td><td></td></tr>
+<tr class="even-state"><td rowspan="1">162</td><td>294</td><td>HAVING_EXPR = LITERAL >= AGGREGATE .</td><td></td><td>HAVING_EXPR -> LITERAL >= AGGREGATE</td><td>$ fetch limit order</td></tr>
+<tr class="odd-state"><td rowspan="3">163</td><td>388</td><td>EQ_EXPR = LITERAL <= id .</td><td>( -> shift(27)</td><td>EQ_EXPR -> LITERAL <= id</td><td>having $ fetch limit order group</td></tr>
+<tr class="odd-state"><td>402</td><td>AGGREGATE = id . ( id )</td><td></td><td></td><td></td></tr>
+<tr class="odd-state"><td>407</td><td>AGGREGATE = id . ( * )</td><td></td><td></td><td></td></tr>
+<tr class="even-state"><td rowspan="1">164</td><td>298</td><td>HAVING_EXPR = LITERAL <= AGGREGATE .</td><td></td><td>HAVING_EXPR -> LITERAL <= AGGREGATE</td><td>$ fetch limit order</td></tr>
+<tr class="odd-state"><td rowspan="3">165</td><td>392</td><td>EQ_EXPR = LITERAL like id .</td><td>( -> shift(27)</td><td>EQ_EXPR -> LITERAL like id</td><td>having $ fetch limit order group</td></tr>
+<tr class="odd-state"><td>402</td><td>AGGREGATE = id . ( id )</td><td></td><td></td><td></td></tr>
+<tr class="odd-state"><td>407</td><td>AGGREGATE = id . ( * )</td><td></td><td></td><td></td></tr>
+<tr class="even-state"><td rowspan="1">166</td><td>302</td><td>HAVING_EXPR = LITERAL like AGGREGATE .</td><td></td><td>HAVING_EXPR -> LITERAL like AGGREGATE</td><td>$ fetch limit order</td></tr>
+<tr class="odd-state"><td rowspan="3">167</td><td>396</td><td>EQ_EXPR = LITERAL ~ id .</td><td>( -> shift(27)</td><td>EQ_EXPR -> LITERAL ~ id</td><td>having $ fetch limit order group</td></tr>
+<tr class="odd-state"><td>402</td><td>AGGREGATE = id . ( id )</td><td></td><td></td><td></td></tr>
+<tr class="odd-state"><td>407</td><td>AGGREGATE = id . ( * )</td><td></td><td></td><td></td></tr>
+<tr class="even-state"><td rowspan="1">168</td><td>306</td><td>HAVING_EXPR = LITERAL ~ AGGREGATE .</td><td></td><td>HAVING_EXPR -> LITERAL ~ AGGREGATE</td><td>$ fetch limit order</td></tr>
+<tr class="odd-state"><td rowspan="1">169</td><td>222</td><td>HAVING_EXPR = AGGREGATE = LITERAL .</td><td></td><td>HAVING_EXPR -> AGGREGATE = LITERAL</td><td>$ fetch limit order</td></tr>
+<tr class="even-state"><td rowspan="1">170</td><td>226</td><td>HAVING_EXPR = AGGREGATE != LITERAL .</td><td></td><td>HAVING_EXPR -> AGGREGATE != LITERAL</td><td>$ fetch limit order</td></tr>
+<tr class="odd-state"><td rowspan="1">171</td><td>230</td><td>HAVING_EXPR = AGGREGATE <> LITERAL .</td><td></td><td>HAVING_EXPR -> AGGREGATE <> LITERAL</td><td>$ fetch limit order</td></tr>
+<tr class="even-state"><td rowspan="1">172</td><td>234</td><td>HAVING_EXPR = AGGREGATE > LITERAL .</td><td></td><td>HAVING_EXPR -> AGGREGATE > LITERAL</td><td>$ fetch limit order</td></tr>
+<tr class="odd-state"><td rowspan="1">173</td><td>238</td><td>HAVING_EXPR = AGGREGATE < LITERAL .</td><td></td><td>HAVING_EXPR -> AGGREGATE < LITERAL</td><td>$ fetch limit order</td></tr>
+<tr class="even-state"><td rowspan="1">174</td><td>242</td><td>HAVING_EXPR = AGGREGATE !> LITERAL .</td><td></td><td>HAVING_EXPR -> AGGREGATE !> LITERAL</td><td>$ fetch limit order</td></tr>
+<tr class="odd-state"><td rowspan="1">175</td><td>246</td><td>HAVING_EXPR = AGGREGATE !< LITERAL .</td><td></td><td>HAVING_EXPR -> AGGREGATE !< LITERAL</td><td>$ fetch limit order</td></tr>
+<tr class="even-state"><td rowspan="1">176</td><td>250</td><td>HAVING_EXPR = AGGREGATE >= LITERAL .</td><td></td><td>HAVING_EXPR -> AGGREGATE >= LITERAL</td><td>$ fetch limit order</td></tr>
+<tr class="odd-state"><td rowspan="1">177</td><td>254</td><td>HAVING_EXPR = AGGREGATE <= LITERAL .</td><td></td><td>HAVING_EXPR -> AGGREGATE <= LITERAL</td><td>$ fetch limit order</td></tr>
+<tr class="even-state"><td rowspan="1">178</td><td>258</td><td>HAVING_EXPR = AGGREGATE like LITERAL .</td><td></td><td>HAVING_EXPR -> AGGREGATE like LITERAL</td><td>$ fetch limit order</td></tr>
+<tr class="odd-state"><td rowspan="1">179</td><td>262</td><td>HAVING_EXPR = AGGREGATE ~ LITERAL .</td><td></td><td>HAVING_EXPR -> AGGREGATE ~ LITERAL</td><td>$ fetch limit order</td></tr>
+<tr class="even-state"><td rowspan="1">180</td><td>198</td><td>ID_LIST = ID_LIST , id .</td><td></td><td>ID_LIST -> ID_LIST , id</td><td>, having $ fetch limit order</td></tr>
+<tr class="odd-state"><td rowspan="1">181</td><td>182</td><td>LIMIT = fetch first number rows only .</td><td></td><td>LIMIT -> fetch first number rows only</td><td>$</td></tr>
+<tr class="even-state"><td rowspan="1">182</td><td>188</td><td>LIMIT = fetch first number row only .</td><td></td><td>LIMIT -> fetch first number row only</td><td>$</td></tr>
 </tbody>
 </table>
 </body></html>
