@@ -1,0 +1,12 @@
+Grammar: S
+==========
+
+Conflicts
+---------
+
+Shift-Reduce Conflict at State #5
+  Lookahead
+    else
+  Actions
+    reduce(I -> if S)
+    shift(6)

@@ -1,6 +1,4 @@
-require_relative '../bottoms_up'
-
-$parser = BottomsUp::Grammar.new(:ARITHMETIC) do |p|
+BottomsUp::Grammar.new(:ARITHMETIC) do |p|
   p.rule(:ARITHMETIC, [:EXPR_LIST])
   p.rule(:EXPR_LIST, [:EXPR])
   p.rule(:EXPR_LIST, [:EXPR_LIST, :EXPR])

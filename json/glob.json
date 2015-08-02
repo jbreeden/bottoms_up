@@ -1,6 +1,5 @@
 [
   {
-    "num": 0,
     "shifts": {
       "GLOB": 1,
       "SEGMENT_LIST": 2,
@@ -16,7 +15,6 @@
     ]
   },
   {
-    "num": 1,
     "shifts": {
     },
     "reductions": [
@@ -25,14 +23,11 @@
         "lookaheads": [
           "$"
         ],
-        "reduces": [
-          "GLOB"
-        ]
+        "reduces": 1
       }
     ]
   },
   {
-    "num": 2,
     "shifts": {
       "$": 9,
       "slash": 10
@@ -42,7 +37,6 @@
     ]
   },
   {
-    "num": 3,
     "shifts": {
       "SEGMENT": 11,
       "GROUP": 4,
@@ -57,14 +51,11 @@
           "slash",
           "$"
         ],
-        "reduces": [
-          "SEGMENT"
-        ]
+        "reduces": 1
       }
     ]
   },
   {
-    "num": 4,
     "shifts": {
     },
     "reductions": [
@@ -76,14 +67,11 @@
           "slash",
           "$"
         ],
-        "reduces": [
-          "GROUP"
-        ]
+        "reduces": 1
       }
     ]
   },
   {
-    "num": 5,
     "shifts": {
       "close_group": 12,
       "STRING_LIST": 13,
@@ -96,7 +84,6 @@
     ]
   },
   {
-    "num": 6,
     "shifts": {
     },
     "reductions": [
@@ -108,14 +95,11 @@
           "slash",
           "$"
         ],
-        "reduces": [
-          "STRING"
-        ]
+        "reduces": 1
       }
     ]
   },
   {
-    "num": 7,
     "shifts": {
       "ESCAPE": 16,
       "backslash": 17
@@ -125,7 +109,6 @@
     ]
   },
   {
-    "num": 8,
     "shifts": {
       "SEGMENT_LIST": 18,
       "SEGMENT": 3,
@@ -139,7 +122,6 @@
     ]
   },
   {
-    "num": 9,
     "shifts": {
     },
     "reductions": [
@@ -148,15 +130,11 @@
         "lookaheads": [
           "$"
         ],
-        "reduces": [
-          "SEGMENT_LIST",
-          "$"
-        ]
+        "reduces": 2
       }
     ]
   },
   {
-    "num": 10,
     "shifts": {
       "SEGMENT": 19,
       "GROUP": 4,
@@ -169,7 +147,6 @@
     ]
   },
   {
-    "num": 11,
     "shifts": {
       "SEGMENT": 11,
       "GROUP": 4,
@@ -186,15 +163,11 @@
           "slash",
           "$"
         ],
-        "reduces": [
-          "SEGMENT",
-          "SEGMENT"
-        ]
+        "reduces": 2
       }
     ]
   },
   {
-    "num": 12,
     "shifts": {
     },
     "reductions": [
@@ -206,15 +179,11 @@
           "slash",
           "$"
         ],
-        "reduces": [
-          "open_group",
-          "close_group"
-        ]
+        "reduces": 2
       }
     ]
   },
   {
-    "num": 13,
     "shifts": {
       "close_group": 20,
       "STRING": 21,
@@ -225,7 +194,6 @@
     ]
   },
   {
-    "num": 14,
     "shifts": {
     },
     "reductions": [
@@ -235,14 +203,11 @@
           "string",
           "close_group"
         ],
-        "reduces": [
-          "STRING"
-        ]
+        "reduces": 1
       }
     ]
   },
   {
-    "num": 15,
     "shifts": {
     },
     "reductions": [
@@ -252,14 +217,11 @@
           "string",
           "close_group"
         ],
-        "reduces": [
-          "comma"
-        ]
+        "reduces": 1
       }
     ]
   },
   {
-    "num": 16,
     "shifts": {
     },
     "reductions": [
@@ -272,15 +234,11 @@
           "slash",
           "$"
         ],
-        "reduces": [
-          "string",
-          "ESCAPE"
-        ]
+        "reduces": 2
       }
     ]
   },
   {
-    "num": 17,
     "shifts": {
       "string": 22,
       "backslash": 23,
@@ -293,7 +251,6 @@
     ]
   },
   {
-    "num": 18,
     "shifts": {
       "$": 27,
       "slash": 10
@@ -303,7 +260,6 @@
     ]
   },
   {
-    "num": 19,
     "shifts": {
       "SEGMENT": 11,
       "GROUP": 4,
@@ -318,16 +274,11 @@
           "slash",
           "$"
         ],
-        "reduces": [
-          "SEGMENT_LIST",
-          "slash",
-          "SEGMENT"
-        ]
+        "reduces": 3
       }
     ]
   },
   {
-    "num": 20,
     "shifts": {
     },
     "reductions": [
@@ -339,16 +290,11 @@
           "slash",
           "$"
         ],
-        "reduces": [
-          "open_group",
-          "STRING_LIST",
-          "close_group"
-        ]
+        "reduces": 3
       }
     ]
   },
   {
-    "num": 21,
     "shifts": {
     },
     "reductions": [
@@ -358,15 +304,11 @@
           "string",
           "close_group"
         ],
-        "reduces": [
-          "STRING_LIST",
-          "STRING"
-        ]
+        "reduces": 2
       }
     ]
   },
   {
-    "num": 22,
     "shifts": {
     },
     "reductions": [
@@ -379,15 +321,11 @@
           "slash",
           "$"
         ],
-        "reduces": [
-          "backslash",
-          "string"
-        ]
+        "reduces": 2
       }
     ]
   },
   {
-    "num": 23,
     "shifts": {
     },
     "reductions": [
@@ -400,15 +338,11 @@
           "slash",
           "$"
         ],
-        "reduces": [
-          "backslash",
-          "backslash"
-        ]
+        "reduces": 2
       }
     ]
   },
   {
-    "num": 24,
     "shifts": {
     },
     "reductions": [
@@ -421,15 +355,11 @@
           "slash",
           "$"
         ],
-        "reduces": [
-          "backslash",
-          "open_group"
-        ]
+        "reduces": 2
       }
     ]
   },
   {
-    "num": 25,
     "shifts": {
     },
     "reductions": [
@@ -442,15 +372,11 @@
           "slash",
           "$"
         ],
-        "reduces": [
-          "backslash",
-          "comma"
-        ]
+        "reduces": 2
       }
     ]
   },
   {
-    "num": 26,
     "shifts": {
     },
     "reductions": [
@@ -463,15 +389,11 @@
           "slash",
           "$"
         ],
-        "reduces": [
-          "backslash",
-          "close_group"
-        ]
+        "reduces": 2
       }
     ]
   },
   {
-    "num": 27,
     "shifts": {
     },
     "reductions": [
@@ -480,11 +402,7 @@
         "lookaheads": [
           "$"
         ],
-        "reduces": [
-          "slash",
-          "SEGMENT_LIST",
-          "$"
-        ]
+        "reduces": 3
       }
     ]
   }

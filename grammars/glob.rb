@@ -1,6 +1,4 @@
-require_relative '../bottoms_up'
-
-$parser = BottomsUp::Grammar.new(:GLOB) do |p|
+BottomsUp::Grammar.new(:GLOB) do |p|
   p.rule(:GLOB, [:SEGMENT_LIST, :'$'])
   p.rule(:GLOB, [:slash, :SEGMENT_LIST, :'$'])
   p.rule(:SEGMENT_LIST, [:SEGMENT])

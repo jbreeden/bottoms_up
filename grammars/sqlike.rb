@@ -1,8 +1,4 @@
-require_relative '../bottoms_up'
-
-$parser = BottomsUp::Grammar.new(:QUERY) do |p|
-  eq_operators = [:'=', :'!=', :'<>', :'>', :'<', :'!>', :'!<', :'>=', :'<=', :like, :'~']
-
+BottomsUp::Grammar.new(:QUERY) do |p|
   # Using (NON_TERMINAL | e) for option parts makes it easier to decord while reducing.
   # If the non terminals themselves were nullable, that would have to be detected on reduction.
   # With this grammar construction, we can safely assume they have contents on reuction
@@ -48,13 +44,16 @@ $parser = BottomsUp::Grammar.new(:QUERY) do |p|
   #       /        OR_EXPR
   #      /        /       \
   #   a = b and b = c or a = d
+
+  eq_operators = [:'=', :'!=', :'<>', :'>', :'<', :'!>', :'!<', :'>=', :'<=', :like, :'~']
+
   precedence = []
   precedence.push([:LITERAL, :id, :PAREN_EXPR, :AGGREGATE])
   is_term = precedence.flatten
-  precedence.push([:NOT_EXPR])
-  not_term = precedence.flatten
   precedence.push([:EQ_EXPR])
   eq_term = precedence.flatten
+  precedence.push([:NOT_EXPR])
+  not_term = precedence.flatten
   precedence.push([:AND_EXPR])
   and_term = precedence.flatten
   precedence.push([:OR_EXPR])
@@ -65,7 +64,7 @@ $parser = BottomsUp::Grammar.new(:QUERY) do |p|
   p.rule :EXPR,        [any_expression]
   p.rule :OR_EXPR,     [or_term, :or, and_term]
   p.rule :AND_EXPR,    [and_term, :and, eq_term]
-  p.rule :EQ_EXPR,     [eq_term, eq_operators, eq_term]
+  p.rule :EQ_EXPR,     [eq_term, eq_operators, is_term]
   p.rule :EQ_EXPR,     [is_term, :is, :not, :null]
   p.rule :EQ_EXPR,     [is_term, :is, :null]
   p.rule :NOT_EXPR,    [:not, not_term]

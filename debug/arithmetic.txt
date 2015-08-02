@@ -1,0 +1,145 @@
+Grammar: ARITHMETIC
+===================
+
+Conflicts
+---------
+
+Shift-Reduce Conflict at State #3
+  Lookahead
+    -
+  Actions
+    reduce(EXPR_LIST -> EXPR)
+    shift(17)
+
+Shift-Reduce Conflict at State #3
+  Lookahead
+    +
+  Actions
+    reduce(EXPR_LIST -> EXPR)
+    shift(16)
+
+Shift-Reduce Conflict at State #13
+  Lookahead
+    -
+  Actions
+    reduce(EXPR_LIST -> EXPR_LIST EXPR)
+    shift(17)
+
+Shift-Reduce Conflict at State #13
+  Lookahead
+    +
+  Actions
+    reduce(EXPR_LIST -> EXPR_LIST EXPR)
+    shift(16)
+
+Shift-Reduce Conflict at State #21
+  Lookahead
+    /
+  Actions
+    reduce(MULTIPLICATION -> EXPR * EXPR)
+    shift(15)
+
+Shift-Reduce Conflict at State #21
+  Lookahead
+    *
+  Actions
+    reduce(MULTIPLICATION -> EXPR * EXPR)
+    shift(14)
+
+Shift-Reduce Conflict at State #21
+  Lookahead
+    -
+  Actions
+    reduce(MULTIPLICATION -> EXPR * EXPR)
+    shift(17)
+
+Shift-Reduce Conflict at State #21
+  Lookahead
+    +
+  Actions
+    reduce(MULTIPLICATION -> EXPR * EXPR)
+    shift(16)
+
+Shift-Reduce Conflict at State #22
+  Lookahead
+    /
+  Actions
+    reduce(DIVISION -> EXPR / EXPR)
+    shift(15)
+
+Shift-Reduce Conflict at State #22
+  Lookahead
+    *
+  Actions
+    reduce(DIVISION -> EXPR / EXPR)
+    shift(14)
+
+Shift-Reduce Conflict at State #22
+  Lookahead
+    -
+  Actions
+    reduce(DIVISION -> EXPR / EXPR)
+    shift(17)
+
+Shift-Reduce Conflict at State #22
+  Lookahead
+    +
+  Actions
+    reduce(DIVISION -> EXPR / EXPR)
+    shift(16)
+
+Shift-Reduce Conflict at State #23
+  Lookahead
+    /
+  Actions
+    reduce(ADDITION -> EXPR + EXPR)
+    shift(15)
+
+Shift-Reduce Conflict at State #23
+  Lookahead
+    *
+  Actions
+    reduce(ADDITION -> EXPR + EXPR)
+    shift(14)
+
+Shift-Reduce Conflict at State #23
+  Lookahead
+    -
+  Actions
+    reduce(ADDITION -> EXPR + EXPR)
+    shift(17)
+
+Shift-Reduce Conflict at State #23
+  Lookahead
+    +
+  Actions
+    reduce(ADDITION -> EXPR + EXPR)
+    shift(16)
+
+Shift-Reduce Conflict at State #24
+  Lookahead
+    /
+  Actions
+    reduce(SUBTRACTION -> EXPR - EXPR)
+    shift(15)
+
+Shift-Reduce Conflict at State #24
+  Lookahead
+    *
+  Actions
+    reduce(SUBTRACTION -> EXPR - EXPR)
+    shift(14)
+
+Shift-Reduce Conflict at State #24
+  Lookahead
+    -
+  Actions
+    reduce(SUBTRACTION -> EXPR - EXPR)
+    shift(17)
+
+Shift-Reduce Conflict at State #24
+  Lookahead
+    +
+  Actions
+    reduce(SUBTRACTION -> EXPR - EXPR)
+    shift(16)

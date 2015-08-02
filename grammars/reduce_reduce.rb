@@ -1,6 +1,4 @@
-require_relative '../bottoms_up'
-
-$parser = BottomsUp::Grammar.new(:E) do |p|
+BottomsUp::Grammar.new(:E) do |p|
   p.rule :E, [:A, :'1']
   p.rule :E, [:B, :'1']
   p.rule :A, [:'1']

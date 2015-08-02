@@ -1,6 +1,5 @@
 [
   {
-    "num": 0,
     "shifts": {
       "E": 1,
       "A": 2,
@@ -12,14 +11,11 @@
         "lookaheads": [
           "$"
         ],
-        "reduces": [
-
-        ]
+        "reduces": 1
       }
     ]
   },
   {
-    "num": 1,
     "shifts": {
     },
     "reductions": [
@@ -28,14 +24,11 @@
         "lookaheads": [
           "$"
         ],
-        "reduces": [
-          "E"
-        ]
+        "reduces": 1
       }
     ]
   },
   {
-    "num": 2,
     "shifts": {
       "B": 4
     },
@@ -45,14 +38,11 @@
         "lookaheads": [
           "$"
         ],
-        "reduces": [
-
-        ]
+        "reduces": 1
       }
     ]
   },
   {
-    "num": 3,
     "shifts": {
       "B": 5
     },
@@ -62,23 +52,18 @@
         "lookaheads": [
           "$"
         ],
-        "reduces": [
-          "str"
-        ]
+        "reduces": 1
       },
       {
         "produces": "B",
         "lookaheads": [
           "$"
         ],
-        "reduces": [
-
-        ]
+        "reduces": 1
       }
     ]
   },
   {
-    "num": 4,
     "shifts": {
     },
     "reductions": [
@@ -87,15 +72,11 @@
         "lookaheads": [
           "$"
         ],
-        "reduces": [
-          "A",
-          "B"
-        ]
+        "reduces": 2
       }
     ]
   },
   {
-    "num": 5,
     "shifts": {
     },
     "reductions": [
@@ -104,10 +85,7 @@
         "lookaheads": [
           "$"
         ],
-        "reduces": [
-          "str",
-          "B"
-        ]
+        "reduces": 2
       }
     ]
   }

@@ -6,7 +6,8 @@ thead { background-color: skyblue; }
 tr.odd-state { background-color: whitesmoke; }
 </style></head><body>
 <h1>Grammar</h1>
-<pre>ARITHMETIC' ->
+<pre>
+ARITHMETIC' ->
   ARITHMETIC
 
 ARITHMETIC ->
@@ -41,8 +42,8 @@ NUMBER ->
   | - number
   | number
 </pre>
-
-<h1>First Sets</h1><table>
+<h1>First Sets</h1>
+<table>
   <thead>
     <th>Non Terminal</th>
     <th>Firsts</th>
@@ -76,8 +77,7 @@ NUMBER ->
 <tr><td>NUMBER</td><td>/ * ) ( number - + $</td></tr>
   </tbody>
 </table>
-<h1>NFA Table</h1>
-<table>
+<h1>NFA Table</h1><table>
   <thead><th>State</th><th>Item</th><th>Epsilon Transitions</th><th>Action</th></thead>
   <tbody>
 <tr><td>0</td><td>ARITHMETIC' = . ARITHMETIC</td><td>[2]</td><td>goto(1)</td></tr>
@@ -129,8 +129,7 @@ NUMBER ->
 <tr><td>46</td><td>NUMBER = number .</td><td>[]</td><td>reduce(NUMBER -> number)</td></tr>
 </tbody>
 </table>
-<h1>DFA Table</h1>
-<table>
+<h1>DFA Table</h1><table>
   <thead>
     <tr><th rowspan="2">State</th><th rowspan="2">NFA States</th><th rowspan="2">Items</th><th rowspan="2">Shifts</th><th colspan="2">Reductions</th><th rowspan="2">Conflicts</th></tr>
     <tr><th>Rule</th><th>SLR Lookaheads</th></tr>

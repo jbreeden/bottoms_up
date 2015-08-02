@@ -1,6 +1,5 @@
 [
   {
-    "num": 0,
     "shifts": {
       "E": 1,
       "1": 2
@@ -10,7 +9,6 @@
     ]
   },
   {
-    "num": 1,
     "shifts": {
     },
     "reductions": [
@@ -19,14 +17,11 @@
         "lookaheads": [
           "$"
         ],
-        "reduces": [
-          "E"
-        ]
+        "reduces": 1
       }
     ]
   },
   {
-    "num": 2,
     "shifts": {
       "E": 3,
       "1": 2
@@ -37,14 +32,11 @@
         "lookaheads": [
           "$"
         ],
-        "reduces": [
-          "1"
-        ]
+        "reduces": 1
       }
     ]
   },
   {
-    "num": 3,
     "shifts": {
     },
     "reductions": [
@@ -53,10 +45,7 @@
         "lookaheads": [
           "$"
         ],
-        "reduces": [
-          "1",
-          "E"
-        ]
+        "reduces": 2
       }
     ]
   }

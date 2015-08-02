@@ -1,0 +1,19 @@
+Grammar: E
+==========
+
+Conflicts
+---------
+
+Reduce-Reduce Conflict at State #3
+  Lookahead
+    1
+  Actions
+    reduce(A -> 1)
+    reduce(B -> 1)
+
+Reduce-Reduce Conflict at State #3
+  Lookahead
+    1
+  Actions
+    reduce(B -> 1)
+    reduce(A -> 1)

@@ -1,0 +1,19 @@
+Grammar: GLOB
+=============
+
+Conflicts
+---------
+
+Shift-Reduce Conflict at State #11
+  Lookahead
+    open_group
+  Actions
+    reduce(SEGMENT -> SEGMENT SEGMENT)
+    shift(5)
+
+Shift-Reduce Conflict at State #11
+  Lookahead
+    string
+  Actions
+    reduce(SEGMENT -> SEGMENT SEGMENT)
+    shift(7)

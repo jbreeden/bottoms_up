@@ -1,0 +1,1 @@
+[{:shifts=>{:E=>1, :"1"=>2}, :reductions=>[]}, {:shifts=>{}, :reductions=>[{:produces=>:"E'", :lookaheads=>[:"$"], :reduces=>1}]}, {:shifts=>{:E=>3, :"1"=>2}, :reductions=>[{:produces=>:E, :lookaheads=>[:"$"], :reduces=>1}]}, {:shifts=>{}, :reductions=>[{:produces=>:E, :lookaheads=>[:"$"], :reduces=>2}]}]

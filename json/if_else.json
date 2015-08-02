@@ -1,6 +1,5 @@
 [
   {
-    "num": 0,
     "shifts": {
       "S": 1,
       "I": 2,
@@ -12,7 +11,6 @@
     ]
   },
   {
-    "num": 1,
     "shifts": {
     },
     "reductions": [
@@ -21,14 +19,11 @@
         "lookaheads": [
           "$"
         ],
-        "reduces": [
-          "S"
-        ]
+        "reduces": 1
       }
     ]
   },
   {
-    "num": 2,
     "shifts": {
     },
     "reductions": [
@@ -38,14 +33,11 @@
           "else",
           "$"
         ],
-        "reduces": [
-          "I"
-        ]
+        "reduces": 1
       }
     ]
   },
   {
-    "num": 3,
     "shifts": {
       "S": 5,
       "I": 2,
@@ -57,7 +49,6 @@
     ]
   },
   {
-    "num": 4,
     "shifts": {
     },
     "reductions": [
@@ -67,14 +58,11 @@
           "else",
           "$"
         ],
-        "reduces": [
-          "other"
-        ]
+        "reduces": 1
       }
     ]
   },
   {
-    "num": 5,
     "shifts": {
       "else": 6
     },
@@ -85,15 +73,11 @@
           "else",
           "$"
         ],
-        "reduces": [
-          "if",
-          "S"
-        ]
+        "reduces": 2
       }
     ]
   },
   {
-    "num": 6,
     "shifts": {
       "S": 7,
       "I": 2,
@@ -105,7 +89,6 @@
     ]
   },
   {
-    "num": 7,
     "shifts": {
     },
     "reductions": [
@@ -115,12 +98,7 @@
           "else",
           "$"
         ],
-        "reduces": [
-          "if",
-          "S",
-          "else",
-          "S"
-        ]
+        "reduces": 4
       }
     ]
   }

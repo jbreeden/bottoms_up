@@ -6,7 +6,8 @@ thead { background-color: skyblue; }
 tr.odd-state { background-color: whitesmoke; }
 </style></head><body>
 <h1>Grammar</h1>
-<pre>S' ->
+<pre>
+S' ->
   S
 
 S ->
@@ -17,8 +18,8 @@ I ->
   if S
   | if S else S
 </pre>
-
-<h1>First Sets</h1><table>
+<h1>First Sets</h1>
+<table>
   <thead>
     <th>Non Terminal</th>
     <th>Firsts</th>
@@ -40,8 +41,7 @@ I ->
 <tr><td>I</td><td>else $</td></tr>
   </tbody>
 </table>
-<h1>NFA Table</h1>
-<table>
+<h1>NFA Table</h1><table>
   <thead><th>State</th><th>Item</th><th>Epsilon Transitions</th><th>Action</th></thead>
   <tbody>
 <tr><td>0</td><td>S' = . S</td><td>[2, 4]</td><td>goto(1)</td></tr>
@@ -60,8 +60,7 @@ I ->
 <tr><td>13</td><td>I = if S else S .</td><td>[]</td><td>reduce(I -> if S else S)</td></tr>
 </tbody>
 </table>
-<h1>DFA Table</h1>
-<table>
+<h1>DFA Table</h1><table>
   <thead>
     <tr><th rowspan="2">State</th><th rowspan="2">NFA States</th><th rowspan="2">Items</th><th rowspan="2">Shifts</th><th colspan="2">Reductions</th><th rowspan="2">Conflicts</th></tr>
     <tr><th>Rule</th><th>SLR Lookaheads</th></tr>

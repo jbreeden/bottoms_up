@@ -1,0 +1,54 @@
+require_relative '../lib/yargs'
+require_relative '../bottoms_up'
+require 'json'
+
+yargs = Yargs.new(ARGV, :consume)
+table = yargs.value('table')
+json  = yargs.value('json')
+html  = yargs.value('html')
+debug = yargs.value('debug')
+
+grammar_file = ARGV[0]
+
+debug_file = debug.nil? ? $stderr : File.open(debug, 'w')
+table_file = table.nil? ? nil : File.open(table, 'w')
+json_file = json.nil? ? nil : File.open(json, 'w')
+html_file = html.nil? ? nil : File.open(html, 'w')
+
+unless File.exists?(grammar_file)
+  $stderr.puts "Grammar file #{grammar_file} does not exist"
+  exit
+end
+
+load grammar_file
+
+BottomsUp::Grammar.grammars.each do |start_symbol, grammar|
+  debug_file.puts "Grammar: #{start_symbol}"
+  debug_file.puts ('=' * "Grammar: #{start_symbol}".length)
+  debug_file.puts
+
+  if grammar.dfa.conflicts.empty?
+    debug_file.puts "No Conflicts!"
+  else
+    debug_file.puts "Conflicts"
+    debug_file.puts "---------"
+    grammar.dfa.conflicts.each do |conflict|
+      debug_file.puts
+      debug_file.puts(conflict)
+    end
+  end
+
+  if table_file
+    table_file.write(grammar.dfa.table)
+  end
+
+  if json_file
+    json_file.write(JSON.pretty_generate(grammar.dfa.table))
+  end
+
+  if html_file
+    html_file.write(grammar.to_html)
+  end
+end
+
+debug_file.close

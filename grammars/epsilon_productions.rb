@@ -1,6 +1,4 @@
-require_relative '../bottoms_up'
-
-$parser = BottomsUp::Grammar.new(:E) do |p|
+BottomsUp::Grammar.new(:E) do |p|
   # Should be rewritten without :e as
   # E -> A B | e
   p.rule :E, [:A, :e, :B]
