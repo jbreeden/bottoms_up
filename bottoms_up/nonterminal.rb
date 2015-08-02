@@ -1,4 +1,4 @@
-class BottomsUp
+module BottomsUp
   class NonTerminal
     def initialize(symbol)
       @symbol = symbol

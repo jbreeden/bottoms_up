@@ -1,44 +1,85 @@
 [
-{ "num": 0, 
-  "shifts": { "A": 1, "(": 2, "a": 3},
-  "reductions": [ 
+  {
+    "num": 0,
+    "shifts": {
+      "A": 1,
+      "(": 2,
+      "a": 3
+    },
+    "reductions": [
 
-  ]
-},
-{ "num": 1, 
-  "shifts": { },
-  "reductions": [ 
-    { "produces": "A'", 
-      "lookaheads": ["$"], 
-      "nReducedSymbols": 1 }
-  ]
-},
-{ "num": 2, 
-  "shifts": { "A": 4, "(": 2, "a": 3},
-  "reductions": [ 
+    ]
+  },
+  {
+    "num": 1,
+    "shifts": {
+    },
+    "reductions": [
+      {
+        "produces": "A'",
+        "lookaheads": [
+          "$"
+        ],
+        "reduces": [
+          "A"
+        ]
+      }
+    ]
+  },
+  {
+    "num": 2,
+    "shifts": {
+      "A": 4,
+      "(": 2,
+      "a": 3
+    },
+    "reductions": [
 
-  ]
-},
-{ "num": 3, 
-  "shifts": { },
-  "reductions": [ 
-    { "produces": "A", 
-      "lookaheads": [")", "$"], 
-      "nReducedSymbols": 1 }
-  ]
-},
-{ "num": 4, 
-  "shifts": { ")": 5},
-  "reductions": [ 
+    ]
+  },
+  {
+    "num": 3,
+    "shifts": {
+    },
+    "reductions": [
+      {
+        "produces": "A",
+        "lookaheads": [
+          ")",
+          "$"
+        ],
+        "reduces": [
+          "a"
+        ]
+      }
+    ]
+  },
+  {
+    "num": 4,
+    "shifts": {
+      ")": 5
+    },
+    "reductions": [
 
-  ]
-},
-{ "num": 5, 
-  "shifts": { },
-  "reductions": [ 
-    { "produces": "A", 
-      "lookaheads": [")", "$"], 
-      "nReducedSymbols": 3 }
-  ]
-}
+    ]
+  },
+  {
+    "num": 5,
+    "shifts": {
+    },
+    "reductions": [
+      {
+        "produces": "A",
+        "lookaheads": [
+          ")",
+          "$"
+        ],
+        "reduces": [
+          "(",
+          "A",
+          ")"
+        ]
+      }
+    ]
+  }
 ]

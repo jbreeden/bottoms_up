@@ -1,6 +1,6 @@
 require_relative './nfa_state'
 
-class BottomsUp
+module BottomsUp
   class NFA
     attr_reader :states
 
@@ -11,6 +11,10 @@ class BottomsUp
       # be their index in this array.
       @start_symbol = start_symbol
       @items = items.dup
+      @start_state_numbers = Hash.new() { |h, k| h[k] = [] }
+      @items.each_with_index do |item, i|
+        @start_state_numbers[item.production.non_terminal.symbol].push(i) if item.start_item?
+      end
       define_states
     end
 
@@ -25,11 +29,12 @@ class BottomsUp
       @states.find { |s| s.item.production.non_terminal.symbol == @start_symbol }
     end
 
-    def epsilon_closure(state_num, seen = [])
+    def epsilon_closure(state_num, seen = nil)
       closure = []
-      unless seen.index(state_num)
+      seen = Hash.new() { |h,k| h[k] = false } unless seen
+      unless seen[state_num]
         closure = [state_num]
-        seen.push(state_num)
+        seen[state_num] = true
         epsilon_transitions(state_num).each do |epsilon_state_num|
           closure.concat(epsilon_closure(epsilon_state_num, seen))
         end
@@ -41,13 +46,14 @@ class BottomsUp
       @epsilon_transitions ||= []
       item = @items[state_num]
       @epsilon_transitions[state_num] ||= if item.goto_item?
-        epsilons = []
-        @items.each_with_index { |other_item, i|
-          if other_item.start_item? && other_item.production.non_terminal.symbol == item.next_symbol
-            epsilons.push(i)
-          end
-        }
-        epsilons
+        # epsilons = []
+        # @items.each_with_index { |other_item, i|
+        #   # if other_item.start_item? && other_item.production.non_terminal.symbol == item.next_symbol
+        #   #   epsilons.push(i)
+        #   # end
+        # }
+        # epsilons
+        @start_state_numbers[item.next_symbol]
       else
         []
       end

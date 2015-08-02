@@ -1,4 +1,4 @@
-class BottomsUp
+module BottomsUp
   class Action; end
 
   class Reduction < Action

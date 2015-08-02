@@ -1,4 +1,4 @@
-class BottomsUp
+module BottomsUp
   class NFA
     class State
       attr_reader :nfa, :item, :num

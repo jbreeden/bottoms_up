@@ -1,32 +1,63 @@
 [
-{ "num": 0, 
-  "shifts": { "E": 1, "1": 2},
-  "reductions": [ 
+  {
+    "num": 0,
+    "shifts": {
+      "E": 1,
+      "1": 2
+    },
+    "reductions": [
 
-  ]
-},
-{ "num": 1, 
-  "shifts": { },
-  "reductions": [ 
-    { "produces": "E'", 
-      "lookaheads": ["$"], 
-      "nReducedSymbols": 1 }
-  ]
-},
-{ "num": 2, 
-  "shifts": { "E": 3, "1": 2},
-  "reductions": [ 
-    { "produces": "E", 
-      "lookaheads": ["$"], 
-      "nReducedSymbols": 1 }
-  ]
-},
-{ "num": 3, 
-  "shifts": { },
-  "reductions": [ 
-    { "produces": "E", 
-      "lookaheads": ["$"], 
-      "nReducedSymbols": 2 }
-  ]
-}
+    ]
+  },
+  {
+    "num": 1,
+    "shifts": {
+    },
+    "reductions": [
+      {
+        "produces": "E'",
+        "lookaheads": [
+          "$"
+        ],
+        "reduces": [
+          "E"
+        ]
+      }
+    ]
+  },
+  {
+    "num": 2,
+    "shifts": {
+      "E": 3,
+      "1": 2
+    },
+    "reductions": [
+      {
+        "produces": "E",
+        "lookaheads": [
+          "$"
+        ],
+        "reduces": [
+          "1"
+        ]
+      }
+    ]
+  },
+  {
+    "num": 3,
+    "shifts": {
+    },
+    "reductions": [
+      {
+        "produces": "E",
+        "lookaheads": [
+          "$"
+        ],
+        "reduces": [
+          "1",
+          "E"
+        ]
+      }
+    ]
+  }
 ]

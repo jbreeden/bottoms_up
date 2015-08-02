@@ -1,7 +1,8 @@
-class BottomsUp
+module BottomsUp
   module SymCheck
     def self.terminal?(sym)
-      sym.to_s[0].downcase == sym.to_s[0]
+      char = sym.to_s[0]
+      char.downcase == char
     end
 
     def self.non_terminal?(sym)

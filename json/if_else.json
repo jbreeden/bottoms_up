@@ -1,60 +1,127 @@
 [
-{ "num": 0, 
-  "shifts": { "S": 1, "I": 2, "if": 3, "other": 4},
-  "reductions": [ 
+  {
+    "num": 0,
+    "shifts": {
+      "S": 1,
+      "I": 2,
+      "if": 3,
+      "other": 4
+    },
+    "reductions": [
 
-  ]
-},
-{ "num": 1, 
-  "shifts": { },
-  "reductions": [ 
-    { "produces": "S'", 
-      "lookaheads": ["$"], 
-      "nReducedSymbols": 1 }
-  ]
-},
-{ "num": 2, 
-  "shifts": { },
-  "reductions": [ 
-    { "produces": "S", 
-      "lookaheads": ["else", "$"], 
-      "nReducedSymbols": 1 }
-  ]
-},
-{ "num": 3, 
-  "shifts": { "S": 5, "I": 2, "if": 3, "other": 4},
-  "reductions": [ 
+    ]
+  },
+  {
+    "num": 1,
+    "shifts": {
+    },
+    "reductions": [
+      {
+        "produces": "S'",
+        "lookaheads": [
+          "$"
+        ],
+        "reduces": [
+          "S"
+        ]
+      }
+    ]
+  },
+  {
+    "num": 2,
+    "shifts": {
+    },
+    "reductions": [
+      {
+        "produces": "S",
+        "lookaheads": [
+          "else",
+          "$"
+        ],
+        "reduces": [
+          "I"
+        ]
+      }
+    ]
+  },
+  {
+    "num": 3,
+    "shifts": {
+      "S": 5,
+      "I": 2,
+      "if": 3,
+      "other": 4
+    },
+    "reductions": [
 
-  ]
-},
-{ "num": 4, 
-  "shifts": { },
-  "reductions": [ 
-    { "produces": "S", 
-      "lookaheads": ["else", "$"], 
-      "nReducedSymbols": 1 }
-  ]
-},
-{ "num": 5, 
-  "shifts": { "else": 6},
-  "reductions": [ 
-    { "produces": "I", 
-      "lookaheads": ["else", "$"], 
-      "nReducedSymbols": 2 }
-  ]
-},
-{ "num": 6, 
-  "shifts": { "S": 7, "I": 2, "if": 3, "other": 4},
-  "reductions": [ 
+    ]
+  },
+  {
+    "num": 4,
+    "shifts": {
+    },
+    "reductions": [
+      {
+        "produces": "S",
+        "lookaheads": [
+          "else",
+          "$"
+        ],
+        "reduces": [
+          "other"
+        ]
+      }
+    ]
+  },
+  {
+    "num": 5,
+    "shifts": {
+      "else": 6
+    },
+    "reductions": [
+      {
+        "produces": "I",
+        "lookaheads": [
+          "else",
+          "$"
+        ],
+        "reduces": [
+          "if",
+          "S"
+        ]
+      }
+    ]
+  },
+  {
+    "num": 6,
+    "shifts": {
+      "S": 7,
+      "I": 2,
+      "if": 3,
+      "other": 4
+    },
+    "reductions": [
 
-  ]
-},
-{ "num": 7, 
-  "shifts": { },
-  "reductions": [ 
-    { "produces": "I", 
-      "lookaheads": ["else", "$"], 
-      "nReducedSymbols": 4 }
-  ]
-}
+    ]
+  },
+  {
+    "num": 7,
+    "shifts": {
+    },
+    "reductions": [
+      {
+        "produces": "I",
+        "lookaheads": [
+          "else",
+          "$"
+        ],
+        "reduces": [
+          "if",
+          "S",
+          "else",
+          "S"
+        ]
+      }
+    ]
+  }
 ]

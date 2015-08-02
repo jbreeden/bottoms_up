@@ -1,8 +1,9 @@
-class BottomsUp
+module BottomsUp
   class Item
     def initialize(production, step)
       @production = production
       @step = step
+      @is_reduction_item = @step == (production.symbol_count) || production.symbols == [:e]
     end
 
     def production
@@ -26,7 +27,7 @@ class BottomsUp
     end
 
     def reduction_item?
-      production.symbols == [:e] || @step == (production.symbols.length)
+      @is_reduction_item
     end
 
     def next_symbol

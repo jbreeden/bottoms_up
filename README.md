@@ -15,7 +15,7 @@ correspond to at lease one production rule in the grammar. (Otherwise the gramma
 
 Ex (Balanced Parens)
 ```Ruby
-parser = BottomsUp.new(:S) do |p|
+parser = BottomsUp::Grammar.new(:S) do |p|
   # S -> ( S ) S | e
   p.rule :S, [:'(', :S, :')', :S]
   p.rule :S, [:e]
@@ -32,7 +32,7 @@ generating the NFA.
 
 Ex (Dangling Else Problem)
 ```Ruby
-parser = BottomsUp.new(:S) do |p|
+parser = BottomsUp::Grammar.new(:S) do |p|
   # S -> I | other
   p.rule :S, [[:I, :other]]
 

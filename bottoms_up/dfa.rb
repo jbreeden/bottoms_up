@@ -1,6 +1,6 @@
 require_relative './dfa_state'
 
-class BottomsUp
+module BottomsUp
   class DFA
     attr_reader :start_symbol,
       :states,
@@ -23,24 +23,21 @@ class BottomsUp
 
     def define_states
       @states = []
-      nfa_states = [@nfa.start_symbol_state]
-
-      @nfa.start_symbol_state
-      closure = @nfa.start_symbol_state.epsilon_closure
-      items = closure.map { |state| state.item }
-      start_state = State.new(self, closure)
+      start_state_closure = @nfa.start_symbol_state.epsilon_closure
+      items = start_state_closure.map { |state| state.item }
+      start_state = State.new(self, start_state_closure)
       @states.push(start_state)
 
-      # State#shifts will generate a new state and push it on DFA#states
+      # State#shifts will generate a new state and push it on @states
       # if the state for the required closure does not yet exist. So,
       # we can run "shifts" on all new states until no new states
       # are created. Then all states will have been created.
-      known_states = []
+      visited_states = []
       new_states = [start_state]
       begin
         new_states.each { |s| s.shifts }
-        known_states.concat(new_states)
-        new_states = @states.dup - known_states
+        visited_states.concat(new_states)
+        new_states = @states.dup - visited_states
       end until new_states.empty?
     end
 
@@ -53,7 +50,7 @@ class BottomsUp
       result =
         "<table>\n" <<
         "  <thead>\n" <<
-        "    <tr><th rowspan=\"2\">State</th><th rowspan=\"2\">NFA States</th><th rowspan=\"2\">Items</th><th rowspan=\"2\">Shifts</th><th colspan=\"2\">Reductions</th></tr>\n" <<
+        "    <tr><th rowspan=\"2\">State</th><th rowspan=\"2\">NFA States</th><th rowspan=\"2\">Items</th><th rowspan=\"2\">Shifts</th><th colspan=\"2\">Reductions</th><th rowspan=\"2\">Conflicts</th></tr>\n" <<
         "    <tr><th>Rule</th><th>SLR Lookaheads</th></tr>\n" <<
         "  </thead>\n" <<
         "<tbody>\n"
@@ -91,36 +88,36 @@ class BottomsUp
       result
     end
 
-    def to_json
-      result =
-          "[\n"
+    def to_a
+      result = []
       states.each_with_index do |s, i|
-        result <<
-          "{ \"num\": #{i}, \n"
-
-        result <<
-          '  "shifts": { '
-        result << s.shifts.map { |symbol, action|
-          "\"#{symbol}\": #{action.state.num}"
-        }.join(', ')
-        result <<
-          "},\n"
-
-        result <<
-          "  \"reductions\": [ \n"
-        result << s.reductions.map { |action|
-          "    { \"produces\": \"#{action.production.non_terminal.symbol}\", \n" +
-          "      \"lookaheads\": [#{action.lookaheads.map { |la| "\"#{la}\""}.join(', ') }], \n" +
-          "      \"nReducedSymbols\": #{action.production.symbols.reject { |s| s == :e }.length} }"
-        }.join(",\n")
-        result << "\n" <<
-          "  ]\n"
-
-        result <<
-          "}#{',' unless i == (states.length - 1)}\n"
+        state = {}
+        state[:shifts] = {}
+        s.shifts.each do |symbol, action|
+          state[:shifts][symbol] = action.state.num
+        end
+        state[:reductions] = []
+        s.reductions.each do |action|
+          reduction = {}
+          reduction[:produces] = action.production.non_terminal.symbol
+          reduction[:lookaheads] = action.lookaheads
+          reduction[:reduces] = action.production.symbol_count
+          state[:reductions].push(reduction)
+          action.lookaheads.each do |la|
+            if state[:shifts][la]
+              $stderr.puts("WARNING: Shift-Reduce conflict on token #{la} in state #{i}")
+            end
+          end
+          s.reductions.reject { |a| a == action }.each do |other|
+            action.lookaheads.each do |la|
+              if other.lookaheads.index(la)
+                $stderr.puts("WARNING: Reduce-Reduce conflict on token #{la} in state #{i}")
+              end
+            end
+          end
+        end
+        result.push(state)
       end
-      result <<
-          "]"
       result
     end
   end

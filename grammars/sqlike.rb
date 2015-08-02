@@ -1,7 +1,7 @@
 require_relative '../bottoms_up'
 
-$parser = BottomsUp.new(:QUERY) do |p|
-  expr_operators = [:'=', :'!=', :'<>', :'>', :'<', :'!>', :'!<', :'>=', :'<=', :like, :'~']
+$parser = BottomsUp::Grammar.new(:QUERY) do |p|
+  eq_operators = [:'=', :'!=', :'<>', :'>', :'<', :'!>', :'!<', :'>=', :'<=', :like, :'~']
 
   # Using (NON_TERMINAL | e) for option parts makes it easier to decord while reducing.
   # If the non terminals themselves were nullable, that would have to be detected on reduction.
@@ -16,6 +16,8 @@ $parser = BottomsUp.new(:QUERY) do |p|
   p.rule :FIELD,       [:id, :as, :id]
   p.rule :FIELD,       [:AGGREGATE]
   p.rule :FIELD,       [:AGGREGATE, :as, :id]
+  p.rule :FIELD,       [:EXPR]
+  p.rule :FIELD,       [:EXPR, :as, :id]
   p.rule :FROM,        [:from, :id]
   p.rule :WHERE,       [:where, :EXPR]
   p.rule :LIMIT,       [:limit, :number]
@@ -23,15 +25,54 @@ $parser = BottomsUp.new(:QUERY) do |p|
   p.rule :GROUP_BY,    [:group, :by, :ID_LIST]
   p.rule :ID_LIST,     [:id]
   p.rule :ID_LIST,     [:ID_LIST, :',', :id]
-  p.rule :HAVING,      [:having, [:EXPR, :HAVING_EXPR]]
+  p.rule :HAVING,      [:having, :EXPR]
   p.rule :ORDER_BY,    [:order, :by, :id, [:asc, :desc, :e]]
-  p.rule :HAVING_EXPR, [:AGGREGATE, expr_operators, :LITERAL]
-  p.rule :HAVING_EXPR, [:LITERAL, expr_operators, :AGGREGATE]
-  p.rule :EXPR,        [:EQ_EXPR,]
-  p.rule :EQ_EXPR,     [:id, expr_operators, :LITERAL]
-  p.rule :EQ_EXPR,     [:LITERAL, expr_operators, :id]
-  p.rule :LITERAL,     [[:number, :string]]
-  p.rule :AGGREGATE,   [:id, :'(', [:id, :'*'], :')'] # So far only single param aggregate functions supported
 
-  # TODO: Multi eq expressions in where/having
+  # Recall (Association & Precedence)
+  # - Left recursion yield left-associative operators
+  #   + Think about the productions, you always have to expand the left side,
+  #     so in the reductions, you must work up from the bottom left.
+  #         OR_EXPR
+  #        /      \
+  #     OR_EXPR   id
+  #      /    \
+  #  OR_EXPR  id
+  #    /
+  #   ...
+  #
+  #
+  # - Since AND_EXPR does not have OR_EXPR in its term,
+  #   OR_EXPR will have lower precedence.
+  #   Basically, there is no AND_EXPR -> {ANYTHING} and OR_EXPR
+  #   So you can't get:
+  #
+  #        AND_EXPR
+  #        /       \
+  #       /        OR_EXPR
+  #      /        /       \
+  #   a = b and b = c or a = d
+  precedence = []
+  precedence.push([:LITERAL, :id, :PAREN_EXPR, :AGGREGATE])
+  is_term = precedence.flatten
+  precedence.push([:NOT_EXPR])
+  not_term = precedence.flatten
+  precedence.push([:EQ_EXPR])
+  eq_term = precedence.flatten
+  precedence.push([:AND_EXPR])
+  and_term = precedence.flatten
+  precedence.push([:OR_EXPR])
+  or_term = precedence.flatten
+
+  any_expression = precedence.flatten
+
+  p.rule :EXPR,        [any_expression]
+  p.rule :OR_EXPR,     [or_term, :or, and_term]
+  p.rule :AND_EXPR,    [and_term, :and, eq_term]
+  p.rule :EQ_EXPR,     [eq_term, eq_operators, eq_term]
+  p.rule :EQ_EXPR,     [is_term, :is, :not, :null]
+  p.rule :EQ_EXPR,     [is_term, :is, :null]
+  p.rule :NOT_EXPR,    [:not, not_term]
+  p.rule :PAREN_EXPR,  [:'(', :EXPR, :')']
+  p.rule :LITERAL,     [[:number, :string]]
+  p.rule :AGGREGATE,   [:id, :'(', [:id, :'*'], :')']
 end

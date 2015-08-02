@@ -1,4 +1,4 @@
-class BottomsUp
+module BottomsUp
   class Production
     def initialize(non_terminal, symbols)
       @non_terminal = non_terminal
@@ -9,12 +9,21 @@ class BottomsUp
       @items.push(Item.new(self, symbols.length)) unless symbols == [:e]
     end
 
+    def hash
+      # Performance hack (makes comparisons for == faster)
+      @id ||= ([@non_terminal].concat(@items)).hash
+    end
+
     def non_terminal
       @non_terminal
     end
 
     def symbols
       @symbols.dup
+    end
+
+    def symbol_count
+      @symbol_count ||= @symbols.length
     end
 
     def items
@@ -30,7 +39,7 @@ class BottomsUp
     end
 
     def ==(other)
-      non_terminal == other.non_terminal && symbols == other.symbols
+      hash == other.hash
     end
 
     def to_s

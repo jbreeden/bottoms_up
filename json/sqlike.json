@@ -1,1318 +1,3272 @@
 [
-{ "num": 0, 
-  "shifts": { "QUERY": 1, "SELECT": 2, "select": 3, "delete": 4},
-  "reductions": [ 
-
-  ]
-},
-{ "num": 1, 
-  "shifts": { },
-  "reductions": [ 
-    { "produces": "QUERY'", 
-      "lookaheads": ["$"], 
-      "nReducedSymbols": 1 }
-  ]
-},
-{ "num": 2, 
-  "shifts": { "FROM": 5, "from": 6},
-  "reductions": [ 
-
-  ]
-},
-{ "num": 3, 
-  "shifts": { "distinct": 7, "FIELD_LIST": 8, "FIELD": 9, "id": 10, "*": 11, "AGGREGATE": 12},
-  "reductions": [ 
-
-  ]
-},
-{ "num": 4, 
-  "shifts": { "FROM": 13, "from": 6},
-  "reductions": [ 
-
-  ]
-},
-{ "num": 5, 
-  "shifts": { "WHERE": 14, "GROUP_BY": 15, "ORDER_BY": 16, "LIMIT": 17, "where": 18, "group": 19, "order": 20, "limit": 21, "fetch": 22},
-  "reductions": [ 
-    { "produces": "QUERY", 
-      "lookaheads": ["$"], 
-      "nReducedSymbols": 2 }
-  ]
-},
-{ "num": 6, 
-  "shifts": { "id": 23},
-  "reductions": [ 
-
-  ]
-},
-{ "num": 7, 
-  "shifts": { "FIELD_LIST": 24, "FIELD": 9, "id": 10, "*": 11, "AGGREGATE": 12},
-  "reductions": [ 
-
-  ]
-},
-{ "num": 8, 
-  "shifts": { ",": 25},
-  "reductions": [ 
-    { "produces": "SELECT", 
-      "lookaheads": ["having", "fetch", "limit", "order", "group", "where", "from"], 
-      "nReducedSymbols": 2 }
-  ]
-},
-{ "num": 9, 
-  "shifts": { },
-  "reductions": [ 
-    { "produces": "FIELD_LIST", 
-      "lookaheads": [",", "having", "fetch", "limit", "order", "group", "where", "from"], 
-      "nReducedSymbols": 1 }
-  ]
-},
-{ "num": 10, 
-  "shifts": { "as": 26, "(": 27},
-  "reductions": [ 
-    { "produces": "FIELD", 
-      "lookaheads": [",", "having", "fetch", "limit", "order", "group", "where", "from"], 
-      "nReducedSymbols": 1 }
-  ]
-},
-{ "num": 11, 
-  "shifts": { },
-  "reductions": [ 
-    { "produces": "FIELD", 
-      "lookaheads": [",", "having", "fetch", "limit", "order", "group", "where", "from"], 
-      "nReducedSymbols": 1 }
-  ]
-},
-{ "num": 12, 
-  "shifts": { "as": 28},
-  "reductions": [ 
-    { "produces": "FIELD", 
-      "lookaheads": [",", "having", "fetch", "limit", "order", "group", "where", "from"], 
-      "nReducedSymbols": 1 }
-  ]
-},
-{ "num": 13, 
-  "shifts": { "WHERE": 29, "where": 18},
-  "reductions": [ 
-    { "produces": "QUERY", 
-      "lookaheads": ["$"], 
-      "nReducedSymbols": 2 }
-  ]
-},
-{ "num": 14, 
-  "shifts": { "GROUP_BY": 30, "ORDER_BY": 31, "LIMIT": 32, "group": 19, "order": 20, "limit": 21, "fetch": 22},
-  "reductions": [ 
-    { "produces": "QUERY", 
-      "lookaheads": ["$"], 
-      "nReducedSymbols": 3 }
-  ]
-},
-{ "num": 15, 
-  "shifts": { "ORDER_BY": 33, "LIMIT": 34, "HAVING": 35, "order": 20, "limit": 21, "fetch": 22, "having": 36},
-  "reductions": [ 
-    { "produces": "QUERY", 
-      "lookaheads": ["$"], 
-      "nReducedSymbols": 3 }
-  ]
-},
-{ "num": 16, 
-  "shifts": { "LIMIT": 37, "limit": 21, "fetch": 22},
-  "reductions": [ 
-    { "produces": "QUERY", 
-      "lookaheads": ["$"], 
-      "nReducedSymbols": 3 }
-  ]
-},
-{ "num": 17, 
-  "shifts": { },
-  "reductions": [ 
-    { "produces": "QUERY", 
-      "lookaheads": ["$"], 
-      "nReducedSymbols": 3 }
-  ]
-},
-{ "num": 18, 
-  "shifts": { "EXPR": 38, "EQ_EXPR": 39, "id": 40, "LITERAL": 41, "number": 42, "string": 43},
-  "reductions": [ 
-
-  ]
-},
-{ "num": 19, 
-  "shifts": { "by": 44},
-  "reductions": [ 
-
-  ]
-},
-{ "num": 20, 
-  "shifts": { "by": 45},
-  "reductions": [ 
-
-  ]
-},
-{ "num": 21, 
-  "shifts": { "number": 46},
-  "reductions": [ 
-
-  ]
-},
-{ "num": 22, 
-  "shifts": { "first": 47},
-  "reductions": [ 
-
-  ]
-},
-{ "num": 23, 
-  "shifts": { },
-  "reductions": [ 
-    { "produces": "FROM", 
-      "lookaheads": ["having", "$", "fetch", "limit", "order", "group", "where"], 
-      "nReducedSymbols": 2 }
-  ]
-},
-{ "num": 24, 
-  "shifts": { ",": 25},
-  "reductions": [ 
-    { "produces": "SELECT", 
-      "lookaheads": ["having", "fetch", "limit", "order", "group", "where", "from"], 
-      "nReducedSymbols": 3 }
-  ]
-},
-{ "num": 25, 
-  "shifts": { "FIELD": 48, "id": 10, "*": 11, "AGGREGATE": 12},
-  "reductions": [ 
-
-  ]
-},
-{ "num": 26, 
-  "shifts": { "id": 49},
-  "reductions": [ 
-
-  ]
-},
-{ "num": 27, 
-  "shifts": { "id": 50, "*": 51},
-  "reductions": [ 
-
-  ]
-},
-{ "num": 28, 
-  "shifts": { "id": 52},
-  "reductions": [ 
-
-  ]
-},
-{ "num": 29, 
-  "shifts": { },
-  "reductions": [ 
-    { "produces": "QUERY", 
-      "lookaheads": ["$"], 
-      "nReducedSymbols": 3 }
-  ]
-},
-{ "num": 30, 
-  "shifts": { "ORDER_BY": 53, "LIMIT": 54, "HAVING": 55, "order": 20, "limit": 21, "fetch": 22, "having": 36},
-  "reductions": [ 
-    { "produces": "QUERY", 
-      "lookaheads": ["$"], 
-      "nReducedSymbols": 4 }
-  ]
-},
-{ "num": 31, 
-  "shifts": { "LIMIT": 56, "limit": 21, "fetch": 22},
-  "reductions": [ 
-    { "produces": "QUERY", 
-      "lookaheads": ["$"], 
-      "nReducedSymbols": 4 }
-  ]
-},
-{ "num": 32, 
-  "shifts": { },
-  "reductions": [ 
-    { "produces": "QUERY", 
-      "lookaheads": ["$"], 
-      "nReducedSymbols": 4 }
-  ]
-},
-{ "num": 33, 
-  "shifts": { "LIMIT": 57, "limit": 21, "fetch": 22},
-  "reductions": [ 
-    { "produces": "QUERY", 
-      "lookaheads": ["$"], 
-      "nReducedSymbols": 4 }
-  ]
-},
-{ "num": 34, 
-  "shifts": { },
-  "reductions": [ 
-    { "produces": "QUERY", 
-      "lookaheads": ["$"], 
-      "nReducedSymbols": 4 }
-  ]
-},
-{ "num": 35, 
-  "shifts": { "ORDER_BY": 58, "LIMIT": 59, "order": 20, "limit": 21, "fetch": 22},
-  "reductions": [ 
-    { "produces": "QUERY", 
-      "lookaheads": ["$"], 
-      "nReducedSymbols": 4 }
-  ]
-},
-{ "num": 36, 
-  "shifts": { "EXPR": 60, "HAVING_EXPR": 61, "EQ_EXPR": 39, "id": 62, "LITERAL": 63, "number": 42, "string": 43, "AGGREGATE": 64},
-  "reductions": [ 
-
-  ]
-},
-{ "num": 37, 
-  "shifts": { },
-  "reductions": [ 
-    { "produces": "QUERY", 
-      "lookaheads": ["$"], 
-      "nReducedSymbols": 4 }
-  ]
-},
-{ "num": 38, 
-  "shifts": { },
-  "reductions": [ 
-    { "produces": "WHERE", 
-      "lookaheads": ["having", "$", "fetch", "limit", "order", "group"], 
-      "nReducedSymbols": 2 }
-  ]
-},
-{ "num": 39, 
-  "shifts": { },
-  "reductions": [ 
-    { "produces": "EXPR", 
-      "lookaheads": ["having", "$", "fetch", "limit", "order", "group"], 
-      "nReducedSymbols": 1 }
-  ]
-},
-{ "num": 40, 
-  "shifts": { "=": 65, "!=": 66, "<>": 67, ">": 68, "<": 69, "!>": 70, "!<": 71, ">=": 72, "<=": 73, "like": 74, "~": 75},
-  "reductions": [ 
-
-  ]
-},
-{ "num": 41, 
-  "shifts": { "=": 76, "!=": 77, "<>": 78, ">": 79, "<": 80, "!>": 81, "!<": 82, ">=": 83, "<=": 84, "like": 85, "~": 86},
-  "reductions": [ 
-
-  ]
-},
-{ "num": 42, 
-  "shifts": { },
-  "reductions": [ 
-    { "produces": "LITERAL", 
-      "lookaheads": ["having", "group", "~", "like", "<=", ">=", "!<", "!>", "<", ">", "<>", "!=", "=", "$", "fetch", "limit", "order"], 
-      "nReducedSymbols": 1 }
-  ]
-},
-{ "num": 43, 
-  "shifts": { },
-  "reductions": [ 
-    { "produces": "LITERAL", 
-      "lookaheads": ["having", "group", "~", "like", "<=", ">=", "!<", "!>", "<", ">", "<>", "!=", "=", "$", "fetch", "limit", "order"], 
-      "nReducedSymbols": 1 }
-  ]
-},
-{ "num": 44, 
-  "shifts": { "ID_LIST": 87, "id": 88},
-  "reductions": [ 
-
-  ]
-},
-{ "num": 45, 
-  "shifts": { "id": 89},
-  "reductions": [ 
-
-  ]
-},
-{ "num": 46, 
-  "shifts": { },
-  "reductions": [ 
-    { "produces": "LIMIT", 
-      "lookaheads": ["$"], 
-      "nReducedSymbols": 2 }
-  ]
-},
-{ "num": 47, 
-  "shifts": { "number": 90},
-  "reductions": [ 
-
-  ]
-},
-{ "num": 48, 
-  "shifts": { },
-  "reductions": [ 
-    { "produces": "FIELD_LIST", 
-      "lookaheads": [",", "having", "fetch", "limit", "order", "group", "where", "from"], 
-      "nReducedSymbols": 3 }
-  ]
-},
-{ "num": 49, 
-  "shifts": { },
-  "reductions": [ 
-    { "produces": "FIELD", 
-      "lookaheads": [",", "having", "fetch", "limit", "order", "group", "where", "from"], 
-      "nReducedSymbols": 3 }
-  ]
-},
-{ "num": 50, 
-  "shifts": { ")": 91},
-  "reductions": [ 
-
-  ]
-},
-{ "num": 51, 
-  "shifts": { ")": 92},
-  "reductions": [ 
-
-  ]
-},
-{ "num": 52, 
-  "shifts": { },
-  "reductions": [ 
-    { "produces": "FIELD", 
-      "lookaheads": [",", "having", "fetch", "limit", "order", "group", "where", "from"], 
-      "nReducedSymbols": 3 }
-  ]
-},
-{ "num": 53, 
-  "shifts": { "LIMIT": 93, "limit": 21, "fetch": 22},
-  "reductions": [ 
-    { "produces": "QUERY", 
-      "lookaheads": ["$"], 
-      "nReducedSymbols": 5 }
-  ]
-},
-{ "num": 54, 
-  "shifts": { },
-  "reductions": [ 
-    { "produces": "QUERY", 
-      "lookaheads": ["$"], 
-      "nReducedSymbols": 5 }
-  ]
-},
-{ "num": 55, 
-  "shifts": { "ORDER_BY": 94, "LIMIT": 95, "order": 20, "limit": 21, "fetch": 22},
-  "reductions": [ 
-    { "produces": "QUERY", 
-      "lookaheads": ["$"], 
-      "nReducedSymbols": 5 }
-  ]
-},
-{ "num": 56, 
-  "shifts": { },
-  "reductions": [ 
-    { "produces": "QUERY", 
-      "lookaheads": ["$"], 
-      "nReducedSymbols": 5 }
-  ]
-},
-{ "num": 57, 
-  "shifts": { },
-  "reductions": [ 
-    { "produces": "QUERY", 
-      "lookaheads": ["$"], 
-      "nReducedSymbols": 5 }
-  ]
-},
-{ "num": 58, 
-  "shifts": { "LIMIT": 96, "limit": 21, "fetch": 22},
-  "reductions": [ 
-    { "produces": "QUERY", 
-      "lookaheads": ["$"], 
-      "nReducedSymbols": 5 }
-  ]
-},
-{ "num": 59, 
-  "shifts": { },
-  "reductions": [ 
-    { "produces": "QUERY", 
-      "lookaheads": ["$"], 
-      "nReducedSymbols": 5 }
-  ]
-},
-{ "num": 60, 
-  "shifts": { },
-  "reductions": [ 
-    { "produces": "HAVING", 
-      "lookaheads": ["$", "fetch", "limit", "order"], 
-      "nReducedSymbols": 2 }
-  ]
-},
-{ "num": 61, 
-  "shifts": { },
-  "reductions": [ 
-    { "produces": "HAVING", 
-      "lookaheads": ["$", "fetch", "limit", "order"], 
-      "nReducedSymbols": 2 }
-  ]
-},
-{ "num": 62, 
-  "shifts": { "=": 65, "!=": 66, "<>": 67, ">": 68, "<": 69, "!>": 70, "!<": 71, ">=": 72, "<=": 73, "like": 74, "~": 75, "(": 27},
-  "reductions": [ 
-
-  ]
-},
-{ "num": 63, 
-  "shifts": { "=": 97, "!=": 98, "<>": 99, ">": 100, "<": 101, "!>": 102, "!<": 103, ">=": 104, "<=": 105, "like": 106, "~": 107},
-  "reductions": [ 
-
-  ]
-},
-{ "num": 64, 
-  "shifts": { "=": 108, "!=": 109, "<>": 110, ">": 111, "<": 112, "!>": 113, "!<": 114, ">=": 115, "<=": 116, "like": 117, "~": 118},
-  "reductions": [ 
-
-  ]
-},
-{ "num": 65, 
-  "shifts": { "LITERAL": 119, "number": 42, "string": 43},
-  "reductions": [ 
-
-  ]
-},
-{ "num": 66, 
-  "shifts": { "LITERAL": 120, "number": 42, "string": 43},
-  "reductions": [ 
-
-  ]
-},
-{ "num": 67, 
-  "shifts": { "LITERAL": 121, "number": 42, "string": 43},
-  "reductions": [ 
-
-  ]
-},
-{ "num": 68, 
-  "shifts": { "LITERAL": 122, "number": 42, "string": 43},
-  "reductions": [ 
-
-  ]
-},
-{ "num": 69, 
-  "shifts": { "LITERAL": 123, "number": 42, "string": 43},
-  "reductions": [ 
-
-  ]
-},
-{ "num": 70, 
-  "shifts": { "LITERAL": 124, "number": 42, "string": 43},
-  "reductions": [ 
-
-  ]
-},
-{ "num": 71, 
-  "shifts": { "LITERAL": 125, "number": 42, "string": 43},
-  "reductions": [ 
-
-  ]
-},
-{ "num": 72, 
-  "shifts": { "LITERAL": 126, "number": 42, "string": 43},
-  "reductions": [ 
-
-  ]
-},
-{ "num": 73, 
-  "shifts": { "LITERAL": 127, "number": 42, "string": 43},
-  "reductions": [ 
-
-  ]
-},
-{ "num": 74, 
-  "shifts": { "LITERAL": 128, "number": 42, "string": 43},
-  "reductions": [ 
-
-  ]
-},
-{ "num": 75, 
-  "shifts": { "LITERAL": 129, "number": 42, "string": 43},
-  "reductions": [ 
-
-  ]
-},
-{ "num": 76, 
-  "shifts": { "id": 130},
-  "reductions": [ 
-
-  ]
-},
-{ "num": 77, 
-  "shifts": { "id": 131},
-  "reductions": [ 
-
-  ]
-},
-{ "num": 78, 
-  "shifts": { "id": 132},
-  "reductions": [ 
-
-  ]
-},
-{ "num": 79, 
-  "shifts": { "id": 133},
-  "reductions": [ 
-
-  ]
-},
-{ "num": 80, 
-  "shifts": { "id": 134},
-  "reductions": [ 
-
-  ]
-},
-{ "num": 81, 
-  "shifts": { "id": 135},
-  "reductions": [ 
-
-  ]
-},
-{ "num": 82, 
-  "shifts": { "id": 136},
-  "reductions": [ 
-
-  ]
-},
-{ "num": 83, 
-  "shifts": { "id": 137},
-  "reductions": [ 
-
-  ]
-},
-{ "num": 84, 
-  "shifts": { "id": 138},
-  "reductions": [ 
-
-  ]
-},
-{ "num": 85, 
-  "shifts": { "id": 139},
-  "reductions": [ 
-
-  ]
-},
-{ "num": 86, 
-  "shifts": { "id": 140},
-  "reductions": [ 
-
-  ]
-},
-{ "num": 87, 
-  "shifts": { ",": 141},
-  "reductions": [ 
-    { "produces": "GROUP_BY", 
-      "lookaheads": ["having", "$", "fetch", "limit", "order"], 
-      "nReducedSymbols": 3 }
-  ]
-},
-{ "num": 88, 
-  "shifts": { },
-  "reductions": [ 
-    { "produces": "ID_LIST", 
-      "lookaheads": [",", "having", "$", "fetch", "limit", "order"], 
-      "nReducedSymbols": 1 }
-  ]
-},
-{ "num": 89, 
-  "shifts": { "asc": 142, "desc": 143},
-  "reductions": [ 
-    { "produces": "ORDER_BY", 
-      "lookaheads": ["$", "fetch", "limit"], 
-      "nReducedSymbols": 3 }
-  ]
-},
-{ "num": 90, 
-  "shifts": { "rows": 144, "row": 145},
-  "reductions": [ 
-
-  ]
-},
-{ "num": 91, 
-  "shifts": { },
-  "reductions": [ 
-    { "produces": "AGGREGATE", 
-      "lookaheads": ["$", "~", "like", "<=", ">=", "!<", "!>", "<", ">", "<>", "!=", "=", "as", ",", "having", "fetch", "limit", "order", "group", "where", "from"], 
-      "nReducedSymbols": 4 }
-  ]
-},
-{ "num": 92, 
-  "shifts": { },
-  "reductions": [ 
-    { "produces": "AGGREGATE", 
-      "lookaheads": ["$", "~", "like", "<=", ">=", "!<", "!>", "<", ">", "<>", "!=", "=", "as", ",", "having", "fetch", "limit", "order", "group", "where", "from"], 
-      "nReducedSymbols": 4 }
-  ]
-},
-{ "num": 93, 
-  "shifts": { },
-  "reductions": [ 
-    { "produces": "QUERY", 
-      "lookaheads": ["$"], 
-      "nReducedSymbols": 6 }
-  ]
-},
-{ "num": 94, 
-  "shifts": { "LIMIT": 146, "limit": 21, "fetch": 22},
-  "reductions": [ 
-    { "produces": "QUERY", 
-      "lookaheads": ["$"], 
-      "nReducedSymbols": 6 }
-  ]
-},
-{ "num": 95, 
-  "shifts": { },
-  "reductions": [ 
-    { "produces": "QUERY", 
-      "lookaheads": ["$"], 
-      "nReducedSymbols": 6 }
-  ]
-},
-{ "num": 96, 
-  "shifts": { },
-  "reductions": [ 
-    { "produces": "QUERY", 
-      "lookaheads": ["$"], 
-      "nReducedSymbols": 6 }
-  ]
-},
-{ "num": 97, 
-  "shifts": { "id": 147, "AGGREGATE": 148},
-  "reductions": [ 
-
-  ]
-},
-{ "num": 98, 
-  "shifts": { "id": 149, "AGGREGATE": 150},
-  "reductions": [ 
-
-  ]
-},
-{ "num": 99, 
-  "shifts": { "id": 151, "AGGREGATE": 152},
-  "reductions": [ 
-
-  ]
-},
-{ "num": 100, 
-  "shifts": { "id": 153, "AGGREGATE": 154},
-  "reductions": [ 
-
-  ]
-},
-{ "num": 101, 
-  "shifts": { "id": 155, "AGGREGATE": 156},
-  "reductions": [ 
-
-  ]
-},
-{ "num": 102, 
-  "shifts": { "id": 157, "AGGREGATE": 158},
-  "reductions": [ 
-
-  ]
-},
-{ "num": 103, 
-  "shifts": { "id": 159, "AGGREGATE": 160},
-  "reductions": [ 
-
-  ]
-},
-{ "num": 104, 
-  "shifts": { "id": 161, "AGGREGATE": 162},
-  "reductions": [ 
-
-  ]
-},
-{ "num": 105, 
-  "shifts": { "id": 163, "AGGREGATE": 164},
-  "reductions": [ 
-
-  ]
-},
-{ "num": 106, 
-  "shifts": { "id": 165, "AGGREGATE": 166},
-  "reductions": [ 
-
-  ]
-},
-{ "num": 107, 
-  "shifts": { "id": 167, "AGGREGATE": 168},
-  "reductions": [ 
-
-  ]
-},
-{ "num": 108, 
-  "shifts": { "LITERAL": 169, "number": 42, "string": 43},
-  "reductions": [ 
-
-  ]
-},
-{ "num": 109, 
-  "shifts": { "LITERAL": 170, "number": 42, "string": 43},
-  "reductions": [ 
-
-  ]
-},
-{ "num": 110, 
-  "shifts": { "LITERAL": 171, "number": 42, "string": 43},
-  "reductions": [ 
-
-  ]
-},
-{ "num": 111, 
-  "shifts": { "LITERAL": 172, "number": 42, "string": 43},
-  "reductions": [ 
-
-  ]
-},
-{ "num": 112, 
-  "shifts": { "LITERAL": 173, "number": 42, "string": 43},
-  "reductions": [ 
-
-  ]
-},
-{ "num": 113, 
-  "shifts": { "LITERAL": 174, "number": 42, "string": 43},
-  "reductions": [ 
-
-  ]
-},
-{ "num": 114, 
-  "shifts": { "LITERAL": 175, "number": 42, "string": 43},
-  "reductions": [ 
-
-  ]
-},
-{ "num": 115, 
-  "shifts": { "LITERAL": 176, "number": 42, "string": 43},
-  "reductions": [ 
-
-  ]
-},
-{ "num": 116, 
-  "shifts": { "LITERAL": 177, "number": 42, "string": 43},
-  "reductions": [ 
-
-  ]
-},
-{ "num": 117, 
-  "shifts": { "LITERAL": 178, "number": 42, "string": 43},
-  "reductions": [ 
-
-  ]
-},
-{ "num": 118, 
-  "shifts": { "LITERAL": 179, "number": 42, "string": 43},
-  "reductions": [ 
-
-  ]
-},
-{ "num": 119, 
-  "shifts": { },
-  "reductions": [ 
-    { "produces": "EQ_EXPR", 
-      "lookaheads": ["having", "$", "fetch", "limit", "order", "group"], 
-      "nReducedSymbols": 3 }
-  ]
-},
-{ "num": 120, 
-  "shifts": { },
-  "reductions": [ 
-    { "produces": "EQ_EXPR", 
-      "lookaheads": ["having", "$", "fetch", "limit", "order", "group"], 
-      "nReducedSymbols": 3 }
-  ]
-},
-{ "num": 121, 
-  "shifts": { },
-  "reductions": [ 
-    { "produces": "EQ_EXPR", 
-      "lookaheads": ["having", "$", "fetch", "limit", "order", "group"], 
-      "nReducedSymbols": 3 }
-  ]
-},
-{ "num": 122, 
-  "shifts": { },
-  "reductions": [ 
-    { "produces": "EQ_EXPR", 
-      "lookaheads": ["having", "$", "fetch", "limit", "order", "group"], 
-      "nReducedSymbols": 3 }
-  ]
-},
-{ "num": 123, 
-  "shifts": { },
-  "reductions": [ 
-    { "produces": "EQ_EXPR", 
-      "lookaheads": ["having", "$", "fetch", "limit", "order", "group"], 
-      "nReducedSymbols": 3 }
-  ]
-},
-{ "num": 124, 
-  "shifts": { },
-  "reductions": [ 
-    { "produces": "EQ_EXPR", 
-      "lookaheads": ["having", "$", "fetch", "limit", "order", "group"], 
-      "nReducedSymbols": 3 }
-  ]
-},
-{ "num": 125, 
-  "shifts": { },
-  "reductions": [ 
-    { "produces": "EQ_EXPR", 
-      "lookaheads": ["having", "$", "fetch", "limit", "order", "group"], 
-      "nReducedSymbols": 3 }
-  ]
-},
-{ "num": 126, 
-  "shifts": { },
-  "reductions": [ 
-    { "produces": "EQ_EXPR", 
-      "lookaheads": ["having", "$", "fetch", "limit", "order", "group"], 
-      "nReducedSymbols": 3 }
-  ]
-},
-{ "num": 127, 
-  "shifts": { },
-  "reductions": [ 
-    { "produces": "EQ_EXPR", 
-      "lookaheads": ["having", "$", "fetch", "limit", "order", "group"], 
-      "nReducedSymbols": 3 }
-  ]
-},
-{ "num": 128, 
-  "shifts": { },
-  "reductions": [ 
-    { "produces": "EQ_EXPR", 
-      "lookaheads": ["having", "$", "fetch", "limit", "order", "group"], 
-      "nReducedSymbols": 3 }
-  ]
-},
-{ "num": 129, 
-  "shifts": { },
-  "reductions": [ 
-    { "produces": "EQ_EXPR", 
-      "lookaheads": ["having", "$", "fetch", "limit", "order", "group"], 
-      "nReducedSymbols": 3 }
-  ]
-},
-{ "num": 130, 
-  "shifts": { },
-  "reductions": [ 
-    { "produces": "EQ_EXPR", 
-      "lookaheads": ["having", "$", "fetch", "limit", "order", "group"], 
-      "nReducedSymbols": 3 }
-  ]
-},
-{ "num": 131, 
-  "shifts": { },
-  "reductions": [ 
-    { "produces": "EQ_EXPR", 
-      "lookaheads": ["having", "$", "fetch", "limit", "order", "group"], 
-      "nReducedSymbols": 3 }
-  ]
-},
-{ "num": 132, 
-  "shifts": { },
-  "reductions": [ 
-    { "produces": "EQ_EXPR", 
-      "lookaheads": ["having", "$", "fetch", "limit", "order", "group"], 
-      "nReducedSymbols": 3 }
-  ]
-},
-{ "num": 133, 
-  "shifts": { },
-  "reductions": [ 
-    { "produces": "EQ_EXPR", 
-      "lookaheads": ["having", "$", "fetch", "limit", "order", "group"], 
-      "nReducedSymbols": 3 }
-  ]
-},
-{ "num": 134, 
-  "shifts": { },
-  "reductions": [ 
-    { "produces": "EQ_EXPR", 
-      "lookaheads": ["having", "$", "fetch", "limit", "order", "group"], 
-      "nReducedSymbols": 3 }
-  ]
-},
-{ "num": 135, 
-  "shifts": { },
-  "reductions": [ 
-    { "produces": "EQ_EXPR", 
-      "lookaheads": ["having", "$", "fetch", "limit", "order", "group"], 
-      "nReducedSymbols": 3 }
-  ]
-},
-{ "num": 136, 
-  "shifts": { },
-  "reductions": [ 
-    { "produces": "EQ_EXPR", 
-      "lookaheads": ["having", "$", "fetch", "limit", "order", "group"], 
-      "nReducedSymbols": 3 }
-  ]
-},
-{ "num": 137, 
-  "shifts": { },
-  "reductions": [ 
-    { "produces": "EQ_EXPR", 
-      "lookaheads": ["having", "$", "fetch", "limit", "order", "group"], 
-      "nReducedSymbols": 3 }
-  ]
-},
-{ "num": 138, 
-  "shifts": { },
-  "reductions": [ 
-    { "produces": "EQ_EXPR", 
-      "lookaheads": ["having", "$", "fetch", "limit", "order", "group"], 
-      "nReducedSymbols": 3 }
-  ]
-},
-{ "num": 139, 
-  "shifts": { },
-  "reductions": [ 
-    { "produces": "EQ_EXPR", 
-      "lookaheads": ["having", "$", "fetch", "limit", "order", "group"], 
-      "nReducedSymbols": 3 }
-  ]
-},
-{ "num": 140, 
-  "shifts": { },
-  "reductions": [ 
-    { "produces": "EQ_EXPR", 
-      "lookaheads": ["having", "$", "fetch", "limit", "order", "group"], 
-      "nReducedSymbols": 3 }
-  ]
-},
-{ "num": 141, 
-  "shifts": { "id": 180},
-  "reductions": [ 
-
-  ]
-},
-{ "num": 142, 
-  "shifts": { },
-  "reductions": [ 
-    { "produces": "ORDER_BY", 
-      "lookaheads": ["$", "fetch", "limit"], 
-      "nReducedSymbols": 4 }
-  ]
-},
-{ "num": 143, 
-  "shifts": { },
-  "reductions": [ 
-    { "produces": "ORDER_BY", 
-      "lookaheads": ["$", "fetch", "limit"], 
-      "nReducedSymbols": 4 }
-  ]
-},
-{ "num": 144, 
-  "shifts": { "only": 181},
-  "reductions": [ 
-
-  ]
-},
-{ "num": 145, 
-  "shifts": { "only": 182},
-  "reductions": [ 
-
-  ]
-},
-{ "num": 146, 
-  "shifts": { },
-  "reductions": [ 
-    { "produces": "QUERY", 
-      "lookaheads": ["$"], 
-      "nReducedSymbols": 7 }
-  ]
-},
-{ "num": 147, 
-  "shifts": { "(": 27},
-  "reductions": [ 
-    { "produces": "EQ_EXPR", 
-      "lookaheads": ["having", "$", "fetch", "limit", "order", "group"], 
-      "nReducedSymbols": 3 }
-  ]
-},
-{ "num": 148, 
-  "shifts": { },
-  "reductions": [ 
-    { "produces": "HAVING_EXPR", 
-      "lookaheads": ["$", "fetch", "limit", "order"], 
-      "nReducedSymbols": 3 }
-  ]
-},
-{ "num": 149, 
-  "shifts": { "(": 27},
-  "reductions": [ 
-    { "produces": "EQ_EXPR", 
-      "lookaheads": ["having", "$", "fetch", "limit", "order", "group"], 
-      "nReducedSymbols": 3 }
-  ]
-},
-{ "num": 150, 
-  "shifts": { },
-  "reductions": [ 
-    { "produces": "HAVING_EXPR", 
-      "lookaheads": ["$", "fetch", "limit", "order"], 
-      "nReducedSymbols": 3 }
-  ]
-},
-{ "num": 151, 
-  "shifts": { "(": 27},
-  "reductions": [ 
-    { "produces": "EQ_EXPR", 
-      "lookaheads": ["having", "$", "fetch", "limit", "order", "group"], 
-      "nReducedSymbols": 3 }
-  ]
-},
-{ "num": 152, 
-  "shifts": { },
-  "reductions": [ 
-    { "produces": "HAVING_EXPR", 
-      "lookaheads": ["$", "fetch", "limit", "order"], 
-      "nReducedSymbols": 3 }
-  ]
-},
-{ "num": 153, 
-  "shifts": { "(": 27},
-  "reductions": [ 
-    { "produces": "EQ_EXPR", 
-      "lookaheads": ["having", "$", "fetch", "limit", "order", "group"], 
-      "nReducedSymbols": 3 }
-  ]
-},
-{ "num": 154, 
-  "shifts": { },
-  "reductions": [ 
-    { "produces": "HAVING_EXPR", 
-      "lookaheads": ["$", "fetch", "limit", "order"], 
-      "nReducedSymbols": 3 }
-  ]
-},
-{ "num": 155, 
-  "shifts": { "(": 27},
-  "reductions": [ 
-    { "produces": "EQ_EXPR", 
-      "lookaheads": ["having", "$", "fetch", "limit", "order", "group"], 
-      "nReducedSymbols": 3 }
-  ]
-},
-{ "num": 156, 
-  "shifts": { },
-  "reductions": [ 
-    { "produces": "HAVING_EXPR", 
-      "lookaheads": ["$", "fetch", "limit", "order"], 
-      "nReducedSymbols": 3 }
-  ]
-},
-{ "num": 157, 
-  "shifts": { "(": 27},
-  "reductions": [ 
-    { "produces": "EQ_EXPR", 
-      "lookaheads": ["having", "$", "fetch", "limit", "order", "group"], 
-      "nReducedSymbols": 3 }
-  ]
-},
-{ "num": 158, 
-  "shifts": { },
-  "reductions": [ 
-    { "produces": "HAVING_EXPR", 
-      "lookaheads": ["$", "fetch", "limit", "order"], 
-      "nReducedSymbols": 3 }
-  ]
-},
-{ "num": 159, 
-  "shifts": { "(": 27},
-  "reductions": [ 
-    { "produces": "EQ_EXPR", 
-      "lookaheads": ["having", "$", "fetch", "limit", "order", "group"], 
-      "nReducedSymbols": 3 }
-  ]
-},
-{ "num": 160, 
-  "shifts": { },
-  "reductions": [ 
-    { "produces": "HAVING_EXPR", 
-      "lookaheads": ["$", "fetch", "limit", "order"], 
-      "nReducedSymbols": 3 }
-  ]
-},
-{ "num": 161, 
-  "shifts": { "(": 27},
-  "reductions": [ 
-    { "produces": "EQ_EXPR", 
-      "lookaheads": ["having", "$", "fetch", "limit", "order", "group"], 
-      "nReducedSymbols": 3 }
-  ]
-},
-{ "num": 162, 
-  "shifts": { },
-  "reductions": [ 
-    { "produces": "HAVING_EXPR", 
-      "lookaheads": ["$", "fetch", "limit", "order"], 
-      "nReducedSymbols": 3 }
-  ]
-},
-{ "num": 163, 
-  "shifts": { "(": 27},
-  "reductions": [ 
-    { "produces": "EQ_EXPR", 
-      "lookaheads": ["having", "$", "fetch", "limit", "order", "group"], 
-      "nReducedSymbols": 3 }
-  ]
-},
-{ "num": 164, 
-  "shifts": { },
-  "reductions": [ 
-    { "produces": "HAVING_EXPR", 
-      "lookaheads": ["$", "fetch", "limit", "order"], 
-      "nReducedSymbols": 3 }
-  ]
-},
-{ "num": 165, 
-  "shifts": { "(": 27},
-  "reductions": [ 
-    { "produces": "EQ_EXPR", 
-      "lookaheads": ["having", "$", "fetch", "limit", "order", "group"], 
-      "nReducedSymbols": 3 }
-  ]
-},
-{ "num": 166, 
-  "shifts": { },
-  "reductions": [ 
-    { "produces": "HAVING_EXPR", 
-      "lookaheads": ["$", "fetch", "limit", "order"], 
-      "nReducedSymbols": 3 }
-  ]
-},
-{ "num": 167, 
-  "shifts": { "(": 27},
-  "reductions": [ 
-    { "produces": "EQ_EXPR", 
-      "lookaheads": ["having", "$", "fetch", "limit", "order", "group"], 
-      "nReducedSymbols": 3 }
-  ]
-},
-{ "num": 168, 
-  "shifts": { },
-  "reductions": [ 
-    { "produces": "HAVING_EXPR", 
-      "lookaheads": ["$", "fetch", "limit", "order"], 
-      "nReducedSymbols": 3 }
-  ]
-},
-{ "num": 169, 
-  "shifts": { },
-  "reductions": [ 
-    { "produces": "HAVING_EXPR", 
-      "lookaheads": ["$", "fetch", "limit", "order"], 
-      "nReducedSymbols": 3 }
-  ]
-},
-{ "num": 170, 
-  "shifts": { },
-  "reductions": [ 
-    { "produces": "HAVING_EXPR", 
-      "lookaheads": ["$", "fetch", "limit", "order"], 
-      "nReducedSymbols": 3 }
-  ]
-},
-{ "num": 171, 
-  "shifts": { },
-  "reductions": [ 
-    { "produces": "HAVING_EXPR", 
-      "lookaheads": ["$", "fetch", "limit", "order"], 
-      "nReducedSymbols": 3 }
-  ]
-},
-{ "num": 172, 
-  "shifts": { },
-  "reductions": [ 
-    { "produces": "HAVING_EXPR", 
-      "lookaheads": ["$", "fetch", "limit", "order"], 
-      "nReducedSymbols": 3 }
-  ]
-},
-{ "num": 173, 
-  "shifts": { },
-  "reductions": [ 
-    { "produces": "HAVING_EXPR", 
-      "lookaheads": ["$", "fetch", "limit", "order"], 
-      "nReducedSymbols": 3 }
-  ]
-},
-{ "num": 174, 
-  "shifts": { },
-  "reductions": [ 
-    { "produces": "HAVING_EXPR", 
-      "lookaheads": ["$", "fetch", "limit", "order"], 
-      "nReducedSymbols": 3 }
-  ]
-},
-{ "num": 175, 
-  "shifts": { },
-  "reductions": [ 
-    { "produces": "HAVING_EXPR", 
-      "lookaheads": ["$", "fetch", "limit", "order"], 
-      "nReducedSymbols": 3 }
-  ]
-},
-{ "num": 176, 
-  "shifts": { },
-  "reductions": [ 
-    { "produces": "HAVING_EXPR", 
-      "lookaheads": ["$", "fetch", "limit", "order"], 
-      "nReducedSymbols": 3 }
-  ]
-},
-{ "num": 177, 
-  "shifts": { },
-  "reductions": [ 
-    { "produces": "HAVING_EXPR", 
-      "lookaheads": ["$", "fetch", "limit", "order"], 
-      "nReducedSymbols": 3 }
-  ]
-},
-{ "num": 178, 
-  "shifts": { },
-  "reductions": [ 
-    { "produces": "HAVING_EXPR", 
-      "lookaheads": ["$", "fetch", "limit", "order"], 
-      "nReducedSymbols": 3 }
-  ]
-},
-{ "num": 179, 
-  "shifts": { },
-  "reductions": [ 
-    { "produces": "HAVING_EXPR", 
-      "lookaheads": ["$", "fetch", "limit", "order"], 
-      "nReducedSymbols": 3 }
-  ]
-},
-{ "num": 180, 
-  "shifts": { },
-  "reductions": [ 
-    { "produces": "ID_LIST", 
-      "lookaheads": [",", "having", "$", "fetch", "limit", "order"], 
-      "nReducedSymbols": 3 }
-  ]
-},
-{ "num": 181, 
-  "shifts": { },
-  "reductions": [ 
-    { "produces": "LIMIT", 
-      "lookaheads": ["$"], 
-      "nReducedSymbols": 5 }
-  ]
-},
-{ "num": 182, 
-  "shifts": { },
-  "reductions": [ 
-    { "produces": "LIMIT", 
-      "lookaheads": ["$"], 
-      "nReducedSymbols": 5 }
-  ]
-}
+  {
+    "num": 0,
+    "shifts": {
+      "QUERY": 1,
+      "SELECT": 2,
+      "select": 3,
+      "delete": 4
+    },
+    "reductions": [
+
+    ]
+  },
+  {
+    "num": 1,
+    "shifts": {
+    },
+    "reductions": [
+      {
+        "produces": "QUERY'",
+        "lookaheads": [
+          "$"
+        ],
+        "reduces": [
+          "QUERY"
+        ]
+      }
+    ]
+  },
+  {
+    "num": 2,
+    "shifts": {
+      "FROM": 5,
+      "from": 6
+    },
+    "reductions": [
+
+    ]
+  },
+  {
+    "num": 3,
+    "shifts": {
+      "distinct": 7,
+      "FIELD_LIST": 8,
+      "FIELD": 9,
+      "id": 10,
+      "*": 11,
+      "AGGREGATE": 12
+    },
+    "reductions": [
+
+    ]
+  },
+  {
+    "num": 4,
+    "shifts": {
+      "FROM": 13,
+      "from": 6
+    },
+    "reductions": [
+
+    ]
+  },
+  {
+    "num": 5,
+    "shifts": {
+      "WHERE": 14,
+      "GROUP_BY": 15,
+      "ORDER_BY": 16,
+      "LIMIT": 17,
+      "where": 18,
+      "group": 19,
+      "order": 20,
+      "limit": 21,
+      "fetch": 22
+    },
+    "reductions": [
+      {
+        "produces": "QUERY",
+        "lookaheads": [
+          "$"
+        ],
+        "reduces": [
+          "SELECT",
+          "FROM"
+        ]
+      }
+    ]
+  },
+  {
+    "num": 6,
+    "shifts": {
+      "id": 23
+    },
+    "reductions": [
+
+    ]
+  },
+  {
+    "num": 7,
+    "shifts": {
+      "FIELD_LIST": 24,
+      "FIELD": 9,
+      "id": 10,
+      "*": 11,
+      "AGGREGATE": 12
+    },
+    "reductions": [
+
+    ]
+  },
+  {
+    "num": 8,
+    "shifts": {
+      ",": 25
+    },
+    "reductions": [
+      {
+        "produces": "SELECT",
+        "lookaheads": [
+          "having",
+          "fetch",
+          "limit",
+          "order",
+          "group",
+          "where",
+          "from"
+        ],
+        "reduces": [
+          "select",
+          "FIELD_LIST"
+        ]
+      }
+    ]
+  },
+  {
+    "num": 9,
+    "shifts": {
+    },
+    "reductions": [
+      {
+        "produces": "FIELD_LIST",
+        "lookaheads": [
+          ",",
+          "having",
+          "fetch",
+          "limit",
+          "order",
+          "group",
+          "where",
+          "from"
+        ],
+        "reduces": [
+          "FIELD"
+        ]
+      }
+    ]
+  },
+  {
+    "num": 10,
+    "shifts": {
+      "as": 26,
+      "(": 27
+    },
+    "reductions": [
+      {
+        "produces": "FIELD",
+        "lookaheads": [
+          ",",
+          "having",
+          "fetch",
+          "limit",
+          "order",
+          "group",
+          "where",
+          "from"
+        ],
+        "reduces": [
+          "id"
+        ]
+      }
+    ]
+  },
+  {
+    "num": 11,
+    "shifts": {
+    },
+    "reductions": [
+      {
+        "produces": "FIELD",
+        "lookaheads": [
+          ",",
+          "having",
+          "fetch",
+          "limit",
+          "order",
+          "group",
+          "where",
+          "from"
+        ],
+        "reduces": [
+          "*"
+        ]
+      }
+    ]
+  },
+  {
+    "num": 12,
+    "shifts": {
+      "as": 28
+    },
+    "reductions": [
+      {
+        "produces": "FIELD",
+        "lookaheads": [
+          ",",
+          "having",
+          "fetch",
+          "limit",
+          "order",
+          "group",
+          "where",
+          "from"
+        ],
+        "reduces": [
+          "AGGREGATE"
+        ]
+      }
+    ]
+  },
+  {
+    "num": 13,
+    "shifts": {
+      "WHERE": 29,
+      "where": 18
+    },
+    "reductions": [
+      {
+        "produces": "QUERY",
+        "lookaheads": [
+          "$"
+        ],
+        "reduces": [
+          "delete",
+          "FROM"
+        ]
+      }
+    ]
+  },
+  {
+    "num": 14,
+    "shifts": {
+      "GROUP_BY": 30,
+      "ORDER_BY": 31,
+      "LIMIT": 32,
+      "group": 19,
+      "order": 20,
+      "limit": 21,
+      "fetch": 22
+    },
+    "reductions": [
+      {
+        "produces": "QUERY",
+        "lookaheads": [
+          "$"
+        ],
+        "reduces": [
+          "SELECT",
+          "FROM",
+          "WHERE"
+        ]
+      }
+    ]
+  },
+  {
+    "num": 15,
+    "shifts": {
+      "ORDER_BY": 33,
+      "LIMIT": 34,
+      "HAVING": 35,
+      "order": 20,
+      "limit": 21,
+      "fetch": 22,
+      "having": 36
+    },
+    "reductions": [
+      {
+        "produces": "QUERY",
+        "lookaheads": [
+          "$"
+        ],
+        "reduces": [
+          "SELECT",
+          "FROM",
+          "GROUP_BY"
+        ]
+      }
+    ]
+  },
+  {
+    "num": 16,
+    "shifts": {
+      "LIMIT": 37,
+      "limit": 21,
+      "fetch": 22
+    },
+    "reductions": [
+      {
+        "produces": "QUERY",
+        "lookaheads": [
+          "$"
+        ],
+        "reduces": [
+          "SELECT",
+          "FROM",
+          "ORDER_BY"
+        ]
+      }
+    ]
+  },
+  {
+    "num": 17,
+    "shifts": {
+    },
+    "reductions": [
+      {
+        "produces": "QUERY",
+        "lookaheads": [
+          "$"
+        ],
+        "reduces": [
+          "SELECT",
+          "FROM",
+          "LIMIT"
+        ]
+      }
+    ]
+  },
+  {
+    "num": 18,
+    "shifts": {
+      "EXPR": 38,
+      "EQ_EXPR": 39,
+      "id": 40,
+      "LITERAL": 41,
+      "number": 42,
+      "string": 43
+    },
+    "reductions": [
+
+    ]
+  },
+  {
+    "num": 19,
+    "shifts": {
+      "by": 44
+    },
+    "reductions": [
+
+    ]
+  },
+  {
+    "num": 20,
+    "shifts": {
+      "by": 45
+    },
+    "reductions": [
+
+    ]
+  },
+  {
+    "num": 21,
+    "shifts": {
+      "number": 46
+    },
+    "reductions": [
+
+    ]
+  },
+  {
+    "num": 22,
+    "shifts": {
+      "first": 47
+    },
+    "reductions": [
+
+    ]
+  },
+  {
+    "num": 23,
+    "shifts": {
+    },
+    "reductions": [
+      {
+        "produces": "FROM",
+        "lookaheads": [
+          "having",
+          "$",
+          "fetch",
+          "limit",
+          "order",
+          "group",
+          "where"
+        ],
+        "reduces": [
+          "from",
+          "id"
+        ]
+      }
+    ]
+  },
+  {
+    "num": 24,
+    "shifts": {
+      ",": 25
+    },
+    "reductions": [
+      {
+        "produces": "SELECT",
+        "lookaheads": [
+          "having",
+          "fetch",
+          "limit",
+          "order",
+          "group",
+          "where",
+          "from"
+        ],
+        "reduces": [
+          "select",
+          "distinct",
+          "FIELD_LIST"
+        ]
+      }
+    ]
+  },
+  {
+    "num": 25,
+    "shifts": {
+      "FIELD": 48,
+      "id": 10,
+      "*": 11,
+      "AGGREGATE": 12
+    },
+    "reductions": [
+
+    ]
+  },
+  {
+    "num": 26,
+    "shifts": {
+      "id": 49
+    },
+    "reductions": [
+
+    ]
+  },
+  {
+    "num": 27,
+    "shifts": {
+      "id": 50,
+      "*": 51
+    },
+    "reductions": [
+
+    ]
+  },
+  {
+    "num": 28,
+    "shifts": {
+      "id": 52
+    },
+    "reductions": [
+
+    ]
+  },
+  {
+    "num": 29,
+    "shifts": {
+    },
+    "reductions": [
+      {
+        "produces": "QUERY",
+        "lookaheads": [
+          "$"
+        ],
+        "reduces": [
+          "delete",
+          "FROM",
+          "WHERE"
+        ]
+      }
+    ]
+  },
+  {
+    "num": 30,
+    "shifts": {
+      "ORDER_BY": 53,
+      "LIMIT": 54,
+      "HAVING": 55,
+      "order": 20,
+      "limit": 21,
+      "fetch": 22,
+      "having": 36
+    },
+    "reductions": [
+      {
+        "produces": "QUERY",
+        "lookaheads": [
+          "$"
+        ],
+        "reduces": [
+          "SELECT",
+          "FROM",
+          "WHERE",
+          "GROUP_BY"
+        ]
+      }
+    ]
+  },
+  {
+    "num": 31,
+    "shifts": {
+      "LIMIT": 56,
+      "limit": 21,
+      "fetch": 22
+    },
+    "reductions": [
+      {
+        "produces": "QUERY",
+        "lookaheads": [
+          "$"
+        ],
+        "reduces": [
+          "SELECT",
+          "FROM",
+          "WHERE",
+          "ORDER_BY"
+        ]
+      }
+    ]
+  },
+  {
+    "num": 32,
+    "shifts": {
+    },
+    "reductions": [
+      {
+        "produces": "QUERY",
+        "lookaheads": [
+          "$"
+        ],
+        "reduces": [
+          "SELECT",
+          "FROM",
+          "WHERE",
+          "LIMIT"
+        ]
+      }
+    ]
+  },
+  {
+    "num": 33,
+    "shifts": {
+      "LIMIT": 57,
+      "limit": 21,
+      "fetch": 22
+    },
+    "reductions": [
+      {
+        "produces": "QUERY",
+        "lookaheads": [
+          "$"
+        ],
+        "reduces": [
+          "SELECT",
+          "FROM",
+          "GROUP_BY",
+          "ORDER_BY"
+        ]
+      }
+    ]
+  },
+  {
+    "num": 34,
+    "shifts": {
+    },
+    "reductions": [
+      {
+        "produces": "QUERY",
+        "lookaheads": [
+          "$"
+        ],
+        "reduces": [
+          "SELECT",
+          "FROM",
+          "GROUP_BY",
+          "LIMIT"
+        ]
+      }
+    ]
+  },
+  {
+    "num": 35,
+    "shifts": {
+      "ORDER_BY": 58,
+      "LIMIT": 59,
+      "order": 20,
+      "limit": 21,
+      "fetch": 22
+    },
+    "reductions": [
+      {
+        "produces": "QUERY",
+        "lookaheads": [
+          "$"
+        ],
+        "reduces": [
+          "SELECT",
+          "FROM",
+          "GROUP_BY",
+          "HAVING"
+        ]
+      }
+    ]
+  },
+  {
+    "num": 36,
+    "shifts": {
+      "EXPR": 60,
+      "HAVING_EXPR": 61,
+      "EQ_EXPR": 39,
+      "id": 62,
+      "LITERAL": 63,
+      "number": 42,
+      "string": 43,
+      "AGGREGATE": 64
+    },
+    "reductions": [
+
+    ]
+  },
+  {
+    "num": 37,
+    "shifts": {
+    },
+    "reductions": [
+      {
+        "produces": "QUERY",
+        "lookaheads": [
+          "$"
+        ],
+        "reduces": [
+          "SELECT",
+          "FROM",
+          "ORDER_BY",
+          "LIMIT"
+        ]
+      }
+    ]
+  },
+  {
+    "num": 38,
+    "shifts": {
+    },
+    "reductions": [
+      {
+        "produces": "WHERE",
+        "lookaheads": [
+          "having",
+          "$",
+          "fetch",
+          "limit",
+          "order",
+          "group"
+        ],
+        "reduces": [
+          "where",
+          "EXPR"
+        ]
+      }
+    ]
+  },
+  {
+    "num": 39,
+    "shifts": {
+    },
+    "reductions": [
+      {
+        "produces": "EXPR",
+        "lookaheads": [
+          "having",
+          "$",
+          "fetch",
+          "limit",
+          "order",
+          "group"
+        ],
+        "reduces": [
+          "EQ_EXPR"
+        ]
+      }
+    ]
+  },
+  {
+    "num": 40,
+    "shifts": {
+      "=": 65,
+      "!=": 66,
+      "<>": 67,
+      ">": 68,
+      "<": 69,
+      "!>": 70,
+      "!<": 71,
+      ">=": 72,
+      "<=": 73,
+      "like": 74,
+      "~": 75
+    },
+    "reductions": [
+
+    ]
+  },
+  {
+    "num": 41,
+    "shifts": {
+      "=": 76,
+      "!=": 77,
+      "<>": 78,
+      ">": 79,
+      "<": 80,
+      "!>": 81,
+      "!<": 82,
+      ">=": 83,
+      "<=": 84,
+      "like": 85,
+      "~": 86
+    },
+    "reductions": [
+
+    ]
+  },
+  {
+    "num": 42,
+    "shifts": {
+    },
+    "reductions": [
+      {
+        "produces": "LITERAL",
+        "lookaheads": [
+          "having",
+          "group",
+          "~",
+          "like",
+          "<=",
+          ">=",
+          "!<",
+          "!>",
+          "<",
+          ">",
+          "<>",
+          "!=",
+          "=",
+          "$",
+          "fetch",
+          "limit",
+          "order"
+        ],
+        "reduces": [
+          "number"
+        ]
+      }
+    ]
+  },
+  {
+    "num": 43,
+    "shifts": {
+    },
+    "reductions": [
+      {
+        "produces": "LITERAL",
+        "lookaheads": [
+          "having",
+          "group",
+          "~",
+          "like",
+          "<=",
+          ">=",
+          "!<",
+          "!>",
+          "<",
+          ">",
+          "<>",
+          "!=",
+          "=",
+          "$",
+          "fetch",
+          "limit",
+          "order"
+        ],
+        "reduces": [
+          "string"
+        ]
+      }
+    ]
+  },
+  {
+    "num": 44,
+    "shifts": {
+      "ID_LIST": 87,
+      "id": 88
+    },
+    "reductions": [
+
+    ]
+  },
+  {
+    "num": 45,
+    "shifts": {
+      "id": 89
+    },
+    "reductions": [
+
+    ]
+  },
+  {
+    "num": 46,
+    "shifts": {
+    },
+    "reductions": [
+      {
+        "produces": "LIMIT",
+        "lookaheads": [
+          "$"
+        ],
+        "reduces": [
+          "limit",
+          "number"
+        ]
+      }
+    ]
+  },
+  {
+    "num": 47,
+    "shifts": {
+      "number": 90
+    },
+    "reductions": [
+
+    ]
+  },
+  {
+    "num": 48,
+    "shifts": {
+    },
+    "reductions": [
+      {
+        "produces": "FIELD_LIST",
+        "lookaheads": [
+          ",",
+          "having",
+          "fetch",
+          "limit",
+          "order",
+          "group",
+          "where",
+          "from"
+        ],
+        "reduces": [
+          "FIELD_LIST",
+          ",",
+          "FIELD"
+        ]
+      }
+    ]
+  },
+  {
+    "num": 49,
+    "shifts": {
+    },
+    "reductions": [
+      {
+        "produces": "FIELD",
+        "lookaheads": [
+          ",",
+          "having",
+          "fetch",
+          "limit",
+          "order",
+          "group",
+          "where",
+          "from"
+        ],
+        "reduces": [
+          "id",
+          "as",
+          "id"
+        ]
+      }
+    ]
+  },
+  {
+    "num": 50,
+    "shifts": {
+      ")": 91
+    },
+    "reductions": [
+
+    ]
+  },
+  {
+    "num": 51,
+    "shifts": {
+      ")": 92
+    },
+    "reductions": [
+
+    ]
+  },
+  {
+    "num": 52,
+    "shifts": {
+    },
+    "reductions": [
+      {
+        "produces": "FIELD",
+        "lookaheads": [
+          ",",
+          "having",
+          "fetch",
+          "limit",
+          "order",
+          "group",
+          "where",
+          "from"
+        ],
+        "reduces": [
+          "AGGREGATE",
+          "as",
+          "id"
+        ]
+      }
+    ]
+  },
+  {
+    "num": 53,
+    "shifts": {
+      "LIMIT": 93,
+      "limit": 21,
+      "fetch": 22
+    },
+    "reductions": [
+      {
+        "produces": "QUERY",
+        "lookaheads": [
+          "$"
+        ],
+        "reduces": [
+          "SELECT",
+          "FROM",
+          "WHERE",
+          "GROUP_BY",
+          "ORDER_BY"
+        ]
+      }
+    ]
+  },
+  {
+    "num": 54,
+    "shifts": {
+    },
+    "reductions": [
+      {
+        "produces": "QUERY",
+        "lookaheads": [
+          "$"
+        ],
+        "reduces": [
+          "SELECT",
+          "FROM",
+          "WHERE",
+          "GROUP_BY",
+          "LIMIT"
+        ]
+      }
+    ]
+  },
+  {
+    "num": 55,
+    "shifts": {
+      "ORDER_BY": 94,
+      "LIMIT": 95,
+      "order": 20,
+      "limit": 21,
+      "fetch": 22
+    },
+    "reductions": [
+      {
+        "produces": "QUERY",
+        "lookaheads": [
+          "$"
+        ],
+        "reduces": [
+          "SELECT",
+          "FROM",
+          "WHERE",
+          "GROUP_BY",
+          "HAVING"
+        ]
+      }
+    ]
+  },
+  {
+    "num": 56,
+    "shifts": {
+    },
+    "reductions": [
+      {
+        "produces": "QUERY",
+        "lookaheads": [
+          "$"
+        ],
+        "reduces": [
+          "SELECT",
+          "FROM",
+          "WHERE",
+          "ORDER_BY",
+          "LIMIT"
+        ]
+      }
+    ]
+  },
+  {
+    "num": 57,
+    "shifts": {
+    },
+    "reductions": [
+      {
+        "produces": "QUERY",
+        "lookaheads": [
+          "$"
+        ],
+        "reduces": [
+          "SELECT",
+          "FROM",
+          "GROUP_BY",
+          "ORDER_BY",
+          "LIMIT"
+        ]
+      }
+    ]
+  },
+  {
+    "num": 58,
+    "shifts": {
+      "LIMIT": 96,
+      "limit": 21,
+      "fetch": 22
+    },
+    "reductions": [
+      {
+        "produces": "QUERY",
+        "lookaheads": [
+          "$"
+        ],
+        "reduces": [
+          "SELECT",
+          "FROM",
+          "GROUP_BY",
+          "HAVING",
+          "ORDER_BY"
+        ]
+      }
+    ]
+  },
+  {
+    "num": 59,
+    "shifts": {
+    },
+    "reductions": [
+      {
+        "produces": "QUERY",
+        "lookaheads": [
+          "$"
+        ],
+        "reduces": [
+          "SELECT",
+          "FROM",
+          "GROUP_BY",
+          "HAVING",
+          "LIMIT"
+        ]
+      }
+    ]
+  },
+  {
+    "num": 60,
+    "shifts": {
+    },
+    "reductions": [
+      {
+        "produces": "HAVING",
+        "lookaheads": [
+          "$",
+          "fetch",
+          "limit",
+          "order"
+        ],
+        "reduces": [
+          "having",
+          "EXPR"
+        ]
+      }
+    ]
+  },
+  {
+    "num": 61,
+    "shifts": {
+    },
+    "reductions": [
+      {
+        "produces": "HAVING",
+        "lookaheads": [
+          "$",
+          "fetch",
+          "limit",
+          "order"
+        ],
+        "reduces": [
+          "having",
+          "HAVING_EXPR"
+        ]
+      }
+    ]
+  },
+  {
+    "num": 62,
+    "shifts": {
+      "=": 65,
+      "!=": 66,
+      "<>": 67,
+      ">": 68,
+      "<": 69,
+      "!>": 70,
+      "!<": 71,
+      ">=": 72,
+      "<=": 73,
+      "like": 74,
+      "~": 75,
+      "(": 27
+    },
+    "reductions": [
+
+    ]
+  },
+  {
+    "num": 63,
+    "shifts": {
+      "=": 97,
+      "!=": 98,
+      "<>": 99,
+      ">": 100,
+      "<": 101,
+      "!>": 102,
+      "!<": 103,
+      ">=": 104,
+      "<=": 105,
+      "like": 106,
+      "~": 107
+    },
+    "reductions": [
+
+    ]
+  },
+  {
+    "num": 64,
+    "shifts": {
+      "=": 108,
+      "!=": 109,
+      "<>": 110,
+      ">": 111,
+      "<": 112,
+      "!>": 113,
+      "!<": 114,
+      ">=": 115,
+      "<=": 116,
+      "like": 117,
+      "~": 118
+    },
+    "reductions": [
+
+    ]
+  },
+  {
+    "num": 65,
+    "shifts": {
+      "LITERAL": 119,
+      "number": 42,
+      "string": 43
+    },
+    "reductions": [
+
+    ]
+  },
+  {
+    "num": 66,
+    "shifts": {
+      "LITERAL": 120,
+      "number": 42,
+      "string": 43
+    },
+    "reductions": [
+
+    ]
+  },
+  {
+    "num": 67,
+    "shifts": {
+      "LITERAL": 121,
+      "number": 42,
+      "string": 43
+    },
+    "reductions": [
+
+    ]
+  },
+  {
+    "num": 68,
+    "shifts": {
+      "LITERAL": 122,
+      "number": 42,
+      "string": 43
+    },
+    "reductions": [
+
+    ]
+  },
+  {
+    "num": 69,
+    "shifts": {
+      "LITERAL": 123,
+      "number": 42,
+      "string": 43
+    },
+    "reductions": [
+
+    ]
+  },
+  {
+    "num": 70,
+    "shifts": {
+      "LITERAL": 124,
+      "number": 42,
+      "string": 43
+    },
+    "reductions": [
+
+    ]
+  },
+  {
+    "num": 71,
+    "shifts": {
+      "LITERAL": 125,
+      "number": 42,
+      "string": 43
+    },
+    "reductions": [
+
+    ]
+  },
+  {
+    "num": 72,
+    "shifts": {
+      "LITERAL": 126,
+      "number": 42,
+      "string": 43
+    },
+    "reductions": [
+
+    ]
+  },
+  {
+    "num": 73,
+    "shifts": {
+      "LITERAL": 127,
+      "number": 42,
+      "string": 43
+    },
+    "reductions": [
+
+    ]
+  },
+  {
+    "num": 74,
+    "shifts": {
+      "LITERAL": 128,
+      "number": 42,
+      "string": 43
+    },
+    "reductions": [
+
+    ]
+  },
+  {
+    "num": 75,
+    "shifts": {
+      "LITERAL": 129,
+      "number": 42,
+      "string": 43
+    },
+    "reductions": [
+
+    ]
+  },
+  {
+    "num": 76,
+    "shifts": {
+      "id": 130
+    },
+    "reductions": [
+
+    ]
+  },
+  {
+    "num": 77,
+    "shifts": {
+      "id": 131
+    },
+    "reductions": [
+
+    ]
+  },
+  {
+    "num": 78,
+    "shifts": {
+      "id": 132
+    },
+    "reductions": [
+
+    ]
+  },
+  {
+    "num": 79,
+    "shifts": {
+      "id": 133
+    },
+    "reductions": [
+
+    ]
+  },
+  {
+    "num": 80,
+    "shifts": {
+      "id": 134
+    },
+    "reductions": [
+
+    ]
+  },
+  {
+    "num": 81,
+    "shifts": {
+      "id": 135
+    },
+    "reductions": [
+
+    ]
+  },
+  {
+    "num": 82,
+    "shifts": {
+      "id": 136
+    },
+    "reductions": [
+
+    ]
+  },
+  {
+    "num": 83,
+    "shifts": {
+      "id": 137
+    },
+    "reductions": [
+
+    ]
+  },
+  {
+    "num": 84,
+    "shifts": {
+      "id": 138
+    },
+    "reductions": [
+
+    ]
+  },
+  {
+    "num": 85,
+    "shifts": {
+      "id": 139
+    },
+    "reductions": [
+
+    ]
+  },
+  {
+    "num": 86,
+    "shifts": {
+      "id": 140
+    },
+    "reductions": [
+
+    ]
+  },
+  {
+    "num": 87,
+    "shifts": {
+      ",": 141
+    },
+    "reductions": [
+      {
+        "produces": "GROUP_BY",
+        "lookaheads": [
+          "having",
+          "$",
+          "fetch",
+          "limit",
+          "order"
+        ],
+        "reduces": [
+          "group",
+          "by",
+          "ID_LIST"
+        ]
+      }
+    ]
+  },
+  {
+    "num": 88,
+    "shifts": {
+    },
+    "reductions": [
+      {
+        "produces": "ID_LIST",
+        "lookaheads": [
+          ",",
+          "having",
+          "$",
+          "fetch",
+          "limit",
+          "order"
+        ],
+        "reduces": [
+          "id"
+        ]
+      }
+    ]
+  },
+  {
+    "num": 89,
+    "shifts": {
+      "asc": 142,
+      "desc": 143
+    },
+    "reductions": [
+      {
+        "produces": "ORDER_BY",
+        "lookaheads": [
+          "$",
+          "fetch",
+          "limit"
+        ],
+        "reduces": [
+          "order",
+          "by",
+          "id"
+        ]
+      }
+    ]
+  },
+  {
+    "num": 90,
+    "shifts": {
+      "rows": 144,
+      "row": 145
+    },
+    "reductions": [
+
+    ]
+  },
+  {
+    "num": 91,
+    "shifts": {
+    },
+    "reductions": [
+      {
+        "produces": "AGGREGATE",
+        "lookaheads": [
+          "$",
+          "~",
+          "like",
+          "<=",
+          ">=",
+          "!<",
+          "!>",
+          "<",
+          ">",
+          "<>",
+          "!=",
+          "=",
+          "as",
+          ",",
+          "having",
+          "fetch",
+          "limit",
+          "order",
+          "group",
+          "where",
+          "from"
+        ],
+        "reduces": [
+          "id",
+          "(",
+          "id",
+          ")"
+        ]
+      }
+    ]
+  },
+  {
+    "num": 92,
+    "shifts": {
+    },
+    "reductions": [
+      {
+        "produces": "AGGREGATE",
+        "lookaheads": [
+          "$",
+          "~",
+          "like",
+          "<=",
+          ">=",
+          "!<",
+          "!>",
+          "<",
+          ">",
+          "<>",
+          "!=",
+          "=",
+          "as",
+          ",",
+          "having",
+          "fetch",
+          "limit",
+          "order",
+          "group",
+          "where",
+          "from"
+        ],
+        "reduces": [
+          "id",
+          "(",
+          "*",
+          ")"
+        ]
+      }
+    ]
+  },
+  {
+    "num": 93,
+    "shifts": {
+    },
+    "reductions": [
+      {
+        "produces": "QUERY",
+        "lookaheads": [
+          "$"
+        ],
+        "reduces": [
+          "SELECT",
+          "FROM",
+          "WHERE",
+          "GROUP_BY",
+          "ORDER_BY",
+          "LIMIT"
+        ]
+      }
+    ]
+  },
+  {
+    "num": 94,
+    "shifts": {
+      "LIMIT": 146,
+      "limit": 21,
+      "fetch": 22
+    },
+    "reductions": [
+      {
+        "produces": "QUERY",
+        "lookaheads": [
+          "$"
+        ],
+        "reduces": [
+          "SELECT",
+          "FROM",
+          "WHERE",
+          "GROUP_BY",
+          "HAVING",
+          "ORDER_BY"
+        ]
+      }
+    ]
+  },
+  {
+    "num": 95,
+    "shifts": {
+    },
+    "reductions": [
+      {
+        "produces": "QUERY",
+        "lookaheads": [
+          "$"
+        ],
+        "reduces": [
+          "SELECT",
+          "FROM",
+          "WHERE",
+          "GROUP_BY",
+          "HAVING",
+          "LIMIT"
+        ]
+      }
+    ]
+  },
+  {
+    "num": 96,
+    "shifts": {
+    },
+    "reductions": [
+      {
+        "produces": "QUERY",
+        "lookaheads": [
+          "$"
+        ],
+        "reduces": [
+          "SELECT",
+          "FROM",
+          "GROUP_BY",
+          "HAVING",
+          "ORDER_BY",
+          "LIMIT"
+        ]
+      }
+    ]
+  },
+  {
+    "num": 97,
+    "shifts": {
+      "id": 147,
+      "AGGREGATE": 148
+    },
+    "reductions": [
+
+    ]
+  },
+  {
+    "num": 98,
+    "shifts": {
+      "id": 149,
+      "AGGREGATE": 150
+    },
+    "reductions": [
+
+    ]
+  },
+  {
+    "num": 99,
+    "shifts": {
+      "id": 151,
+      "AGGREGATE": 152
+    },
+    "reductions": [
+
+    ]
+  },
+  {
+    "num": 100,
+    "shifts": {
+      "id": 153,
+      "AGGREGATE": 154
+    },
+    "reductions": [
+
+    ]
+  },
+  {
+    "num": 101,
+    "shifts": {
+      "id": 155,
+      "AGGREGATE": 156
+    },
+    "reductions": [
+
+    ]
+  },
+  {
+    "num": 102,
+    "shifts": {
+      "id": 157,
+      "AGGREGATE": 158
+    },
+    "reductions": [
+
+    ]
+  },
+  {
+    "num": 103,
+    "shifts": {
+      "id": 159,
+      "AGGREGATE": 160
+    },
+    "reductions": [
+
+    ]
+  },
+  {
+    "num": 104,
+    "shifts": {
+      "id": 161,
+      "AGGREGATE": 162
+    },
+    "reductions": [
+
+    ]
+  },
+  {
+    "num": 105,
+    "shifts": {
+      "id": 163,
+      "AGGREGATE": 164
+    },
+    "reductions": [
+
+    ]
+  },
+  {
+    "num": 106,
+    "shifts": {
+      "id": 165,
+      "AGGREGATE": 166
+    },
+    "reductions": [
+
+    ]
+  },
+  {
+    "num": 107,
+    "shifts": {
+      "id": 167,
+      "AGGREGATE": 168
+    },
+    "reductions": [
+
+    ]
+  },
+  {
+    "num": 108,
+    "shifts": {
+      "LITERAL": 169,
+      "number": 42,
+      "string": 43
+    },
+    "reductions": [
+
+    ]
+  },
+  {
+    "num": 109,
+    "shifts": {
+      "LITERAL": 170,
+      "number": 42,
+      "string": 43
+    },
+    "reductions": [
+
+    ]
+  },
+  {
+    "num": 110,
+    "shifts": {
+      "LITERAL": 171,
+      "number": 42,
+      "string": 43
+    },
+    "reductions": [
+
+    ]
+  },
+  {
+    "num": 111,
+    "shifts": {
+      "LITERAL": 172,
+      "number": 42,
+      "string": 43
+    },
+    "reductions": [
+
+    ]
+  },
+  {
+    "num": 112,
+    "shifts": {
+      "LITERAL": 173,
+      "number": 42,
+      "string": 43
+    },
+    "reductions": [
+
+    ]
+  },
+  {
+    "num": 113,
+    "shifts": {
+      "LITERAL": 174,
+      "number": 42,
+      "string": 43
+    },
+    "reductions": [
+
+    ]
+  },
+  {
+    "num": 114,
+    "shifts": {
+      "LITERAL": 175,
+      "number": 42,
+      "string": 43
+    },
+    "reductions": [
+
+    ]
+  },
+  {
+    "num": 115,
+    "shifts": {
+      "LITERAL": 176,
+      "number": 42,
+      "string": 43
+    },
+    "reductions": [
+
+    ]
+  },
+  {
+    "num": 116,
+    "shifts": {
+      "LITERAL": 177,
+      "number": 42,
+      "string": 43
+    },
+    "reductions": [
+
+    ]
+  },
+  {
+    "num": 117,
+    "shifts": {
+      "LITERAL": 178,
+      "number": 42,
+      "string": 43
+    },
+    "reductions": [
+
+    ]
+  },
+  {
+    "num": 118,
+    "shifts": {
+      "LITERAL": 179,
+      "number": 42,
+      "string": 43
+    },
+    "reductions": [
+
+    ]
+  },
+  {
+    "num": 119,
+    "shifts": {
+    },
+    "reductions": [
+      {
+        "produces": "EQ_EXPR",
+        "lookaheads": [
+          "having",
+          "$",
+          "fetch",
+          "limit",
+          "order",
+          "group"
+        ],
+        "reduces": [
+          "id",
+          "=",
+          "LITERAL"
+        ]
+      }
+    ]
+  },
+  {
+    "num": 120,
+    "shifts": {
+    },
+    "reductions": [
+      {
+        "produces": "EQ_EXPR",
+        "lookaheads": [
+          "having",
+          "$",
+          "fetch",
+          "limit",
+          "order",
+          "group"
+        ],
+        "reduces": [
+          "id",
+          "!=",
+          "LITERAL"
+        ]
+      }
+    ]
+  },
+  {
+    "num": 121,
+    "shifts": {
+    },
+    "reductions": [
+      {
+        "produces": "EQ_EXPR",
+        "lookaheads": [
+          "having",
+          "$",
+          "fetch",
+          "limit",
+          "order",
+          "group"
+        ],
+        "reduces": [
+          "id",
+          "<>",
+          "LITERAL"
+        ]
+      }
+    ]
+  },
+  {
+    "num": 122,
+    "shifts": {
+    },
+    "reductions": [
+      {
+        "produces": "EQ_EXPR",
+        "lookaheads": [
+          "having",
+          "$",
+          "fetch",
+          "limit",
+          "order",
+          "group"
+        ],
+        "reduces": [
+          "id",
+          ">",
+          "LITERAL"
+        ]
+      }
+    ]
+  },
+  {
+    "num": 123,
+    "shifts": {
+    },
+    "reductions": [
+      {
+        "produces": "EQ_EXPR",
+        "lookaheads": [
+          "having",
+          "$",
+          "fetch",
+          "limit",
+          "order",
+          "group"
+        ],
+        "reduces": [
+          "id",
+          "<",
+          "LITERAL"
+        ]
+      }
+    ]
+  },
+  {
+    "num": 124,
+    "shifts": {
+    },
+    "reductions": [
+      {
+        "produces": "EQ_EXPR",
+        "lookaheads": [
+          "having",
+          "$",
+          "fetch",
+          "limit",
+          "order",
+          "group"
+        ],
+        "reduces": [
+          "id",
+          "!>",
+          "LITERAL"
+        ]
+      }
+    ]
+  },
+  {
+    "num": 125,
+    "shifts": {
+    },
+    "reductions": [
+      {
+        "produces": "EQ_EXPR",
+        "lookaheads": [
+          "having",
+          "$",
+          "fetch",
+          "limit",
+          "order",
+          "group"
+        ],
+        "reduces": [
+          "id",
+          "!<",
+          "LITERAL"
+        ]
+      }
+    ]
+  },
+  {
+    "num": 126,
+    "shifts": {
+    },
+    "reductions": [
+      {
+        "produces": "EQ_EXPR",
+        "lookaheads": [
+          "having",
+          "$",
+          "fetch",
+          "limit",
+          "order",
+          "group"
+        ],
+        "reduces": [
+          "id",
+          ">=",
+          "LITERAL"
+        ]
+      }
+    ]
+  },
+  {
+    "num": 127,
+    "shifts": {
+    },
+    "reductions": [
+      {
+        "produces": "EQ_EXPR",
+        "lookaheads": [
+          "having",
+          "$",
+          "fetch",
+          "limit",
+          "order",
+          "group"
+        ],
+        "reduces": [
+          "id",
+          "<=",
+          "LITERAL"
+        ]
+      }
+    ]
+  },
+  {
+    "num": 128,
+    "shifts": {
+    },
+    "reductions": [
+      {
+        "produces": "EQ_EXPR",
+        "lookaheads": [
+          "having",
+          "$",
+          "fetch",
+          "limit",
+          "order",
+          "group"
+        ],
+        "reduces": [
+          "id",
+          "like",
+          "LITERAL"
+        ]
+      }
+    ]
+  },
+  {
+    "num": 129,
+    "shifts": {
+    },
+    "reductions": [
+      {
+        "produces": "EQ_EXPR",
+        "lookaheads": [
+          "having",
+          "$",
+          "fetch",
+          "limit",
+          "order",
+          "group"
+        ],
+        "reduces": [
+          "id",
+          "~",
+          "LITERAL"
+        ]
+      }
+    ]
+  },
+  {
+    "num": 130,
+    "shifts": {
+    },
+    "reductions": [
+      {
+        "produces": "EQ_EXPR",
+        "lookaheads": [
+          "having",
+          "$",
+          "fetch",
+          "limit",
+          "order",
+          "group"
+        ],
+        "reduces": [
+          "LITERAL",
+          "=",
+          "id"
+        ]
+      }
+    ]
+  },
+  {
+    "num": 131,
+    "shifts": {
+    },
+    "reductions": [
+      {
+        "produces": "EQ_EXPR",
+        "lookaheads": [
+          "having",
+          "$",
+          "fetch",
+          "limit",
+          "order",
+          "group"
+        ],
+        "reduces": [
+          "LITERAL",
+          "!=",
+          "id"
+        ]
+      }
+    ]
+  },
+  {
+    "num": 132,
+    "shifts": {
+    },
+    "reductions": [
+      {
+        "produces": "EQ_EXPR",
+        "lookaheads": [
+          "having",
+          "$",
+          "fetch",
+          "limit",
+          "order",
+          "group"
+        ],
+        "reduces": [
+          "LITERAL",
+          "<>",
+          "id"
+        ]
+      }
+    ]
+  },
+  {
+    "num": 133,
+    "shifts": {
+    },
+    "reductions": [
+      {
+        "produces": "EQ_EXPR",
+        "lookaheads": [
+          "having",
+          "$",
+          "fetch",
+          "limit",
+          "order",
+          "group"
+        ],
+        "reduces": [
+          "LITERAL",
+          ">",
+          "id"
+        ]
+      }
+    ]
+  },
+  {
+    "num": 134,
+    "shifts": {
+    },
+    "reductions": [
+      {
+        "produces": "EQ_EXPR",
+        "lookaheads": [
+          "having",
+          "$",
+          "fetch",
+          "limit",
+          "order",
+          "group"
+        ],
+        "reduces": [
+          "LITERAL",
+          "<",
+          "id"
+        ]
+      }
+    ]
+  },
+  {
+    "num": 135,
+    "shifts": {
+    },
+    "reductions": [
+      {
+        "produces": "EQ_EXPR",
+        "lookaheads": [
+          "having",
+          "$",
+          "fetch",
+          "limit",
+          "order",
+          "group"
+        ],
+        "reduces": [
+          "LITERAL",
+          "!>",
+          "id"
+        ]
+      }
+    ]
+  },
+  {
+    "num": 136,
+    "shifts": {
+    },
+    "reductions": [
+      {
+        "produces": "EQ_EXPR",
+        "lookaheads": [
+          "having",
+          "$",
+          "fetch",
+          "limit",
+          "order",
+          "group"
+        ],
+        "reduces": [
+          "LITERAL",
+          "!<",
+          "id"
+        ]
+      }
+    ]
+  },
+  {
+    "num": 137,
+    "shifts": {
+    },
+    "reductions": [
+      {
+        "produces": "EQ_EXPR",
+        "lookaheads": [
+          "having",
+          "$",
+          "fetch",
+          "limit",
+          "order",
+          "group"
+        ],
+        "reduces": [
+          "LITERAL",
+          ">=",
+          "id"
+        ]
+      }
+    ]
+  },
+  {
+    "num": 138,
+    "shifts": {
+    },
+    "reductions": [
+      {
+        "produces": "EQ_EXPR",
+        "lookaheads": [
+          "having",
+          "$",
+          "fetch",
+          "limit",
+          "order",
+          "group"
+        ],
+        "reduces": [
+          "LITERAL",
+          "<=",
+          "id"
+        ]
+      }
+    ]
+  },
+  {
+    "num": 139,
+    "shifts": {
+    },
+    "reductions": [
+      {
+        "produces": "EQ_EXPR",
+        "lookaheads": [
+          "having",
+          "$",
+          "fetch",
+          "limit",
+          "order",
+          "group"
+        ],
+        "reduces": [
+          "LITERAL",
+          "like",
+          "id"
+        ]
+      }
+    ]
+  },
+  {
+    "num": 140,
+    "shifts": {
+    },
+    "reductions": [
+      {
+        "produces": "EQ_EXPR",
+        "lookaheads": [
+          "having",
+          "$",
+          "fetch",
+          "limit",
+          "order",
+          "group"
+        ],
+        "reduces": [
+          "LITERAL",
+          "~",
+          "id"
+        ]
+      }
+    ]
+  },
+  {
+    "num": 141,
+    "shifts": {
+      "id": 180
+    },
+    "reductions": [
+
+    ]
+  },
+  {
+    "num": 142,
+    "shifts": {
+    },
+    "reductions": [
+      {
+        "produces": "ORDER_BY",
+        "lookaheads": [
+          "$",
+          "fetch",
+          "limit"
+        ],
+        "reduces": [
+          "order",
+          "by",
+          "id",
+          "asc"
+        ]
+      }
+    ]
+  },
+  {
+    "num": 143,
+    "shifts": {
+    },
+    "reductions": [
+      {
+        "produces": "ORDER_BY",
+        "lookaheads": [
+          "$",
+          "fetch",
+          "limit"
+        ],
+        "reduces": [
+          "order",
+          "by",
+          "id",
+          "desc"
+        ]
+      }
+    ]
+  },
+  {
+    "num": 144,
+    "shifts": {
+      "only": 181
+    },
+    "reductions": [
+
+    ]
+  },
+  {
+    "num": 145,
+    "shifts": {
+      "only": 182
+    },
+    "reductions": [
+
+    ]
+  },
+  {
+    "num": 146,
+    "shifts": {
+    },
+    "reductions": [
+      {
+        "produces": "QUERY",
+        "lookaheads": [
+          "$"
+        ],
+        "reduces": [
+          "SELECT",
+          "FROM",
+          "WHERE",
+          "GROUP_BY",
+          "HAVING",
+          "ORDER_BY",
+          "LIMIT"
+        ]
+      }
+    ]
+  },
+  {
+    "num": 147,
+    "shifts": {
+      "(": 27
+    },
+    "reductions": [
+      {
+        "produces": "EQ_EXPR",
+        "lookaheads": [
+          "having",
+          "$",
+          "fetch",
+          "limit",
+          "order",
+          "group"
+        ],
+        "reduces": [
+          "LITERAL",
+          "=",
+          "id"
+        ]
+      }
+    ]
+  },
+  {
+    "num": 148,
+    "shifts": {
+    },
+    "reductions": [
+      {
+        "produces": "HAVING_EXPR",
+        "lookaheads": [
+          "$",
+          "fetch",
+          "limit",
+          "order"
+        ],
+        "reduces": [
+          "LITERAL",
+          "=",
+          "AGGREGATE"
+        ]
+      }
+    ]
+  },
+  {
+    "num": 149,
+    "shifts": {
+      "(": 27
+    },
+    "reductions": [
+      {
+        "produces": "EQ_EXPR",
+        "lookaheads": [
+          "having",
+          "$",
+          "fetch",
+          "limit",
+          "order",
+          "group"
+        ],
+        "reduces": [
+          "LITERAL",
+          "!=",
+          "id"
+        ]
+      }
+    ]
+  },
+  {
+    "num": 150,
+    "shifts": {
+    },
+    "reductions": [
+      {
+        "produces": "HAVING_EXPR",
+        "lookaheads": [
+          "$",
+          "fetch",
+          "limit",
+          "order"
+        ],
+        "reduces": [
+          "LITERAL",
+          "!=",
+          "AGGREGATE"
+        ]
+      }
+    ]
+  },
+  {
+    "num": 151,
+    "shifts": {
+      "(": 27
+    },
+    "reductions": [
+      {
+        "produces": "EQ_EXPR",
+        "lookaheads": [
+          "having",
+          "$",
+          "fetch",
+          "limit",
+          "order",
+          "group"
+        ],
+        "reduces": [
+          "LITERAL",
+          "<>",
+          "id"
+        ]
+      }
+    ]
+  },
+  {
+    "num": 152,
+    "shifts": {
+    },
+    "reductions": [
+      {
+        "produces": "HAVING_EXPR",
+        "lookaheads": [
+          "$",
+          "fetch",
+          "limit",
+          "order"
+        ],
+        "reduces": [
+          "LITERAL",
+          "<>",
+          "AGGREGATE"
+        ]
+      }
+    ]
+  },
+  {
+    "num": 153,
+    "shifts": {
+      "(": 27
+    },
+    "reductions": [
+      {
+        "produces": "EQ_EXPR",
+        "lookaheads": [
+          "having",
+          "$",
+          "fetch",
+          "limit",
+          "order",
+          "group"
+        ],
+        "reduces": [
+          "LITERAL",
+          ">",
+          "id"
+        ]
+      }
+    ]
+  },
+  {
+    "num": 154,
+    "shifts": {
+    },
+    "reductions": [
+      {
+        "produces": "HAVING_EXPR",
+        "lookaheads": [
+          "$",
+          "fetch",
+          "limit",
+          "order"
+        ],
+        "reduces": [
+          "LITERAL",
+          ">",
+          "AGGREGATE"
+        ]
+      }
+    ]
+  },
+  {
+    "num": 155,
+    "shifts": {
+      "(": 27
+    },
+    "reductions": [
+      {
+        "produces": "EQ_EXPR",
+        "lookaheads": [
+          "having",
+          "$",
+          "fetch",
+          "limit",
+          "order",
+          "group"
+        ],
+        "reduces": [
+          "LITERAL",
+          "<",
+          "id"
+        ]
+      }
+    ]
+  },
+  {
+    "num": 156,
+    "shifts": {
+    },
+    "reductions": [
+      {
+        "produces": "HAVING_EXPR",
+        "lookaheads": [
+          "$",
+          "fetch",
+          "limit",
+          "order"
+        ],
+        "reduces": [
+          "LITERAL",
+          "<",
+          "AGGREGATE"
+        ]
+      }
+    ]
+  },
+  {
+    "num": 157,
+    "shifts": {
+      "(": 27
+    },
+    "reductions": [
+      {
+        "produces": "EQ_EXPR",
+        "lookaheads": [
+          "having",
+          "$",
+          "fetch",
+          "limit",
+          "order",
+          "group"
+        ],
+        "reduces": [
+          "LITERAL",
+          "!>",
+          "id"
+        ]
+      }
+    ]
+  },
+  {
+    "num": 158,
+    "shifts": {
+    },
+    "reductions": [
+      {
+        "produces": "HAVING_EXPR",
+        "lookaheads": [
+          "$",
+          "fetch",
+          "limit",
+          "order"
+        ],
+        "reduces": [
+          "LITERAL",
+          "!>",
+          "AGGREGATE"
+        ]
+      }
+    ]
+  },
+  {
+    "num": 159,
+    "shifts": {
+      "(": 27
+    },
+    "reductions": [
+      {
+        "produces": "EQ_EXPR",
+        "lookaheads": [
+          "having",
+          "$",
+          "fetch",
+          "limit",
+          "order",
+          "group"
+        ],
+        "reduces": [
+          "LITERAL",
+          "!<",
+          "id"
+        ]
+      }
+    ]
+  },
+  {
+    "num": 160,
+    "shifts": {
+    },
+    "reductions": [
+      {
+        "produces": "HAVING_EXPR",
+        "lookaheads": [
+          "$",
+          "fetch",
+          "limit",
+          "order"
+        ],
+        "reduces": [
+          "LITERAL",
+          "!<",
+          "AGGREGATE"
+        ]
+      }
+    ]
+  },
+  {
+    "num": 161,
+    "shifts": {
+      "(": 27
+    },
+    "reductions": [
+      {
+        "produces": "EQ_EXPR",
+        "lookaheads": [
+          "having",
+          "$",
+          "fetch",
+          "limit",
+          "order",
+          "group"
+        ],
+        "reduces": [
+          "LITERAL",
+          ">=",
+          "id"
+        ]
+      }
+    ]
+  },
+  {
+    "num": 162,
+    "shifts": {
+    },
+    "reductions": [
+      {
+        "produces": "HAVING_EXPR",
+        "lookaheads": [
+          "$",
+          "fetch",
+          "limit",
+          "order"
+        ],
+        "reduces": [
+          "LITERAL",
+          ">=",
+          "AGGREGATE"
+        ]
+      }
+    ]
+  },
+  {
+    "num": 163,
+    "shifts": {
+      "(": 27
+    },
+    "reductions": [
+      {
+        "produces": "EQ_EXPR",
+        "lookaheads": [
+          "having",
+          "$",
+          "fetch",
+          "limit",
+          "order",
+          "group"
+        ],
+        "reduces": [
+          "LITERAL",
+          "<=",
+          "id"
+        ]
+      }
+    ]
+  },
+  {
+    "num": 164,
+    "shifts": {
+    },
+    "reductions": [
+      {
+        "produces": "HAVING_EXPR",
+        "lookaheads": [
+          "$",
+          "fetch",
+          "limit",
+          "order"
+        ],
+        "reduces": [
+          "LITERAL",
+          "<=",
+          "AGGREGATE"
+        ]
+      }
+    ]
+  },
+  {
+    "num": 165,
+    "shifts": {
+      "(": 27
+    },
+    "reductions": [
+      {
+        "produces": "EQ_EXPR",
+        "lookaheads": [
+          "having",
+          "$",
+          "fetch",
+          "limit",
+          "order",
+          "group"
+        ],
+        "reduces": [
+          "LITERAL",
+          "like",
+          "id"
+        ]
+      }
+    ]
+  },
+  {
+    "num": 166,
+    "shifts": {
+    },
+    "reductions": [
+      {
+        "produces": "HAVING_EXPR",
+        "lookaheads": [
+          "$",
+          "fetch",
+          "limit",
+          "order"
+        ],
+        "reduces": [
+          "LITERAL",
+          "like",
+          "AGGREGATE"
+        ]
+      }
+    ]
+  },
+  {
+    "num": 167,
+    "shifts": {
+      "(": 27
+    },
+    "reductions": [
+      {
+        "produces": "EQ_EXPR",
+        "lookaheads": [
+          "having",
+          "$",
+          "fetch",
+          "limit",
+          "order",
+          "group"
+        ],
+        "reduces": [
+          "LITERAL",
+          "~",
+          "id"
+        ]
+      }
+    ]
+  },
+  {
+    "num": 168,
+    "shifts": {
+    },
+    "reductions": [
+      {
+        "produces": "HAVING_EXPR",
+        "lookaheads": [
+          "$",
+          "fetch",
+          "limit",
+          "order"
+        ],
+        "reduces": [
+          "LITERAL",
+          "~",
+          "AGGREGATE"
+        ]
+      }
+    ]
+  },
+  {
+    "num": 169,
+    "shifts": {
+    },
+    "reductions": [
+      {
+        "produces": "HAVING_EXPR",
+        "lookaheads": [
+          "$",
+          "fetch",
+          "limit",
+          "order"
+        ],
+        "reduces": [
+          "AGGREGATE",
+          "=",
+          "LITERAL"
+        ]
+      }
+    ]
+  },
+  {
+    "num": 170,
+    "shifts": {
+    },
+    "reductions": [
+      {
+        "produces": "HAVING_EXPR",
+        "lookaheads": [
+          "$",
+          "fetch",
+          "limit",
+          "order"
+        ],
+        "reduces": [
+          "AGGREGATE",
+          "!=",
+          "LITERAL"
+        ]
+      }
+    ]
+  },
+  {
+    "num": 171,
+    "shifts": {
+    },
+    "reductions": [
+      {
+        "produces": "HAVING_EXPR",
+        "lookaheads": [
+          "$",
+          "fetch",
+          "limit",
+          "order"
+        ],
+        "reduces": [
+          "AGGREGATE",
+          "<>",
+          "LITERAL"
+        ]
+      }
+    ]
+  },
+  {
+    "num": 172,
+    "shifts": {
+    },
+    "reductions": [
+      {
+        "produces": "HAVING_EXPR",
+        "lookaheads": [
+          "$",
+          "fetch",
+          "limit",
+          "order"
+        ],
+        "reduces": [
+          "AGGREGATE",
+          ">",
+          "LITERAL"
+        ]
+      }
+    ]
+  },
+  {
+    "num": 173,
+    "shifts": {
+    },
+    "reductions": [
+      {
+        "produces": "HAVING_EXPR",
+        "lookaheads": [
+          "$",
+          "fetch",
+          "limit",
+          "order"
+        ],
+        "reduces": [
+          "AGGREGATE",
+          "<",
+          "LITERAL"
+        ]
+      }
+    ]
+  },
+  {
+    "num": 174,
+    "shifts": {
+    },
+    "reductions": [
+      {
+        "produces": "HAVING_EXPR",
+        "lookaheads": [
+          "$",
+          "fetch",
+          "limit",
+          "order"
+        ],
+        "reduces": [
+          "AGGREGATE",
+          "!>",
+          "LITERAL"
+        ]
+      }
+    ]
+  },
+  {
+    "num": 175,
+    "shifts": {
+    },
+    "reductions": [
+      {
+        "produces": "HAVING_EXPR",
+        "lookaheads": [
+          "$",
+          "fetch",
+          "limit",
+          "order"
+        ],
+        "reduces": [
+          "AGGREGATE",
+          "!<",
+          "LITERAL"
+        ]
+      }
+    ]
+  },
+  {
+    "num": 176,
+    "shifts": {
+    },
+    "reductions": [
+      {
+        "produces": "HAVING_EXPR",
+        "lookaheads": [
+          "$",
+          "fetch",
+          "limit",
+          "order"
+        ],
+        "reduces": [
+          "AGGREGATE",
+          ">=",
+          "LITERAL"
+        ]
+      }
+    ]
+  },
+  {
+    "num": 177,
+    "shifts": {
+    },
+    "reductions": [
+      {
+        "produces": "HAVING_EXPR",
+        "lookaheads": [
+          "$",
+          "fetch",
+          "limit",
+          "order"
+        ],
+        "reduces": [
+          "AGGREGATE",
+          "<=",
+          "LITERAL"
+        ]
+      }
+    ]
+  },
+  {
+    "num": 178,
+    "shifts": {
+    },
+    "reductions": [
+      {
+        "produces": "HAVING_EXPR",
+        "lookaheads": [
+          "$",
+          "fetch",
+          "limit",
+          "order"
+        ],
+        "reduces": [
+          "AGGREGATE",
+          "like",
+          "LITERAL"
+        ]
+      }
+    ]
+  },
+  {
+    "num": 179,
+    "shifts": {
+    },
+    "reductions": [
+      {
+        "produces": "HAVING_EXPR",
+        "lookaheads": [
+          "$",
+          "fetch",
+          "limit",
+          "order"
+        ],
+        "reduces": [
+          "AGGREGATE",
+          "~",
+          "LITERAL"
+        ]
+      }
+    ]
+  },
+  {
+    "num": 180,
+    "shifts": {
+    },
+    "reductions": [
+      {
+        "produces": "ID_LIST",
+        "lookaheads": [
+          ",",
+          "having",
+          "$",
+          "fetch",
+          "limit",
+          "order"
+        ],
+        "reduces": [
+          "ID_LIST",
+          ",",
+          "id"
+        ]
+      }
+    ]
+  },
+  {
+    "num": 181,
+    "shifts": {
+    },
+    "reductions": [
+      {
+        "produces": "LIMIT",
+        "lookaheads": [
+          "$"
+        ],
+        "reduces": [
+          "fetch",
+          "first",
+          "number",
+          "rows",
+          "only"
+        ]
+      }
+    ]
+  },
+  {
+    "num": 182,
+    "shifts": {
+    },
+    "reductions": [
+      {
+        "produces": "LIMIT",
+        "lookaheads": [
+          "$"
+        ],
+        "reduces": [
+          "fetch",
+          "first",
+          "number",
+          "row",
+          "only"
+        ]
+      }
+    ]
+  }
 ]
