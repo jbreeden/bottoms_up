@@ -2,8 +2,8 @@ BottomsUp::Grammar.new(:QUERY) do |p|
   # Using (NON_TERMINAL | e) for option parts makes it easier to decord while reducing.
   # If the non terminals themselves were nullable, that would have to be detected on reduction.
   # With this grammar construction, we can safely assume they have contents on reuction
-  p.rule :QUERY,       [:SELECT, :FROM, [:WHERE, :e], [:GROUP_BY, :e], [:ORDER_BY, :e], [:LIMIT, :e]]
-  p.rule :QUERY,       [:SELECT, :FROM, [:WHERE, :e], :GROUP_BY, :HAVING, [:ORDER_BY, :e], [:LIMIT, :e]]
+  p.rule :QUERY,       [:SELECT, [:FROM, :e], [:WHERE, :e], [:GROUP_BY, :e], [:ORDER_BY, :e], [:LIMIT, :e]]
+  p.rule :QUERY,       [:SELECT, [:FROM, :e], [:WHERE, :e], :GROUP_BY, :HAVING, [:ORDER_BY, :e], [:LIMIT, :e]]
   p.rule :QUERY,       [:delete, :FROM, [:WHERE, :e]]
   p.rule :SELECT,      [:select, [:distinct, :e], :FIELD_LIST]
   p.rule :FIELD_LIST,  [:FIELD_LIST, :',', :FIELD]
@@ -12,6 +12,7 @@ BottomsUp::Grammar.new(:QUERY) do |p|
   p.rule :FIELD,       [:EXPR]
   p.rule :FIELD,       [:EXPR, :as, :id]
   p.rule :FROM,        [:from, :id]
+  # p.rule :FROM,        [:from, :'(', :QUERY, :')', :as, :id] # Soooon, precious, soon
   p.rule :WHERE,       [:where, :EXPR]
   p.rule :LIMIT,       [:limit, :number]
   p.rule :LIMIT,       [:fetch, :first, :number, [:rows, :row], :only]
@@ -46,10 +47,16 @@ BottomsUp::Grammar.new(:QUERY) do |p|
   #   a = b and b = c or a = d
 
   eq_operators = [:'=', :'!=', :'<>', :'>', :'<', :'!>', :'!<', :'>=', :'<=', :like, :'~']
+  mul_operators = [:'*', :'/', :'%']
+  add_operators = [:'+', :'-', :'.']
 
   precedence = []
-  precedence.push([:LITERAL, :id, :PAREN_EXPR, :AGGREGATE])
+  precedence.push([:LITERAL, :id, :PAREN_EXPR, :FN_EXPR])
   is_term = precedence.flatten
+  precedence.push([:MUL_EXPR])
+  mul_term = precedence.flatten
+  precedence.push([:ADD_EXPR])
+  add_term = precedence.flatten
   precedence.push([:EQ_EXPR])
   eq_term = precedence.flatten
   precedence.push([:NOT_EXPR])
@@ -64,11 +71,14 @@ BottomsUp::Grammar.new(:QUERY) do |p|
   p.rule :EXPR,        [any_expression]
   p.rule :OR_EXPR,     [or_term, :or, and_term]
   p.rule :AND_EXPR,    [and_term, :and, eq_term]
-  p.rule :EQ_EXPR,     [eq_term, eq_operators, is_term]
+  p.rule :NOT_EXPR,    [:not, not_term]
+  p.rule :EQ_EXPR,     [eq_term, eq_operators, add_term]
+  p.rule :ADD_EXPR,    [add_term, add_operators, mul_term]
+  p.rule :MUL_EXPR,    [mul_term, mul_operators, is_term]
   p.rule :EQ_EXPR,     [is_term, :is, :not, :null]
   p.rule :EQ_EXPR,     [is_term, :is, :null]
-  p.rule :NOT_EXPR,    [:not, not_term]
   p.rule :PAREN_EXPR,  [:'(', :EXPR, :')']
-  p.rule :LITERAL,     [[:number, :string]]
-  p.rule :AGGREGATE,   [:id, :'(', [:id, :'*'], :')']
+  p.rule :LITERAL,     [[:'+', :'-', :e], :number]
+  p.rule :LITERAL,     [:string]
+  p.rule :FN_EXPR,   [:id, :'(', [:id, :'*'], :')']
 end
