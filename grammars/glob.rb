@@ -4,7 +4,7 @@ BottomsUp::Grammar.new(:GLOB) do |p|
   p.rule(:SEGMENT_LIST, [:SEGMENT])
   p.rule(:SEGMENT_LIST, [:SEGMENT_LIST, :slash, :SEGMENT])
   p.rule(:SEGMENT, [[:GROUP, :STRING]])
-  p.rule(:SEGMENT, [:SEGMENT, :SEGMENT])
+  p.rule(:SEGMENT, [:SEGMENT, [:GROUP, :STRING]])
   p.rule(:GROUP, [:open_group, :close_group])
   p.rule(:GROUP, [:open_group, :STRING_LIST, :close_group])
   p.rule(:STRING_LIST, [:STRING])
